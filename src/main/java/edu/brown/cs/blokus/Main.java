@@ -37,6 +37,7 @@ import spark.template.freemarker.FreeMarkerEngine;
   */
 public final class Main {
   private static final int DEFAULT_PORT = 4567;
+  private static final String DEFAULT_DB = "blokus";
 
   /**
     * The main method.
@@ -57,12 +58,17 @@ public final class Main {
 
     OptionSpec<Integer> portSpec = parser
       .accepts("port", "The port the GUI should run on.")
-      .withRequiredArg().ofType(Integer.class);
+      .withRequiredArg().ofType(Integer.class)
+      .defaultsTo(DEFAULT_PORT);
+    OptionSpec<String> dbSpec = parser
+      .accepts("db", "The name of the database to use.")
+      .withRequiredArg().ofType(String.class)
+      .defaultsTo(DEFAULT_DB);
     OptionSet options = parser.parse(args);
 
-    final int port = options.has("port")
-      ? options.valueOf(portSpec) : DEFAULT_PORT;
-    runSparkServer(port);
+    final int port = options.valueOf(portSpec);
+    final String dbName = options.valueOf(dbSpec);
+    runSparkServer(port, dbName);
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -78,7 +84,7 @@ public final class Main {
     return new FreeMarkerEngine(config);
   }
 
-  private void runSparkServer(int port) {
+  private void runSparkServer(int port, String dbName) {
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
     Spark.setPort(port);
