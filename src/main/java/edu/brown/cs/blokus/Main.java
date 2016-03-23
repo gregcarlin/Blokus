@@ -1,17 +1,11 @@
 package edu.brown.cs.blokus;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+import edu.brown.cs.blokus.handlers.IndexHandler;
 
 import freemarker.template.Configuration;
 
@@ -20,12 +14,9 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import spark.ExceptionHandler;
-import spark.ModelAndView;
-import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
-import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 
@@ -38,6 +29,7 @@ import spark.template.freemarker.FreeMarkerEngine;
 public final class Main {
   private static final int DEFAULT_PORT = 4567;
   private static final String DEFAULT_DB = "blokus";
+  private static final int HTTP_ERROR = 500;
 
   /**
     * The main method.
@@ -92,19 +84,7 @@ public final class Main {
     FreeMarkerEngine freeMarker = createEngine();
 
     // Setup Spark Routes
-    Spark.get("/", new FrontHandler(), freeMarker);
-  }
-
-  /**
-    * Handles main page in web GUI.
-    */
-  private class FrontHandler implements TemplateViewRoute {
-    @Override
-    public ModelAndView handle(Request req, Response res) {
-      Map<String, Object> variables =
-        ImmutableMap.of("title", "Autocorrect");
-      return new ModelAndView(variables, "action.ftl");
-    }
+    Spark.get("/", new IndexHandler(), freeMarker);
   }
 
   /**
@@ -113,7 +93,7 @@ public final class Main {
   private static class ExceptionPrinter implements ExceptionHandler {
     @Override
     public void handle(Exception e, Request req, Response res) {
-      res.status(500);
+      res.status(HTTP_ERROR);
       StringWriter stacktrace = new StringWriter();
       try (PrintWriter pw = new PrintWriter(stacktrace)) {
         pw.println("<pre>");

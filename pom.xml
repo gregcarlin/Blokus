@@ -25,6 +25,7 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
     </dependency>
+
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
@@ -123,6 +124,9 @@
             </reports>
           </reportSet>
         </reportSets>
+        <configuration>
+          <excludePackageNames>org.mindrot.jbcrypt</excludePackageNames>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -136,6 +140,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.3</version>
+        <configuration>
+          <excludes>
+            <exclude>org/mindrot/jbcrypt/BCrypt.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
