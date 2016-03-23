@@ -2,10 +2,14 @@ package edu.brown.cs.blokus;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
+import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.handlers.AuthHandler;
+import edu.brown.cs.blokus.handlers.ExceptionPrinter;
 import edu.brown.cs.blokus.handlers.IndexHandler;
+import edu.brown.cs.blokus.handlers.LoginHandler;
+import edu.brown.cs.blokus.handlers.MainHandler;
+import edu.brown.cs.blokus.handlers.SignupHandler;
 
 import freemarker.template.Configuration;
 
@@ -13,9 +17,6 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
-import spark.ExceptionHandler;
-import spark.Request;
-import spark.Response;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -29,7 +30,6 @@ import spark.template.freemarker.FreeMarkerEngine;
 public final class Main {
   private static final int DEFAULT_PORT = 4567;
   private static final String DEFAULT_DB = "blokus";
-  private static final int HTTP_ERROR = 500;
 
   /**
     * The main method.
@@ -82,27 +82,13 @@ public final class Main {
     Spark.setPort(port);
 
     FreeMarkerEngine freeMarker = createEngine();
+    Database db = new Database(dbName);
 
     // Setup Spark Routes
     Spark.get("/", new IndexHandler(), freeMarker);
+    Spark.post("/login", new LoginHandler(db), freeMarker);
+    Spark.post("/signup", new SignupHandler(db), freeMarker);
+    Spark.before("/auth/*", new AuthHandler(db));
+    Spark.get("/auth/main", new MainHandler(), freeMarker);
   }
-
-  /**
-    * Handles printing of exceptions to web GUI users.
-    */
-  private static class ExceptionPrinter implements ExceptionHandler {
-    @Override
-    public void handle(Exception e, Request req, Response res) {
-      res.status(HTTP_ERROR);
-      StringWriter stacktrace = new StringWriter();
-      try (PrintWriter pw = new PrintWriter(stacktrace)) {
-        pw.println("<pre>");
-        e.printStackTrace(pw);
-        pw.println("</pre>");
-      }
-      res.body(stacktrace.toString());
-    }
-  }
-
-
 }

@@ -1,7 +1,12 @@
 package edu.brown.cs.blokus.db;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import org.bson.Document;
@@ -12,11 +17,12 @@ import org.mindrot.jbcrypt.BCrypt;
   * Manages connections to the database.
   */
 public class Database implements AutoCloseable {
-  private static final String USER_COLLECTION = "users";
-  private static final String GAME_COLLECTION = "games";
-
   private final MongoClient client;
   private final MongoDatabase db;
+  private final MongoCollection<Document> users;
+  private final MongoCollection<Document> games;
+  // maps userId to sessionHash
+  private final Map<String, String> sessions = new HashMap<>();
 
   /**
     * Creates a new database connection.
@@ -25,11 +31,13 @@ public class Database implements AutoCloseable {
   public Database(String dbName) {
     client = new MongoClient();
     db = client.getDatabase(dbName);
+    users = db.getCollection("users");
+    games = db.getCollection("games");
   }
 
   private Document getUser(String username) {
-    FindIterable<Document> docs = db.getCollection(USER_COLLECTION)
-      .find(new Document("username", username));
+    FindIterable<Document> docs
+      = users.find(new Document("username", username));
     return docs.first();
   }
 
@@ -46,7 +54,7 @@ public class Database implements AutoCloseable {
     Document newUserDoc = new Document();
     newUserDoc.append("username", user);
     newUserDoc.append("password", pass);
-    db.getCollection(USER_COLLECTION).insertOne(newUserDoc);
+    users.insertOne(newUserDoc);
 
     return getUser(user).getString("_id");
   }
@@ -65,6 +73,26 @@ public class Database implements AutoCloseable {
     if (!BCrypt.checkpw(pass, actualPass)) { return null; }
 
     return userDoc.getString("_id");
+  }
+
+  /**
+    * Creates a new session for a given user.
+    * @param userId the id of the user logging in
+    * @return the session hash
+    */
+  public String logIn(String userId) {
+    String hash = UUID.randomUUID().toString();
+    sessions.put(hash, userId);
+    return hash;
+  }
+
+  /**
+    * Gets the user id associated with a session hash.
+    * @param hash the session hash provided by the client
+    * @return the id of the associated user, or null if none
+    */
+  public String getUserId(String hash) {
+    return sessions.get(hash);
   }
 
   @Override
