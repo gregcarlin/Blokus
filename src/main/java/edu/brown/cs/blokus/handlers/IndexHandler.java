@@ -1,8 +1,6 @@
 package edu.brown.cs.blokus.handlers;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -11,13 +9,11 @@ import spark.TemplateViewRoute;
 
 
 /**
-  * Handles main page in web GUI.
+  * Handles index page in web GUI.
   */
 public class IndexHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
-    Map<String, Object> variables =
-      ImmutableMap.of("title", "Autocorrect");
-    return new ModelAndView(variables, "action.ftl");
+    return new ModelAndView(Collections.emptyMap(), "index.ftl");
   }
 }
