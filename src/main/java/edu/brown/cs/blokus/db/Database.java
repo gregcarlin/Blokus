@@ -1,6 +1,8 @@
 package edu.brown.cs.blokus.db;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -9,8 +11,13 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.brown.cs.blokus.Game;
+import edu.brown.cs.blokus.GameSettings;
+
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
+
+import static com.mongodb.client.model.Filters.*;
 
 
 /**
@@ -93,6 +100,69 @@ public class Database implements AutoCloseable {
     */
   public String getUserId(String hash) {
     return sessions.get(hash);
+  }
+
+  /**
+    * Creates a game settings object based on values in the given document.
+    * @param doc a document from the games collection
+    * @return a GameSettings object
+    */
+  private static GameSettings parseSettings(Document doc) {
+    // TODO read in actual data besides _id
+    return new GameSettings.Builder(doc.getString("_id"))
+      .build();
+  }
+
+  /**
+    * Gets a list of publicly listed games that aren't full.
+    * @return a list of game settings
+    */
+  public List<GameSettings> getJoinableGames() {
+    FindIterable<Document> it = games.find(
+        and(
+          eq("params.privacy", GameSettings.Type.PUBLIC.ordinal()),
+          lt("players.length", "params.num-players")
+        ));
+
+    List<GameSettings> rt = new ArrayList<>();
+    for (Document doc : it) {
+      rt.add(parseSettings(doc));
+    }
+    return rt;
+  }
+
+  /**
+    * Gets a game with a given id.
+    * @param id the id of the game to find
+    * @return the game, or null if not found
+    */
+  public Game getGame(String id) {
+    FindIterable<Document> docs = games.find(new Document("_id", id));
+    Document gameDoc = docs.first();
+    if (gameDoc == null) { return null; }
+
+    // TODO set values besides settings
+    return new Game.Builder()
+      .setSettings(parseSettings(gameDoc))
+      .build();
+  }
+
+  /**
+    * Saves a game to the database.
+    * If a game with a matching id is already present, it is replaced.
+    * @param game the game to save
+    */
+  public void saveGame(Game game) {
+    GameSettings settings = game.getSettings();
+
+    // TODO players, last move and state
+    Document gameDoc = new Document()
+      .append("_id", settings.getId())
+      .append("params", new Document()
+          .append("privacy", settings.getType().ordinal())
+          .append("num-players", settings.getMaxPlayers())
+          .append("timer", settings.getTimer()))
+      .append("board", game.getGrid());
   }
 
   @Override

@@ -27,6 +27,11 @@ public class Game {
   private Turn turn;
 
   /**
+    * Game settings.
+    */
+  private GameSettings settings;
+
+  /**
    * Game builder.
    */
   public static class Builder {
@@ -88,6 +93,17 @@ public class Game {
     }
 
     /**
+      * Sets game settings.
+      * This method must be called.
+      * @param settings game settings
+      * @return this builder
+      */
+    public Builder setSettings(GameSettings settings) {
+      game.settings = settings;
+      return this;
+    }
+
+    /**
      * Builds game.
      *
      * @return game
@@ -101,6 +117,9 @@ public class Game {
       }
       if (game.turn == null) {
         game.turn = Turn.FIRST;
+      }
+      if (game.settings == null) {
+        throw new IllegalStateException("Game settings must be set.");
       }
       return game;
     }
@@ -210,5 +229,13 @@ public class Game {
    */
   public Turn getTurn() {
     return turn;
+  }
+
+  /**
+    * Gets the settings of this game.
+    * @return the game settings
+    */
+  public GameSettings getSettings() {
+    return settings;
   }
 }
