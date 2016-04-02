@@ -15,6 +15,7 @@ import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.mindrot.jbcrypt.BCrypt;
 
 import static com.mongodb.client.model.Filters.*;
@@ -24,6 +25,10 @@ import static com.mongodb.client.model.Filters.*;
   * Manages connections to the database.
   */
 public class Database implements AutoCloseable {
+  public static final String DEFAULT_HOST = "104.236.87.248";
+  public static final int DEFAULT_PORT = 27017;
+  public static final String DEFAULT_DB = "blokus";
+
   private final MongoClient client;
   private final MongoDatabase db;
   private final MongoCollection<Document> users;
@@ -32,11 +37,28 @@ public class Database implements AutoCloseable {
   private final Map<String, String> sessions = new HashMap<>();
 
   /**
-    * Creates a new database connection.
+    * Creates a new database connection with default values.
+    */
+  public Database() {
+    this(DEFAULT_DB);
+  }
+
+  /**
+    * Creates a new database connection with default values.
     * @param dbName the name of the database to connect to
     */
   public Database(String dbName) {
-    client = new MongoClient();
+    this(DEFAULT_HOST, DEFAULT_PORT, dbName);
+  }
+
+  /**
+    * Creates a new database connection.
+    * @param host the address of the database host
+    * @param port the port where the database is running
+    * @param dbName the name of the database to connect to
+    */
+  public Database(String host, int port, String dbName) {
+    client = new MongoClient(host, port);
     db = client.getDatabase(dbName);
     users = db.getCollection("users");
     games = db.getCollection("games");
@@ -60,10 +82,10 @@ public class Database implements AutoCloseable {
 
     Document newUserDoc = new Document();
     newUserDoc.append("username", user);
-    newUserDoc.append("password", pass);
+    newUserDoc.append("password", BCrypt.hashpw(pass, BCrypt.gensalt()));
     users.insertOne(newUserDoc);
 
-    return getUser(user).getString("_id");
+    return getUser(user).getObjectId("_id").toString();
   }
 
   /**
@@ -79,7 +101,7 @@ public class Database implements AutoCloseable {
     String actualPass = userDoc.getString("password");
     if (!BCrypt.checkpw(pass, actualPass)) { return null; }
 
-    return userDoc.getString("_id");
+    return userDoc.getObjectId("_id").toString();
   }
 
   /**
@@ -109,7 +131,7 @@ public class Database implements AutoCloseable {
     */
   private static GameSettings parseSettings(Document doc) {
     // TODO read in actual data besides _id
-    return new GameSettings.Builder(doc.getString("_id"))
+    return new GameSettings.Builder(doc.getObjectId("_id").toString())
       .build();
   }
 
@@ -137,7 +159,8 @@ public class Database implements AutoCloseable {
     * @return the game, or null if not found
     */
   public Game getGame(String id) {
-    FindIterable<Document> docs = games.find(new Document("_id", id));
+    FindIterable<Document> docs
+      = games.find(new Document("_id", new ObjectId(id)));
     Document gameDoc = docs.first();
     if (gameDoc == null) { return null; }
 
@@ -157,12 +180,19 @@ public class Database implements AutoCloseable {
 
     // TODO players, last move and state
     Document gameDoc = new Document()
-      .append("_id", settings.getId())
+      .append("_id", new ObjectId(settings.getId()))
       .append("params", new Document()
           .append("privacy", settings.getType().ordinal())
           .append("num-players", settings.getMaxPlayers())
           .append("timer", settings.getTimer()))
       .append("board", game.getGrid());
+  }
+
+  /**
+    * Wipes all data in this database.
+    */
+  void empty() {
+    db.drop();
   }
 
   @Override

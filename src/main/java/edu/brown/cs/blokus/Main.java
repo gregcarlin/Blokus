@@ -29,7 +29,6 @@ import spark.template.freemarker.FreeMarkerEngine;
   */
 public final class Main {
   private static final int DEFAULT_PORT = 4567;
-  private static final String DEFAULT_DB = "blokus";
 
   /**
     * The main method.
@@ -52,15 +51,22 @@ public final class Main {
       .accepts("port", "The port the GUI should run on.")
       .withRequiredArg().ofType(Integer.class)
       .defaultsTo(DEFAULT_PORT);
+    OptionSpec<String> dbHostSpec = parser
+      .accepts("dbhost", "The host address of the database to use.")
+      .withRequiredArg().ofType(String.class)
+      .defaultsTo(Database.DEFAULT_HOST);
+    OptionSpec<Integer> dbPortSpec = parser
+      .accepts("dbport", "The port the database to use is running on.")
+      .withRequiredArg().ofType(Integer.class)
+      .defaultsTo(Database.DEFAULT_PORT);
     OptionSpec<String> dbSpec = parser
       .accepts("db", "The name of the database to use.")
       .withRequiredArg().ofType(String.class)
-      .defaultsTo(DEFAULT_DB);
+      .defaultsTo(Database.DEFAULT_DB);
     OptionSet options = parser.parse(args);
 
-    final int port = options.valueOf(portSpec);
-    final String dbName = options.valueOf(dbSpec);
-    runSparkServer(port, dbName);
+    runSparkServer(options.valueOf(portSpec), options.valueOf(dbHostSpec),
+        options.valueOf(dbPortSpec), options.valueOf(dbSpec));
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -76,13 +82,14 @@ public final class Main {
     return new FreeMarkerEngine(config);
   }
 
-  private void runSparkServer(int port, String dbName) {
+  private void runSparkServer(int port,
+      String dbHost, int dbPort, String dbName) {
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
     Spark.setPort(port);
 
     FreeMarkerEngine freeMarker = createEngine();
-    Database db = new Database(dbName);
+    Database db = new Database(dbHost, dbPort, dbName);
 
     // Setup Spark Routes
     Spark.get("/", new IndexHandler(), freeMarker);
