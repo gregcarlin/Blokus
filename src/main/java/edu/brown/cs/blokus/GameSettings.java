@@ -16,7 +16,6 @@ public class GameSettings {
   }
 
   private final String id;
-  private String[] players = new String[0];
   private Type type = Type.PUBLIC;
   private int maxPlayers = 4;
   private int timer = 0;
@@ -28,22 +27,19 @@ public class GameSettings {
     private final GameSettings settings;
 
     /**
+      * Creates a new game settings builder for a game that hasn't
+      * been saved yet.
+      */
+    public Builder() {
+      this(null);
+    }
+
+    /**
       * Creates a new game settings builder.
       * @param id the id of the associated game
       */
     public Builder(String id) {
       this.settings = new GameSettings(id);
-    }
-
-    /**
-      * Sets the players in this game.
-      * Each player is represented by his/her id
-      * @param players an array of player ids
-      * @return this builder
-      */
-    public Builder players(String[] players) {
-      settings.players = players;
-      return this;
     }
 
     /**
@@ -105,11 +101,11 @@ public class GameSettings {
   }
 
   /**
-    * Gets the ids of the players in this game.
-    * @return the players' string ids
+    * Whether or not the associated game has been assigned an id.
+    * @return true if it has an id, false otherwise
     */
-  public String[] getPlayers() {
-    return Arrays.copyOf(players, players.length);
+  public boolean hasId() {
+    return id != null;
   }
 
   /**

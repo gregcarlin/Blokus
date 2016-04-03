@@ -1,6 +1,9 @@
 package edu.brown.cs.blokus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +28,8 @@ public class Game {
    * Current turn.
    */
   private Turn turn;
+
+  private long lastTurnTime;
 
   /**
     * Game settings.
@@ -89,6 +94,16 @@ public class Game {
      */
     public Builder setTurn(Turn turn) {
       game.turn = turn;
+      return this;
+    }
+
+    /**
+      * Sets the last turn time.
+      * @param lastTurnTime the time of last turn
+      * @return this builder
+      */
+    public Builder setLastTurnTime(long lastTurnTime) {
+      game.lastTurnTime = lastTurnTime;
       return this;
     }
 
@@ -193,6 +208,23 @@ public class Game {
   }
 
   /**
+    * Gets the grid of the board as a 2d list.
+    * @return a list of lists
+    */
+  public List<List<Integer>> getGridAsList() {
+    List<List<Integer>> rt = new ArrayList<>();
+    int[][] grid = getGrid();
+    for (int[] row : grid) {
+      List<Integer> rowLs = new ArrayList<>();
+      for (int i : row) {
+        rowLs.add(i);
+      }
+      rt.add(rowLs);
+    }
+    return rt;
+  }
+
+  /**
    * Gets value at row and column in grid.
    *
    * @param row row
@@ -229,6 +261,15 @@ public class Game {
    */
   public Turn getTurn() {
     return turn;
+  }
+
+  /**
+    * Gets the timestamp of the last turn.
+    * @return the number of milliseconds elapsed between the epoch
+    * and the last turn
+    */
+  public long getLastTurnTime() {
+    return lastTurnTime;
   }
 
   /**

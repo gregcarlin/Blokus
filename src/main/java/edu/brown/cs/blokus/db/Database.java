@@ -10,9 +10,13 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
+import edu.brown.cs.blokus.Player;
+import edu.brown.cs.blokus.Shape;
+import edu.brown.cs.blokus.Turn;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -48,7 +52,16 @@ public class Database implements AutoCloseable {
     * @param dbName the name of the database to connect to
     */
   public Database(String dbName) {
-    this(DEFAULT_HOST, DEFAULT_PORT, dbName);
+    this(DEFAULT_HOST, dbName);
+  }
+
+  /**
+    * Creates a new database connection with default values.
+    * @param host the address of the database host
+    * @param dbName the name of the database to connect to
+    */
+  public Database(String host, String dbName) {
+    this(host, DEFAULT_PORT, dbName);
   }
 
   /**
@@ -130,8 +143,11 @@ public class Database implements AutoCloseable {
     * @return a GameSettings object
     */
   private static GameSettings parseSettings(Document doc) {
-    // TODO read in actual data besides _id
+    Document params = doc.get("params", Document.class);
     return new GameSettings.Builder(doc.getObjectId("_id").toString())
+      .type(GameSettings.Type.values()[params.getInteger("privacy")])
+      .maxPlayers(params.getInteger("num-players"))
+      .timer(params.getInteger("timer"))
       .build();
   }
 
@@ -164,28 +180,91 @@ public class Database implements AutoCloseable {
     Document gameDoc = docs.first();
     if (gameDoc == null) { return null; }
 
-    // TODO set values besides settings
-    return new Game.Builder()
-      .setSettings(parseSettings(gameDoc))
-      .build();
+    Game.Builder gameBuilder = new Game.Builder();
+    gameBuilder.setSettings(parseSettings(gameDoc));
+
+    @SuppressWarnings("unchecked")
+    List<List<Integer>> board = (List<List<Integer>>) gameDoc.get("board");
+    int[][] grid = new int[board.size()][];
+    for (int i = 0; i < grid.length; i++) {
+      List<Integer> row = board.get(i);
+      grid[i] = new int[row.size()];
+      for (int j = 0; j < grid[i].length; j++) {
+        grid[i][j] = row.get(j);
+      }
+    }
+    gameBuilder.setGrid(grid);
+
+    @SuppressWarnings("unchecked")
+    List<Document> playerDocs = gameDoc.get("players", List.class);
+    final int playerCount = playerDocs.size();
+    for (int i = 0; i < playerCount; i++) {
+      Document playerDoc = playerDocs.get(i);
+      String playerId = playerDoc.getObjectId("_id").toString();
+
+      List<Shape> shapes = new ArrayList<>();
+      @SuppressWarnings("unchecked")
+      List<Integer> pieces = playerDoc.get("pieces", List.class);
+      for (int piece : pieces) {
+        shapes.add(Shape.values()[piece]);
+      }
+
+      Turn turn = Turn.values()[i];
+      gameBuilder.setPlayer(turn, new Player(playerId, shapes,
+            playerDoc.getInteger("score"), playerDoc.getBoolean("playing")));
+    }
+
+    Document lastMoveDoc = gameDoc.get("curr_move", Document.class);
+    gameBuilder.setTurn(Turn.values()[lastMoveDoc.getInteger("turn")]);
+    gameBuilder.setLastTurnTime(lastMoveDoc.getLong("timestamp"));
+
+    return gameBuilder.build();
   }
 
   /**
     * Saves a game to the database.
     * If a game with a matching id is already present, it is replaced.
     * @param game the game to save
+    * @return the id of the saved game
     */
-  public void saveGame(Game game) {
+  public String saveGame(Game game) {
     GameSettings settings = game.getSettings();
 
-    // TODO players, last move and state
+    ObjectId id
+      = settings.hasId() ? new ObjectId(settings.getId()) : new ObjectId();
+
+    List<Document> players = new ArrayList<>();
+    for (Turn turn : Turn.values()) {
+      Player player = game.getPlayer(turn);
+
+      List<Integer> pieces = new ArrayList<>();
+      for (Shape shape : player.getRemainingPieces()) {
+        pieces.add(shape.ordinal());
+      }
+
+      players.add(new Document()
+          .append("_id", new ObjectId(player.getId()))
+          .append("pieces", pieces)
+          .append("score", player.getScore())
+          .append("playing", player.isPlaying()));
+    }
+
     Document gameDoc = new Document()
-      .append("_id", new ObjectId(settings.getId()))
+      .append("_id", id)
+      .append("players", players)
       .append("params", new Document()
           .append("privacy", settings.getType().ordinal())
           .append("num-players", settings.getMaxPlayers())
           .append("timer", settings.getTimer()))
-      .append("board", game.getGrid());
+      .append("curr_move", new Document()
+          .append("turn", game.getTurn().ordinal())
+          .append("timestamp", game.getLastTurnTime()))
+      .append("state", 0) // TODO add meaning (whether game is still playing or not)
+      .append("board", game.getGridAsList());
+
+    games.replaceOne(new Document("_id", id), gameDoc,
+        new UpdateOptions().upsert(true));
+    return id.toString();
   }
 
   /**
