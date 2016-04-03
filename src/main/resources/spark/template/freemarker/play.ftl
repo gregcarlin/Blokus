@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-<link rel="stylesheet" href="main.css">
-<script src = "jquery-2.1.1.js"></script>
-</head>
-<body>
+<#assign content>
+
 <h1> PLAY BLOKUS </h1>
 <div id = "left">
 <canvas id = "board" width = "500" height = "500">
@@ -45,10 +40,8 @@
 <button id = "flip">Flip</button><br>
 <button id = "cancel">Cancel</button><br>
 <button id = "submit">Submit</button><br>
-<script src = "pieces.js"></script>
-<script src = "main.js"></script>
 
-
-
-</body>
-</html>
+<script src="/js/pieces.js"></script>
+</#assign>
+<#assign js>play</#assign>
+<#include "template.ftl">

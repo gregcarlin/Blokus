@@ -1,5 +1,7 @@
 package edu.brown.cs.blokus.handlers;
 
+import java.util.Collections;
+
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -12,7 +14,6 @@ import spark.TemplateViewRoute;
 public class MainHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
-    // TODO implement
-    return null;
+    return new ModelAndView(Collections.emptyMap(), "play.ftl");
   }
 }

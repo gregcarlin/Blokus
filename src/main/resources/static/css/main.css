@@ -4,6 +4,7 @@ body {
   background-color: #eee;
 }
 
+/* index/landing page */
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -28,13 +29,23 @@ body {
 .form-signin .form-control:focus {
   z-index: 2;
 }
-.form-signin input[type="email"] {
+.form-signin input:first-of-type {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
-.form-signin input[type="password"] {
+.form-signin input:last-of-type {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+/* play page */
+#board {
+	border: 2px solid black;
+}
+#left {
+	float: left;
+	width: 550px;
+	height: 550px;
 }

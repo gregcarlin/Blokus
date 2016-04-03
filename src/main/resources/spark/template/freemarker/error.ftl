@@ -9,4 +9,4 @@
 </p>
 
 </#assign>
-<#include "main.ftl">
+<#include "template.ftl">
