@@ -6,6 +6,9 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.brown.cs.blokus.handlers.LiveUpdater;
+
+
 /**
  * A game of Blokus. A game has a board and players. Games should be constructed
  * with {@link Builder}.
@@ -174,6 +177,7 @@ public class Game {
       }
       getPlayer(turn).removePiece(move.getShape());
     }
+    LiveUpdater.moveMade(this, move);
     pass();
   }
 

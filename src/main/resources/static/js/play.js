@@ -146,10 +146,33 @@ $("#submit").on('click', function() {
 	$("button").hide();	
 });
 
+// http://www.w3schools.com/js/js_cookies.asp
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 $(document).ready(function(){
 	drawGrid();
 	$("button").hide();
+
+  var conn = new WebSocket('ws://' + window.location.host + '/live');
+  conn.onopen = function() {
+    conn.send(getCookie('session'));
+  };
+  conn.onerror = function(error) {
+    console.log('Connection error: ' + error);
+    // TODO report to user?
+  };
+  // received when someone else makes a move
+  conn.onmessage = function(msg) {
+    var json = JSON.parse(msg);
+    // TODO update screen
+  };
 });
-
-
-

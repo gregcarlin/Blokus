@@ -33,12 +33,13 @@ public class Database implements AutoCloseable {
   public static final int DEFAULT_PORT = 27017;
   public static final String DEFAULT_DB = "blokus";
 
+  // maps sessionHash to userId
+  public static final Map<String, String> sessions = new HashMap<>();
+
   private final MongoClient client;
   private final MongoDatabase db;
   private final MongoCollection<Document> users;
   private final MongoCollection<Document> games;
-  // maps userId to sessionHash
-  private final Map<String, String> sessions = new HashMap<>();
 
   /**
     * Creates a new database connection with default values.

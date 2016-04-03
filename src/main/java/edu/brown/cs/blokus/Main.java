@@ -7,6 +7,7 @@ import edu.brown.cs.blokus.db.Database;
 import edu.brown.cs.blokus.handlers.AuthHandler;
 import edu.brown.cs.blokus.handlers.ExceptionPrinter;
 import edu.brown.cs.blokus.handlers.IndexHandler;
+import edu.brown.cs.blokus.handlers.LiveUpdater;
 import edu.brown.cs.blokus.handlers.LoginHandler;
 import edu.brown.cs.blokus.handlers.MainHandler;
 import edu.brown.cs.blokus.handlers.SignupHandler;
@@ -86,10 +87,12 @@ public final class Main {
       String dbHost, int dbPort, String dbName) {
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
-    Spark.setPort(port);
+    Spark.port(port);
 
     FreeMarkerEngine freeMarker = createEngine();
     Database db = new Database(dbHost, dbPort, dbName);
+
+    Spark.webSocket("/live", LiveUpdater.class);
 
     // Setup Spark Routes
     Spark.get("/", new IndexHandler(), freeMarker);
