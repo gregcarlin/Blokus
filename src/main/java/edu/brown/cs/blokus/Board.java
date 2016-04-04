@@ -5,11 +5,14 @@ import java.util.Arrays;
 /**
  * A square board: a grid of squares. Each square may be empty, or it may be
  * occupied by a player.
- *
- * @author aaronzhang
  */
 public class Board {
 
+  /**
+   * Default board size.
+   */
+  public static final int DEFAULT_SIZE = 20;
+  
   /**
    * Grid of squares. An empty square has the value 0; an occupied square has
    * the number of the player that occupies it. Each inner array is a row.
@@ -34,6 +37,13 @@ public class Board {
    */
   public Board(int[][] grid) {
     this.grid = copyOf(grid);
+  }
+  
+  /**
+   * New board with the default size {@value Board#DEFAULT_SIZE}.
+   */
+  public Board() {
+    this(DEFAULT_SIZE);
   }
 
   /**
@@ -86,6 +96,17 @@ public class Board {
     int[] rc = convertXY(x, y);
     return getRowColumn(rc[0], rc[1]);
   }
+  
+  /**
+   * Same as {@link Board#getXY(int, int)}, with the x and y-coordinates of the
+   * given square.
+   * 
+   * @param square square
+   * @return value at square
+   */
+  public int getSquare(Square square) {
+    return getXY(square.getX(), square.getY());
+  }
 
   /**
    * Sets the value at the given x and y-coordinates, with (0, 0) the
@@ -129,6 +150,22 @@ public class Board {
    */
   public int[][] getGrid() {
     return copyOf(grid);
+  }
+  
+  /**
+   * Makes a move on the board with the specified mark and returns this board.
+   * The mark is the number of the player (1, 2, 3, or 4). This method may be
+   * useful in testing to construct a board to use for Game tests.
+   * 
+   * @param move move
+   * @param mark mark
+   * @return this board
+   */
+  public Board makeMove(Move move, int mark) {
+    for (Square moveSquare : move.getSquares()) {
+      setXY(moveSquare.getX(), moveSquare.getY(), mark);
+    }
+    return this;
   }
 
   @Override

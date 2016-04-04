@@ -14,23 +14,13 @@ public enum Shape {
     /**
      * X
      */
-    ONE(0, 0) {
-        @Override
-        public String toString() {
-            return "1";
-        }
-    },
+    I1(0, 0),
     
     /**
      * XO
      */
-    TWO(0, 0,
-    1, 0) {
-        @Override
-        public String toString() {
-            return "2";
-        }
-    },
+    I2(0, 0,
+    1, 0),
     
     /**
      * OXO
@@ -63,6 +53,15 @@ public enum Shape {
     0, 1,
     1, 0,
     2, 0),
+    
+    /**
+     * OO
+     * XO
+     */
+    O4(0, 0,
+    0, 1,
+    1, 0,
+    1, 1),
     
     /**
      *  O

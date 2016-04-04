@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import edu.brown.cs.blokus.handlers.LiveUpdater;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
  * A game of Blokus. A game has a board and players. Games should be constructed
  * with {@link Builder}.
- *
- * @author aaronzhang
  */
 public class Game {
 
@@ -50,11 +50,6 @@ public class Game {
     private final Game game;
 
     /**
-     * Default board size.
-     */
-    private static final int DEFAULT_SIZE = 20;
-
-    /**
      * Instantiates a game builder.
      */
     public Builder() {
@@ -64,14 +59,30 @@ public class Game {
     /**
      * Sets the grid. An empty square has the value 0; an occupied square has
      * the number of the player that occupies it. Each inner array is a row. If
-     * this method is not called, the default grid is an empty grid with side
-     * length {@value Builder#DEFAULT_SIZE}.
+     * neither this method nor {@link Builder#setBoard(Board)} is called, then
+     * the default grid is an empty grid with side length
+     * {@value Builder#DEFAULT_SIZE}.
      *
      * @param grid grid
      * @return this builder
      */
     public Builder setGrid(int[][] grid) {
       game.board = new Board(grid);
+      return this;
+    }
+    
+    /**
+     * Sets the board. An alternative to {@link Builder#setGrid(int[][])},
+     * possibly useful in testing if a board has already been built using Board
+     * methods. If neither this method nor {@link Builder#setBoard(Board)} is
+     * called, then the default grid is an empty grid with side length
+     * {@value Builder#DEFAULT_SIZE}.
+     * 
+     * @param board board
+     * @return this builder
+     */
+    public Builder setBoard(Board board) {
+      game.board = board;
       return this;
     }
 
@@ -128,7 +139,7 @@ public class Game {
      */
     public Game build() {
       if (game.board == null) {
-        game.board = new Board(DEFAULT_SIZE);
+        game.board = new Board(Board.DEFAULT_SIZE);
       }
       for (Turn turn : Turn.values()) {
         game.players.putIfAbsent(turn, new Player());
@@ -151,16 +162,82 @@ public class Game {
   }
 
   /**
-   * Whether the move is legal.
+   * Whether the move is legal. For a move to be legal, the turn player must
+   * have the piece being played. All the squares that the move covers must be
+   * unoccupied squares on the board. No square in the move can share an edge
+   * with a square already on the board with the same color. At least one square
+   * in the move must share a corner with a square already on the board with the
+   * same color.
    *
    * @param move move
    * @return whether the move is legal
    */
   public boolean isLegal(Move move) {
-    /*
-     TODO--I'll implement this sometime this week
-     */
-    return false;
+    // Turn player must have the piece being played
+    if (!getPlayer(turn).hasPiece(move.getShape())) {
+      return false;
+    }
+    
+    // All squares in the move must be unoccupied squares on the board
+    for (Square square : move.getSquares()) {
+      if (!(square.getX() >= 0
+          && square.getX() < board.size()
+          && square.getY() >= 0
+          && square.getY() < board.size()
+          && board.getXY(square.getX(), square.getY()) == 0)) {
+        return false;
+      }
+    }
+    
+    // Get the squares that share an edge or corner with any square in the move
+    Set<Square> edges = new HashSet<>();
+    Set<Square> corners = new HashSet<>();
+    for (Square square : move.getSquares()) {
+      // Which directions to check (don't check if we would go off the board)
+      boolean checkLeft = square.getX() > 0;
+      boolean checkRight = square.getX() < board.size() - 1;
+      boolean checkDown = square.getY() > 0;
+      boolean checkUp = square.getY() < board.size() - 1;
+      // Squares that share an edge with a square in the move
+      if (checkLeft) {
+        edges.add(square.translate(-1, 0));
+      }
+      if (checkRight) {
+        edges.add(square.translate(1, 0));
+      }
+      if (checkDown) {
+        edges.add(square.translate(0, -1));
+      }
+      if (checkUp) {
+        edges.add(square.translate(0, 1));
+      }
+      // Squares that share a corner with a square in the move
+      if (checkLeft && checkUp) {
+        corners.add(square.translate(-1, 1));
+      }
+      if (checkRight && checkUp) {
+        corners.add(square.translate(1, 1));
+      }
+      if (checkRight && checkDown) {
+        corners.add(square.translate(1, -1));
+      }
+      if (checkLeft && checkDown) {
+        corners.add(square.translate(-1, -1));
+      }
+    }
+    corners.removeAll(edges);
+    edges.removeAll(move.getSquares());
+    
+    // No squares in the move can share an edge with the player's pieces
+    if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
+      return false;
+    }
+    // Some square in the move must share a corner with the player's pieces
+    if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
+      return false;
+    }
+    
+    return true;
   }
 
   /**
@@ -172,9 +249,7 @@ public class Game {
    */
   public void makeMove(Move move) {
     if (getPlayer(turn).hasPiece(move.getShape())) {
-      for (Square moveSquare : move.getSquares()) {
-        board.setXY(moveSquare.getX(), moveSquare.getY(), turn.mark());
-      }
+      board.makeMove(move, turn.mark());
       getPlayer(turn).removePiece(move.getShape());
     }
     LiveUpdater.moveMade(this, move);
@@ -197,8 +272,8 @@ public class Game {
    */
   public boolean canMove(Turn turn) {
     /*
-     TODO--I'll work on this after implementing isLegal()
-     */
+    TODO--I'll work on this next
+    */
     return false;
   }
 
