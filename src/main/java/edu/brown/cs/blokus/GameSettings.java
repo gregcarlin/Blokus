@@ -9,14 +9,27 @@ import java.util.Arrays;
  * @author aaronzhang
  */
 public class GameSettings {
+  /**
+    * Represents the type of a game.
+    */
   public static enum Type {
-    PUBLIC,
-    PRIVATE,
-    LOCAL
+    PUBLIC, // anyone can join
+    PRIVATE, // this game is unlisted
+    LOCAL // this game is run from one computer
+  }
+
+  /**
+    * Represents the state of a game.
+    */
+  public static enum State {
+    UNSTARTED, // people are still joining the game
+    PLAYING, // game is currently being played
+    FINISHED // game is over
   }
 
   private final String id;
   private Type type = Type.PUBLIC;
+  private State state = State.UNSTARTED;
   private int maxPlayers = 4;
   private int timer = 0;
 
@@ -49,6 +62,16 @@ public class GameSettings {
       */
     public Builder type(Type type) {
       settings.type = type;
+      return this;
+    }
+
+    /**
+      * Sets the sate of this game.
+      * @param state the game state
+      * @return this builder
+      */
+    public Builder state(State state) {
+      settings.state = state;
       return this;
     }
 
@@ -114,6 +137,14 @@ public class GameSettings {
     */
   public Type getType() {
     return type;
+  }
+
+  /**
+    * Gets the state of this game.
+    * @return the game state
+    */
+  public State getState() {
+    return state;
   }
 
   /**

@@ -147,6 +147,7 @@ public class Database implements AutoCloseable {
     Document params = doc.get("params", Document.class);
     return new GameSettings.Builder(doc.getObjectId("_id").toString())
       .type(GameSettings.Type.values()[params.getInteger("privacy")])
+      .state(GameSettings.State.values()[doc.getInteger("state")])
       .maxPlayers(params.getInteger("num-players"))
       .timer(params.getInteger("timer"))
       .build();
@@ -260,7 +261,7 @@ public class Database implements AutoCloseable {
       .append("curr_move", new Document()
           .append("turn", game.getTurn().ordinal())
           .append("timestamp", game.getLastTurnTime()))
-      .append("state", 0) // TODO add meaning (whether game is still playing or not)
+      .append("state", settings.getState().ordinal())
       .append("board", game.getGridAsList());
 
     games.replaceOne(new Document("_id", id), gameDoc,

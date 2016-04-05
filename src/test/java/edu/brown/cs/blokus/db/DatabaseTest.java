@@ -59,9 +59,9 @@ public class DatabaseTest {
     }
 
     Player red = new Player(new ObjectId().toString(),
-        Arrays.asList(Shape.ONE, Shape.I3), 7, true);
+        Arrays.asList(Shape.I1, Shape.I3), 7, true);
     Player blue = new Player(new ObjectId().toString(),
-        Arrays.asList(Shape.TWO, Shape.I3, Shape.T4), 9, true);
+        Arrays.asList(Shape.I2, Shape.I3, Shape.T4), 9, true);
     Player green = new Player(new ObjectId().toString(),
         Collections.emptySet(), 21, false);
     Player yellow = new Player(new ObjectId().toString(),

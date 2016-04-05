@@ -24,7 +24,9 @@ public class GameTest {
     board1.setXY(1, 2, 1);
     board1.setXY(10, 10, 1);
     board1.setXY(11, 10, 2);
-    game1 = new Game.Builder().setBoard(board1).build();
+    game1 = new Game.Builder()
+      .setSettings(new GameSettings.Builder().build())
+      .setBoard(board1).build();
   }
 
   /**
