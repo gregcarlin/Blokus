@@ -2,6 +2,7 @@ package edu.brown.cs.blokus.db;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
@@ -11,6 +12,7 @@ import edu.brown.cs.blokus.Turn;
 
 import org.bson.types.ObjectId;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,6 +28,10 @@ public class DatabaseTest {
   @BeforeClass
   public static void setupDb() {
     db = new Database("blokus-test");
+  }
+
+  @Before
+  public void emptyDb() {
     db.empty();
   }
 
@@ -49,8 +55,26 @@ public class DatabaseTest {
     assertNull(db.getUserId("not-found", "no-pass"));
   }
 
-  @Test
-  public void game() {
+  private static GameSettings.Builder randomGameSettings() {
+    return new GameSettings.Builder()
+      .type(GameSettings.Type.PUBLIC)
+      .state(GameSettings.State.PLAYING)
+      .maxPlayers(Math.random() < 0.5 ? 2 : 4)
+      .timer((int) (Math.random() * 100000));
+  }
+
+  private static List<Shape> randomShapes() {
+    List<Shape> all = Arrays.asList(Shape.values());
+    Collections.shuffle(all);
+    return all.subList(0, (int) (Math.random() * all.size()));
+  }
+
+  private static Player randomPlayer() {
+    return new Player(new ObjectId().toString(), randomShapes(),
+        (int) (Math.random() * 84), Math.random() < 0.5);
+  }
+
+  private static Game.Builder randomGame() {
     int[][] grid = new int[20][20];
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
@@ -58,58 +82,120 @@ public class DatabaseTest {
       }
     }
 
-    Player red = new Player(new ObjectId().toString(),
-        Arrays.asList(Shape.I1, Shape.I3), 7, true);
-    Player blue = new Player(new ObjectId().toString(),
-        Arrays.asList(Shape.I2, Shape.I3, Shape.T4), 9, true);
-    Player green = new Player(new ObjectId().toString(),
-        Collections.emptySet(), 21, false);
-    Player yellow = new Player(new ObjectId().toString(),
-        Arrays.asList(Shape.values()), 0, true);
-
-    GameSettings settings = new GameSettings.Builder()
-      .type(GameSettings.Type.PUBLIC)
-      .maxPlayers(4)
-      .timer(1000)
-      .build();
-
-    Game game = new Game.Builder()
+    return new Game.Builder()
       .setGrid(grid)
-      .setPlayer(Turn.FIRST, red)
-      .setPlayer(Turn.SECOND, blue)
-      .setPlayer(Turn.THIRD, green)
-      .setPlayer(Turn.FOURTH, yellow)
-      .setTurn(Turn.SECOND)
+      .setPlayer(Turn.FIRST, randomPlayer())
+      .setPlayer(Turn.SECOND, randomPlayer())
+      .setPlayer(Turn.THIRD, randomPlayer())
+      .setPlayer(Turn.FOURTH, randomPlayer())
+      .setTurn(Turn.values()[(int) (Math.random() * Turn.values().length)])
       .setLastTurnTime(System.currentTimeMillis())
-      .setSettings(settings)
-      .build();
+      .setSettings(randomGameSettings().build());
+  }
 
-    String id = db.saveGame(game);
+  private static void assertGameSettingsEquals(GameSettings expected,
+      GameSettings actual) {
+    assertEquals(expected.getType(), actual.getType());
+    assertEquals(expected.getState(), actual.getState());
+    assertEquals(expected.getMaxPlayers(), actual.getMaxPlayers());
+    assertEquals(expected.getTimer(), actual.getTimer());
+  }
 
-    Game retrieved = db.getGame(id);
-    assertNotNull(retrieved);
+  private static void assertGameEquals(Game expected, Game actual) {
+    assertNotNull(actual);
 
-    int[][] retrievedGrid = retrieved.getGrid();
+    int[][] grid = expected.getGrid();
+    int[][] retrievedGrid = actual.getGrid();
     for (int i = 0; i < retrievedGrid.length; i++) {
       assertArrayEquals(grid[i], retrievedGrid[i]);
     }
 
-    assertEquals(retrieved.getPlayer(Turn.FIRST), red);
-    assertEquals(retrieved.getPlayer(Turn.SECOND), blue);
-    assertEquals(retrieved.getPlayer(Turn.THIRD), green);
-    assertEquals(retrieved.getPlayer(Turn.FOURTH), yellow);
+    for (Turn turn : Turn.values()) {
+      assertEquals(expected.getPlayer(turn), actual.getPlayer(turn));
+    }
 
-    assertEquals(Turn.SECOND, retrieved.getTurn());
-    assertEquals(game.getLastTurnTime(), retrieved.getLastTurnTime());
+    assertEquals(expected.getTurn(), actual.getTurn());
+    assertEquals(expected.getLastTurnTime(), actual.getLastTurnTime());
 
-    GameSettings retrievedSettings = retrieved.getSettings();
-    assertEquals(id, retrievedSettings.getId());
-    assertEquals(GameSettings.Type.PUBLIC, retrievedSettings.getType());
-    assertEquals(4, retrievedSettings.getMaxPlayers());
-    assertEquals(1000, retrievedSettings.getTimer());
+    assertGameSettingsEquals(expected.getSettings(), actual.getSettings());
   }
 
-  @AfterClass
+  @Test
+  public void gameNotFound() {
+    assertNull(db.getGame(new ObjectId().toString()));
+  }
+
+  @Test
+  public void saveAndLoadGame() {
+    Game game = randomGame().build();
+    String id = db.saveGame(game);
+
+    Game retrieved = db.getGame(id);
+    assertEquals(id, retrieved.getSettings().getId());
+    assertGameEquals(game, retrieved);
+  }
+
+  @Test
+  public void noOpenGames() {
+    assertEquals(Collections.emptyList(), db.getOpenGames(0));
+  }
+
+  @Test
+  public void openGames() {
+    Game gameA = randomGame()
+      .setSettings(randomGameSettings()
+          .type(GameSettings.Type.PUBLIC)
+          .state(GameSettings.State.UNSTARTED)
+          .build())
+      .build();
+    Game gameB = randomGame()
+      .setSettings(randomGameSettings()
+          .type(GameSettings.Type.PUBLIC)
+          .state(GameSettings.State.UNSTARTED)
+          .build())
+      .build();
+    String idA = db.saveGame(gameA);
+    String idB = db.saveGame(gameB);
+
+    List<GameSettings> open = db.getOpenGames(0);
+    assertEquals(2, open.size());
+    assertGameSettingsEquals(gameA.getSettings(), open.get(0));
+    assertEquals(idA, open.get(0).getId());
+    assertGameSettingsEquals(gameB.getSettings(), open.get(1));
+    assertEquals(idB, open.get(1).getId());
+  }
+
+  @Test
+  public void joinedGames() {
+    Player playerA = randomPlayer();
+    Game gameA = randomGame()
+      .setPlayer(Turn.FIRST, playerA)
+      .setSettings(randomGameSettings()
+          .state(GameSettings.State.PLAYING)
+          .build())
+      .build();
+    String idA = db.saveGame(gameA);
+    Player playerB = randomPlayer();
+    Game gameB = randomGame()
+      .setPlayer(Turn.SECOND, playerB)
+      .setPlayer(Turn.FOURTH, playerA)
+      .setSettings(randomGameSettings()
+          .state(GameSettings.State.UNSTARTED)
+          .build())
+      .build();
+    String idB = db.saveGame(gameB);
+
+    List<GameSettings> withB = db.getGamesWith(playerB.getId());
+    assertEquals(1, withB.size());
+    assertGameSettingsEquals(gameB.getSettings(), withB.get(0));
+
+    List<GameSettings> withA = db.getGamesWith(playerA.getId());
+    assertEquals(2, withA.size());
+    assertGameSettingsEquals(gameA.getSettings(), withA.get(0));
+    assertGameSettingsEquals(gameB.getSettings(), withA.get(1));
+  }
+
+  /* see me */ @AfterClass
   public static void closeDb() {
     if (db != null) {
       db.close();

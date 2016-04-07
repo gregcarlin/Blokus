@@ -2,9 +2,11 @@ package edu.brown.cs.blokus.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Set;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -35,6 +37,14 @@ public class Database implements AutoCloseable {
 
   // maps sessionHash to userId
   public static final Map<String, String> sessions = new HashMap<>();
+
+  // the number of games to list in a single page
+  private static final int PAGE_SIZE = 20;
+  // the fields necessary to create a game settings object
+  private static final Document SETTINGS_PROJECTION = new Document()
+    .append("_id", true)
+    .append("params", true)
+    .append("state", true);
 
   private final MongoClient client;
   private final MongoDatabase db;
@@ -154,24 +164,6 @@ public class Database implements AutoCloseable {
   }
 
   /**
-    * Gets a list of publicly listed games that aren't full.
-    * @return a list of game settings
-    */
-  public List<GameSettings> getJoinableGames() {
-    FindIterable<Document> it = games.find(
-        and(
-          eq("params.privacy", GameSettings.Type.PUBLIC.ordinal()),
-          lt("players.length", "params.num-players")
-        ));
-
-    List<GameSettings> rt = new ArrayList<>();
-    for (Document doc : it) {
-      rt.add(parseSettings(doc));
-    }
-    return rt;
-  }
-
-  /**
     * Gets a game with a given id.
     * @param id the id of the game to find
     * @return the game, or null if not found
@@ -267,6 +259,44 @@ public class Database implements AutoCloseable {
     games.replaceOne(new Document("_id", id), gameDoc,
         new UpdateOptions().upsert(true));
     return id.toString();
+  }
+
+  /**
+    * Gets a list of games that are public and haven't been started yet.
+    * @param page the 0-indexed page of data to load
+    * @return a set of game settings representing each game
+    */
+  public List<GameSettings> getOpenGames(int page) {
+    FindIterable<Document> docs = games.find(new Document()
+        .append("params.privacy", GameSettings.Type.PUBLIC.ordinal())
+        .append("state", GameSettings.State.UNSTARTED.ordinal()))
+      .skip(page * PAGE_SIZE)
+      .projection(SETTINGS_PROJECTION);
+
+    List<GameSettings> rt = new ArrayList<>();
+    for (Document doc : docs) {
+      rt.add(parseSettings(doc));
+    }
+    return rt;
+  }
+
+  /**
+    * Gets all games that a given player has joined.
+    * Excludes games that are finished.
+    * @param playerId the unique id of the player
+    * @return a set of game settings representing each game
+    */
+  public List<GameSettings> getGamesWith(String playerId) {
+    FindIterable<Document> docs = games.find(and(
+          elemMatch("players", new Document("_id", new ObjectId(playerId))),
+          ne("state", GameSettings.State.FINISHED.ordinal())))
+      .projection(SETTINGS_PROJECTION);
+
+    List<GameSettings> rt = new ArrayList<>();
+    for (Document doc : docs) {
+      rt.add(parseSettings(doc));
+    }
+    return rt;
   }
 
   /**
