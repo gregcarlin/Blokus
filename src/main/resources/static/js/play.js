@@ -1,26 +1,26 @@
 board = document.getElementById("board");
 ctx = board.getContext("2d");
-SIZE = 25;
-supplyLeftEdge = 25*SIZE;
-size2 = Math.floor(SIZE/2);
-grid = []
+SIZE = 25;     					//size of squares
+supplyLeftEdge = 25*SIZE; 
+size2 = Math.floor(SIZE/2);     //size for supply
+grid = []						//current game board
 
-remainingPieces = [0,[],[],[],[]];
+remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
 
-curPlayer = 1;
-curPiece = 0;
-rotate = [1,0,0,1];
+curPlayer = 1;  //players are 1,2,3,4
+curPiece = 0;   //pieces range from 0 to 20
+rotate = [1,0,0,1,1]; //2x2 matrix followed by parity, see orient function
 
 mode = "relaxing"; 
 //modes include "relaxing" -> "dragging" -> "positioning" 
 
-curPieceX = 0;
+curPieceX = 0; //grid locations
 curPieceY = 0;
 
-curMouseX = 0;
+curMouseX = 0; //mouse locations within grid from bottom left 
 curMouseY = 0;
 
-function init() {
+function init() {    //sets up grid and remainingPieces
 	var foo = [];
 	for (i = 0; i < 21; i++) {
 		foo[i] = 1;
@@ -34,7 +34,7 @@ function init() {
 }}
 }
 
-function orient(piece) {
+function orient(piece) {         // yay math
 	var p = pieces[piece].slice(0);
 	for (i = 0; i < p.length/2; i++) {
 		temp1 = rotate[0]*p[2*i] 
@@ -74,7 +74,6 @@ function drawGrid() {
 }
 
 function drawSupply() {
-	console.log(remainingPieces);
 	for (m = 0; m < 3; m++) {
 	for (n = 0; n < 7; n++) {
 		var piece = 3*n + m;
@@ -99,7 +98,7 @@ function fillGridSquare(player, x, y) {   //fills row x col y gridsquare with co
 	fillSquare(colors[player],SIZE*x,SIZE*y,SIZE,SIZE);
 }
 
-function drawPiece(piece,player,x,y,squareSize) {
+function drawPiece(piece,player,x,y,squareSize) {   // x and y are bottom left corner of 0,0 in the piece
 	for (i = 0; i < piece.length/2; i++) {
 		fillSquare(colors[player],x+squareSize*piece[2*i],
 			y+squareSize*piece[2*i+1],squareSize);
@@ -110,43 +109,31 @@ function drawCurPiece() {
 	drawPiece(orient(curPiece),curPlayer, SIZE*curPieceX,SIZE*curPieceY,SIZE);
 }
 
-
+function mouseOnPiece() {
+	var p = orient(curPiece);
+	var x = Math.floor(curMouseX/SIZE);
+	var y = Math.floor(curMouseY/SIZE);
+	for (i = 0; i < p.length/2; i++) {
+		if (x == curPieceX + p[2*i] && y == curPieceY + p[2*i+1])
+			return true;
+	}
+	return false;
+}
 
 function getMousePos(canvas,evt) {
-    var rect = canvas.getBoundingClientRect();
+	var rect = board.getBoundingClientRect();
+
     return {
         x: evt.clientX - rect.left,
         y: evt.clientY - rect.top
     };
 }
 
-$("td").on('click', function() {
-	var tag = $(this).text();
-	curPiece = pieceVals[tag];
-	if (mode == "positioning") {
-		drawGrid();
-		drawCurPiece();
-		return;
-	}
-	mode = "placing";
-});
-
-
 $("#board").mousemove(function(e){
-	
-	//var col = Math.floor(getMousePos(board,e).x/SIZE);
-	//var row = Math.floor((500-getMousePos(board,e).y)/SIZE);
-	//curMouseX = col;
-	//curMouseY = row;
-	
-	//if (mode != "placing") return;
-	//curPieceX = col;
-	//curPieceY = row;
-	//drawGrid();
-	//drawCurPiece();
 	
 	curMouseX = getMousePos(board,e).x;
 	curMouseY = board.height - getMousePos(board,e).y;
+	
 	if (mode == "dragging") {
 		curPieceX = Math.floor(curMouseX/SIZE);
 		curPieceY = Math.floor(curMouseY/SIZE);
@@ -156,6 +143,12 @@ $("#board").mousemove(function(e){
 });
 
 $("#board").mousedown(function(e){
+	
+	if (mode == "positioning" && mouseOnPiece()) {
+		mode = "dragging";
+		$("i").hide();
+		return;
+	}
 	if (curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2) {
 		var supplyX = Math.floor((curMouseX - supplyLeftEdge)/(6*size2));
 		var supplyY = Math.floor(curMouseY/(6*size2));
@@ -167,14 +160,28 @@ $("#board").mousedown(function(e){
 		drawGrid();
 		drawCurPiece();
 		mode = "dragging";
+		$("i").hide();
+		rotate = [1,0,0,1,1];
 	}
 });
+
+function toGrid(x) {
+	return Math.floor(x/SIZE)*SIZE;
+}
 
 $("#board").mouseup(function(e){
 	if (mode == "dragging") {
 		if (curMouseX < 20*SIZE) {
 			mode = "positioning";
-			$("button").show();
+			$("i").show();
+			$("i").css("position","absolute");
+			$("i").css("left",(toGrid(e.clientX)-48)+"px");
+			$("#rot-right").css("top",(toGrid(e.clientY)-SIZE-10)+"px");
+			$("#rot-left").css("top",(toGrid(e.clientY)-10)+"px");
+			$("#flip-vert").css("top",(toGrid(e.clientY)+SIZE-10)+"px");
+			$("#flip-horiz").css("top",(toGrid(e.clientY)+2*SIZE-10)+"px");
+			$("#submit").css("top",(toGrid(e.clientY) + 3*SIZE-10)+"px");
+			
 			curPieceX = Math.floor(curMouseX/SIZE);
 			curPieceY = Math.floor(curMouseY/SIZE);
 		}
@@ -185,43 +192,69 @@ $("#board").mouseup(function(e){
 	}
 });
 
-$("#rotate").on('click', function() {
-
+function rotLeft() {
 	var temp1 = rotate[1];
 	var temp2 = -1*rotate[0];
 	var temp3 = rotate[3];
 	var temp4 = -1*rotate[2];
-	rotate = [temp1,temp2,temp3,temp4];
+	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
+}
+
+function rotRight() {
+	var temp1 = -1*rotate[1];
+	var temp2 = rotate[0];
+	var temp3 = -1*rotate[3];
+	var temp4 = rotate[2];
+	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
+}
+
+$("#rot-left").on('click', function() {
+	if (rotate[4]) rotLeft();
+	else rotRight();
 	drawGrid();
 	drawCurPiece();
 });
 
-$("#flip").on('click', function() {
-	
+$("#rot-right").on('click', function() {
+	if (!rotate[4]) rotLeft();
+	else rotRight();
+	drawGrid();
+	drawCurPiece();
+});
+
+$("#flip-vert").on('click', function() {
 	rotate[2] = -1*rotate[2];
 	rotate[3] = -1*rotate[3];
+	rotate[4] = (rotate[4] + 1) % 2;
 	drawGrid();
 	drawCurPiece();
 });
 
-$("#cancel").on('click', function() {
-	mode = "placing";
+$("#flip-horiz").on('click', function() {
+	rotate[0] = -1*rotate[0];
+	rotate[1] = -1*rotate[1];
+	rotate[4] = (rotate[4] + 1) % 2;
 	drawGrid();
-	$("button").hide();
+	drawCurPiece();
 });
 
+
 $("#submit").on('click', function() {
+
+	//TODO IMPLEMENT CHECKS
+
 	mode = "relaxing";
 	var locs = orient(curPiece);
 	for (i = 0; i < locs.length/2; i++) {
 		grid[curPieceX+locs[2*i]][curPieceY+locs[2*i+1]] = curPlayer;
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
+	rotate = [1,0,0,1,1];
 	curPlayer = (curPlayer + 1) % 5;
 	if (curPlayer == 0) curPlayer++;
 
 	drawGrid();
-	$("button").hide();	
+	$("i").hide();	
 });
 
 // http://www.w3schools.com/js/js_cookies.asp
@@ -240,8 +273,7 @@ $(document).ready(function(){
 	board.width = board.height*2;
 	init();
 	drawGrid();
-	$("button").hide();
-	$("#pieceList").hide();
+	$("i").hide();
 
   var conn = new WebSocket('ws://' + window.location.host + '/live');
   conn.onopen = function() {
