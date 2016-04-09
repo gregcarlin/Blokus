@@ -44,8 +44,6 @@ body {
 #board {
 	border: 2px solid black;
 }
-#left {
-	float: left;
-	width: 550px;
-	height: 550px;
+button {
+	position: absolute;
 }
