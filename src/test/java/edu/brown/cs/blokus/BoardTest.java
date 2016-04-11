@@ -85,72 +85,72 @@ public class BoardTest {
 
 
  
-//@Test
-//  public void getGridTest() {
-//    /* This is a test to make sure that getGrid returns the
-//    correct grid. We start the test by creating two boards, and
-//    setting up two board variables for later use. Then we use a
-//    for loop to create rows, columns and values and set them to
-//    the boards we created. Then we check to make sure that the grid
-//    given by the board is the same as the output of setRowColumn that was
-//    used to give that board values.
-//    */
-//
-//    /*We start the test by creating two boards, and
-//    setting up two board variables for later use.
-//    */
-//    Board one = new Board();
-//    Board two = new Board();
-//    Board three = new Board();
-//    Board output1 = new Board();
-//    Board output2 = new Board();
-//    Board output3 = new Board();
-//    int[][] onere = output1.getGrid();
-//    int[][] twore = output2.getGrid();
-//    int[][] threere = output3.getGrid();
-//    
-//    
-//
-//    /*Then we use a
-//    for loop to create rows, columns and values and set them to
-//    the boards we created.
-//    */
-//    
-//    
-//    for (int i = 0; i < 6; i++) {
-//      int row = i;
-//      int column = i + 2;
-//      int value = i * 2;
-//      onere[row][column] = value;
-//      one.setRowColumn(row, column, value);
-//    }
-//   // int[][] output1 = one.getGrid();
-//    for (int i = 0; i < 4; i++) {
-//      int row = i;
-//      int column = i + 6;
-//      int value = i * 4;
-//     twore[row][column] = value;
-//      two.setRowColumn(row, column, value);
-//    }
-//   // int[][] output2 = two.getGrid();
-//    for (int i = 0; i < 6; i++) {
-//      int row = i + 3;
-//      int column = i + 1;
-//      int value = i * 7;
-//     threere[row][column] = value;
-//      three.setRowColumn(row, column, value);
-//    }
-//   // int[][] output3 = three.getGrid();
-//    /*Then we check to make sure that the grid
-//    given by the board is the same as the output of setRowColumn that was
-//    used to give that board values.
-//    */
-//    
-//    
-//    assert(onere.equals(one.getGrid()));
-//    assert(twore.equals(one.getGrid()));
-//    assert(threere.equals(one.getGrid()));
-//  }
+@Test
+  public void getGridTest() {
+    /* This is a test to make sure that getGrid returns the
+    correct grid. We start the test by creating two boards, and
+    setting up two board variables for later use. Then we use a
+    for loop to create rows, columns and values and set them to
+    the boards we created. Then we check to make sure that the grid
+    given by the board is the same as the output of setRowColumn that was
+    used to give that board values.
+    */
+
+    /*We start the test by creating two boards, and
+    setting up two board variables for later use.
+    */
+    Board one = new Board();
+    Board two = new Board();
+    Board three = new Board();
+    Board output1 = new Board();
+    Board output2 = new Board();
+    Board output3 = new Board();
+    int[][] onere = output1.getGrid();
+    int[][] twore = output2.getGrid();
+    int[][] threere = output3.getGrid();
+    
+    
+
+    /*Then we use a
+    for loop to create rows, columns and values and set them to
+    the boards we created.
+    */
+    
+    
+    for (int i = 0; i < 6; i++) {
+      int row = i;
+      int column = i + 2;
+      int value = i * 2;
+      onere[row][column] = value;
+      one.setRowColumn(row, column, value);
+    }
+  // int[][] output1 = one.getGrid();
+    for (int i = 0; i < 4; i++) {
+      int row = i;
+      int column = i + 6;
+      int value = i * 4;
+    twore[row][column] = value;
+      two.setRowColumn(row, column, value);
+    }
+  // int[][] output2 = two.getGrid();
+    for (int i = 0; i < 6; i++) {
+      int row = i + 3;
+      int column = i + 1;
+      int value = i * 7;
+    threere[row][column] = value;
+      three.setRowColumn(row, column, value);
+    }
+  // int[][] output3 = three.getGrid();
+    /*Then we check to make sure that the grid
+    given by the board is the same as the output of setRowColumn that was
+    used to give that board values.
+    */
+    
+    
+    assert(onere.equals(one.getGrid()));
+    assert(twore.equals(one.getGrid()));
+    assert(threere.equals(one.getGrid()));
+  }
 
 
   @Test
