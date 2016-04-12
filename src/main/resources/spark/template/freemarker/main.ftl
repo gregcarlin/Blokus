@@ -23,10 +23,62 @@
 <div class="container">
 
   <!-- Main component for a primary marketing message or call to action -->
-  <!--<div class="jumbotron">
-    <h1>Blokus</h1>
-    <p>TODO</p>
-  </div>-->
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Create a new game</h2>
+      <form action="/auth/new" method="post">
+        <div class="btn-group btn-group-justified" data-toggle="buttons">
+          <label class="btn btn-primary active">
+            <input type="radio" name="type" id="public" autocomplete="off" checked> Public 
+          </label>
+          <label class="btn btn-primary">
+            <input type="radio" name="type" id="private" autocomplete="off"> Private
+          </label>
+          <label class="btn btn-primary">
+            <input type="radio" name="type" id="local" autocomplete="off"> Local
+          </label>
+        </div>
+
+        <div class="btn-group btn-group-justified" data-toggle="buttons">
+          <label class="btn btn-primary active">
+            <input type="radio" name="count" id="public" autocomplete="off"> 2 Player
+          </label>
+          <label class="btn btn-primary">
+            <input type="radio" name="count" id="private" autocomplete="off" checked> 4 Player
+          </label>
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-addon" id="timer-addon">Timer (sec)</span>
+          <input type="number" class="form-control" min="0" name="timer" id="timer" aria-describedby="timer-addon" />
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Create Game</button>
+      </form>
+    </div>
+
+    <div class="col-md-6">
+      <h2>Current Games</h2>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Player Count</th>
+            <th>Timer</th>
+          </tr>
+        </thead>
+      </table>
+
+      <h2>Public Games</h2>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Player Count</th>
+            <th>Timer</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
 
 </div> <!-- /container -->
 
