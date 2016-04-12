@@ -1,10 +1,8 @@
-body {
+/* index/landing page */
+.container-index {
   padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #eee;
 }
-
-/* index/landing page */
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -38,6 +36,11 @@ body {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+/* main page */
+.navbar-static-top {
+  margin-bottom: 19px;
 }
 
 /* play page */

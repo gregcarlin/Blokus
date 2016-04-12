@@ -10,6 +10,8 @@ import edu.brown.cs.blokus.handlers.IndexHandler;
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import edu.brown.cs.blokus.handlers.LoginHandler;
 import edu.brown.cs.blokus.handlers.MainHandler;
+import edu.brown.cs.blokus.handlers.PlayHandler;
+import edu.brown.cs.blokus.handlers.SignoutHandler;
 import edu.brown.cs.blokus.handlers.SignupHandler;
 
 import freemarker.template.Configuration;
@@ -98,7 +100,9 @@ public final class Main {
     Spark.get("/", new IndexHandler(), freeMarker);
     Spark.post("/login", new LoginHandler(db), freeMarker);
     Spark.post("/signup", new SignupHandler(db), freeMarker);
+    Spark.get("/signout", new SignoutHandler(), freeMarker);
     Spark.before("/auth/*", new AuthHandler(db));
     Spark.get("/auth/main", new MainHandler(), freeMarker);
+    Spark.get("/auth/play", new PlayHandler(), freeMarker);
   }
 }

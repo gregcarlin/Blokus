@@ -27,12 +27,7 @@
 
   <body>
 
-    <div class="container">
-
-      ${content}
-
-    </div><!-- /.container -->
-
+    ${content}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

@@ -9,11 +9,11 @@ import spark.TemplateViewRoute;
 
 
 /**
-  * Handles the display of the main page.
+  * Handles the display of the play page.
   */
-public class MainHandler implements TemplateViewRoute {
+public class PlayHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
-    return new ModelAndView(Collections.emptyMap(), "main.ftl");
+    return new ModelAndView(Collections.emptyMap(), "play.ftl");
   }
 }

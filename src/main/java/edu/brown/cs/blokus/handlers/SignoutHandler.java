@@ -1,19 +1,22 @@
 package edu.brown.cs.blokus.handlers;
 
-import java.util.Collections;
+import edu.brown.cs.blokus.db.Database;
 
 import spark.ModelAndView;
+import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
 
 /**
-  * Handles the display of the main page.
+  * Handles user logins.
   */
-public class MainHandler implements TemplateViewRoute {
+public class SignoutHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
-    return new ModelAndView(Collections.emptyMap(), "main.ftl");
+    res.removeCookie("session");
+    res.redirect("/");
+    return null;
   }
 }
