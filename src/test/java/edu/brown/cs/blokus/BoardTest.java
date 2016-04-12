@@ -82,10 +82,15 @@ public class BoardTest {
     assertEquals(outCome.getXY(4, 6), 8);
   }
 
+  private static final void assertArrayDeepEquals(int[][] actual,
+      int[][] expected) {
+    assertEquals(actual.length, expected.length);
+    for (int i = 0; i < actual.length; i++) {
+      assertArrayEquals(actual[i], expected[i]);
+    }
+  }
 
-
- 
-@Test
+  @Test
   public void getGridTest() {
     /* This is a test to make sure that getGrid returns the
     correct grid. We start the test by creating two boards, and
@@ -147,9 +152,9 @@ public class BoardTest {
     */
     
     
-    assert(onere.equals(one.getGrid()));
-    assert(twore.equals(one.getGrid()));
-    assert(threere.equals(one.getGrid()));
+    assertArrayDeepEquals(onere, one.getGrid());
+    assertArrayDeepEquals(twore, two.getGrid());
+    assertArrayDeepEquals(threere, three.getGrid());
   }
 
 
