@@ -228,9 +228,7 @@ public class Database implements AutoCloseable {
       = settings.hasId() ? new ObjectId(settings.getId()) : new ObjectId();
 
     List<Document> players = new ArrayList<>();
-    for (Turn turn : Turn.values()) {
-      Player player = game.getPlayer(turn);
-
+    for (Player player : game.getAllPlayers()) {
       List<Integer> pieces = new ArrayList<>();
       for (Shape shape : player.getRemainingPieces()) {
         pieces.add(shape.ordinal());
@@ -264,12 +262,14 @@ public class Database implements AutoCloseable {
   /**
     * Gets a list of games that are public and haven't been started yet.
     * @param page the 0-indexed page of data to load
+    * @param without the id of the player to exclude from the results
     * @return a set of game settings representing each game
     */
-  public List<GameSettings> getOpenGames(int page) {
-    FindIterable<Document> docs = games.find(new Document()
-        .append("params.privacy", GameSettings.Type.PUBLIC.ordinal())
-        .append("state", GameSettings.State.UNSTARTED.ordinal()))
+  public List<GameSettings> getOpenGames(int page, String without) {
+    FindIterable<Document> docs = games.find(and(
+        eq("params.privacy", GameSettings.Type.PUBLIC.ordinal()),
+        eq("state", GameSettings.State.UNSTARTED.ordinal()),
+        not(elemMatch("players", new Document("_id", new ObjectId(without))))))
       .skip(page * PAGE_SIZE)
       .projection(SETTINGS_PROJECTION);
 

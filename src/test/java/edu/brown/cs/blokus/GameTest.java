@@ -25,6 +25,10 @@ public class GameTest {
     board1.setXY(10, 10, 1);
     board1.setXY(11, 10, 2);
     game1 = new Game.Builder()
+      .setPlayer(Turn.FIRST, new Player("one"))
+      .setPlayer(Turn.SECOND, new Player("two"))
+      .setPlayer(Turn.THIRD, new Player("three"))
+      .setPlayer(Turn.FOURTH, new Player("four"))
       .setSettings(new GameSettings.Builder().build())
       .setBoard(board1).build();
   }

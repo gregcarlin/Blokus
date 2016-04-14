@@ -42,6 +42,9 @@
 .navbar-static-top {
   margin-bottom: 19px;
 }
+.container-main tr[onclick]:hover {
+  cursor: pointer;
+}
 
 /* play page */
 #board {

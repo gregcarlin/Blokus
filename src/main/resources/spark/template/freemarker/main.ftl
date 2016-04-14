@@ -20,7 +20,7 @@
   </div>
 </nav>
 
-<div class="container">
+<div class="container container-main">
 
   <!-- Main component for a primary marketing message or call to action -->
   <div class="row">
@@ -29,22 +29,22 @@
       <form action="/auth/new" method="post">
         <div class="btn-group btn-group-justified" data-toggle="buttons">
           <label class="btn btn-primary active">
-            <input type="radio" name="type" id="public" autocomplete="off" checked> Public 
+            <input type="radio" name="type" id="public" autocomplete="off" checked value="public"> Public 
           </label>
           <label class="btn btn-primary">
-            <input type="radio" name="type" id="private" autocomplete="off"> Private
+            <input type="radio" name="type" id="private" autocomplete="off" value="private"> Private
           </label>
           <label class="btn btn-primary">
-            <input type="radio" name="type" id="local" autocomplete="off"> Local
+            <input type="radio" name="type" id="local" autocomplete="off" value="local"> Local
           </label>
         </div>
 
         <div class="btn-group btn-group-justified" data-toggle="buttons">
-          <label class="btn btn-primary active">
-            <input type="radio" name="count" id="public" autocomplete="off"> 2 Player
-          </label>
           <label class="btn btn-primary">
-            <input type="radio" name="count" id="private" autocomplete="off" checked> 4 Player
+            <input type="radio" name="count" id="2player" autocomplete="off" value="2"> 2 Player
+          </label>
+          <label class="btn btn-primary active">
+            <input type="radio" name="count" id="4player" autocomplete="off" checked value="4"> 4 Player
           </label>
         </div>
 
@@ -66,6 +66,20 @@
             <th>Timer</th>
           </tr>
         </thead>
+        <tbody>
+          <#if currGames?? && (currGames?size > 0)>
+            <#list currGames as game>
+              <tr onclick="window.location='/auth/play/${game.getId()}'">
+                <td>${game.getMaxPlayers()}</td>
+                <td>${game.getTimer()}</td>
+              </tr>
+            </#list>
+          <#else>
+            <tr>
+              <td colspan="2">You are not currently in any games.</td>
+            </tr>
+          </#if>
+        </tbody>
       </table>
 
       <h2>Public Games</h2>
@@ -76,6 +90,20 @@
             <th>Timer</th>
           </tr>
         </thead>
+        <tbody>
+          <#if openGames?? && (openGames?size > 0)>
+            <#list openGames as game>
+              <tr onclick="window.location='/auth/join/${game.getId()}'">
+                <td>${game.getMaxPlayers()}</td>
+                <td>${game.getTimer()}</td>
+              </tr>
+            </#list>
+          <#else>
+            <tr>
+              <td colspan="2">There are no open games.</td>
+            </tr>
+          </#if>
+        </tbody>
       </table>
     </div>
   </div>

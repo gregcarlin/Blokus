@@ -25,8 +25,8 @@ public class PlayerTest {
     */
 
     /*We first create two new players.*/
-    Player player1 = new Player();
-    Player player2 = new Player();
+    Player player1 = new Player("one");
+    Player player2 = new Player("two");
 
     /*Then
     we loop through all of their pieces and call hasPiece. We
@@ -86,8 +86,8 @@ public class PlayerTest {
 
       /*We start by creating
        two new players.*/
-      Player player1 = new Player();
-      Player player2 = new Player();
+      Player player1 = new Player("one");
+      Player player2 = new Player("two");
 
         /*Then we create a list of shapes and add
         in seven different shapes.
@@ -165,8 +165,8 @@ public void getAddScoreTest() {
     and check if the score if what it should be.
  */
 	
-	Player player1 = new Player();
-	Player player2 = new Player();
+	Player player1 = new Player("one");
+	Player player2 = new Player("two");
 	
 	player1.addScore(3);
     assertEquals(player1.getScore(), 3);
@@ -194,12 +194,12 @@ public void playingStatusTest() {
     the status of the player should be "playing." Then we call
     stopPlaying(), which should change the status of playing to false.
   */
-  Player player = new Player();
+  Player player = new Player("one");
   assertEquals(player.isPlaying(), true);
   player.stopPlaying();
   assertEquals(!player.isPlaying(), true);
 
-  Player player2 = new Player();
+  Player player2 = new Player("two");
   assertEquals(player2.isPlaying(), true);
   player2.stopPlaying();
   assertEquals(!player2.isPlaying(), true);
@@ -218,8 +218,8 @@ public void remainingPiecesTest() {
     contained in the remaining pieces, in which case the test passes. */
 
   /*We first create two players.*/
-  Player player = new Player();
-  Player player1 = new Player();
+  Player player = new Player("one");
+  Player player1 = new Player("two");
 
   /*Then we create a list of shapes
   that are going to be removed from the player's shapes.*/

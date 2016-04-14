@@ -2,6 +2,7 @@ package edu.brown.cs.blokus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -141,8 +142,8 @@ public class Game {
       if (game.board == null) {
         game.board = new Board(Board.DEFAULT_SIZE);
       }
-      for (Turn turn : Turn.values()) {
-        game.players.putIfAbsent(turn, new Player());
+      if (game.players.size() == 0) {
+        throw new IllegalStateException("Game must have at least one player.");
       }
       if (game.turn == null) {
         game.turn = Turn.FIRST;
@@ -260,7 +261,7 @@ public class Game {
    * Advances to the next turn.
    */
   public void pass() {
-    turn = turn.next();
+    turn = turn.next(settings.getMaxPlayers());
   }
 
   /**
@@ -333,6 +334,14 @@ public class Game {
    */
   public Player getPlayer(Turn turn) {
     return players.get(turn);
+  }
+
+  /**
+    * Gets all players in this game.
+    * @return a collection of all players
+    */
+  public Collection<Player> getAllPlayers() {
+    return players.values();
   }
 
   /**

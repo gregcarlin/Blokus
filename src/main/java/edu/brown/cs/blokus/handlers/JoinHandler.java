@@ -12,24 +12,27 @@ import spark.TemplateViewRoute;
 
 
 /**
-  * Handles the display of the play page.
+  * Handles the joining of games.
   */
-public class PlayHandler implements TemplateViewRoute {
+public class JoinHandler implements TemplateViewRoute {
   private final Database db;
 
   /**
-    * Creates a new handler that displays the play page.
+    * Creates a new handler that adds players to games.
     * @param db a reference to the database
     */
-  public PlayHandler(Database db) {
+  public JoinHandler(Database db) {
     this.db = db;
   }
 
   @Override
   public ModelAndView handle(Request req, Response res) {
-    final Game game = db.getGame(req.params("id"));
+    final String gameId = req.params("id");
+    final Game game = db.getGame(gameId);
 
-    // TODO load data from game into view
-    return new ModelAndView(Collections.emptyMap(), "play.ftl");
+    // TODO add player to game
+
+    res.redirect("/auth/play/" + gameId);
+    return null;
   }
 }

@@ -137,7 +137,8 @@ public class DatabaseTest {
 
   @Test
   public void noOpenGames() {
-    assertEquals(Collections.emptyList(), db.getOpenGames(0));
+    assertEquals(Collections.emptyList(),
+        db.getOpenGames(0, new ObjectId().toString()));
   }
 
   @Test
@@ -157,7 +158,7 @@ public class DatabaseTest {
     String idA = db.saveGame(gameA);
     String idB = db.saveGame(gameB);
 
-    List<GameSettings> open = db.getOpenGames(0);
+    List<GameSettings> open = db.getOpenGames(0, new ObjectId().toString());
     assertEquals(2, open.size());
     assertGameSettingsEquals(gameA.getSettings(), open.get(0));
     assertEquals(idA, open.get(0).getId());
