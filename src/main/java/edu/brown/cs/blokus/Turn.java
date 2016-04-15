@@ -9,25 +9,25 @@ public enum Turn {
 
   FIRST() {
         @Override
-        public Turn next(int maxPlayers) {
-          return maxPlayers > 1 ? SECOND : FIRST;
+        public Turn next() {
+          return SECOND;
         }
       },
   SECOND() {
         @Override
-        public Turn next(int maxPlayers) {
-          return maxPlayers > 2 ? THIRD : FIRST;
+        public Turn next() {
+          return THIRD;
         }
       },
   THIRD() {
         @Override
-        public Turn next(int maxPlayers) {
-          return maxPlayers > 3 ? FOURTH : FIRST;
+        public Turn next() {
+          return FOURTH;
         }
       },
   FOURTH() {
         @Override
-        public Turn next(int maxPlayers) {
+        public Turn next() {
           return FIRST;
         }
       };
@@ -37,7 +37,7 @@ public enum Turn {
    *
    * @return next turn
    */
-  public abstract Turn next(int maxPlayers);
+  public abstract Turn next();
 
   /**
    * The mark on the board representing the turn. For example,

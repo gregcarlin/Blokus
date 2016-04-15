@@ -261,7 +261,7 @@ public class Game {
    * Advances to the next turn.
    */
   public void pass() {
-    turn = turn.next(settings.getMaxPlayers());
+    turn = turn.next();
   }
 
   /**
@@ -341,7 +341,7 @@ public class Game {
     * @return a collection of all players
     */
   public Collection<Player> getAllPlayers() {
-    return players.values();
+    return new HashSet<>(players.values());
   }
 
   /**
