@@ -1,6 +1,10 @@
 package edu.brown.cs.blokus;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
 
 
 /**
@@ -28,10 +32,12 @@ public class GameSettings {
   }
 
   private final String id;
+  private final Map<Turn, Player> players;
   private Type type = Type.PUBLIC;
   private State state = State.UNSTARTED;
   private int maxPlayers = 4;
   private int timer = 0;
+
 
   /**
     * Game settings builder.
@@ -102,7 +108,24 @@ public class GameSettings {
       return this;
     }
 
+    /**
+     * Sets the given player. The player is specified by turn: first, second,
+     * third, or fourth. If a player is not set with this method, the player
+     * defaults to a new player.
+     *
+     * @param turn which player to set
+     * @param player the player
+     * @return this builder
+     */
+    public Builder player(Turn turn, Player player) {
+      settings.players.put(turn, player);
+      return this;
+    }
+
     public GameSettings build() {
+      if (settings.players.size() == 0) {
+        throw new IllegalStateException("Game must have at least one player.");
+      }
       return settings;
     }
   }
@@ -112,6 +135,7 @@ public class GameSettings {
     * @param id the id of the associated game
     */
   private GameSettings(String id) {
+    this.players = new EnumMap<>(Turn.class);
     this.id = id;
   }
 
@@ -161,5 +185,23 @@ public class GameSettings {
     */
   public int getTimer() {
     return timer;
+  }
+
+  /**
+   * Gets the specified player.
+   *
+   * @param turn turn
+   * @return player
+   */
+  public Player getPlayer(Turn turn) {
+    return players.get(turn);
+  }
+
+  /**
+    * Gets all players in this game.
+    * @return a collection of all players
+    */
+  public Collection<Player> getAllPlayers() {
+    return new HashSet<>(players.values());
   }
 }

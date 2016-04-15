@@ -60,6 +60,10 @@ public class DatabaseTest {
       .type(GameSettings.Type.PUBLIC)
       .state(GameSettings.State.PLAYING)
       .maxPlayers(Math.random() < 0.5 ? 2 : 4)
+      .player(Turn.FIRST, randomPlayer())
+      .player(Turn.SECOND, randomPlayer())
+      .player(Turn.THIRD, randomPlayer())
+      .player(Turn.FOURTH, randomPlayer())
       .timer((int) (Math.random() * 100000));
   }
 
@@ -84,10 +88,6 @@ public class DatabaseTest {
 
     return new Game.Builder()
       .setGrid(grid)
-      .setPlayer(Turn.FIRST, randomPlayer())
-      .setPlayer(Turn.SECOND, randomPlayer())
-      .setPlayer(Turn.THIRD, randomPlayer())
-      .setPlayer(Turn.FOURTH, randomPlayer())
       .setTurn(Turn.values()[(int) (Math.random() * Turn.values().length)])
       .setLastTurnTime(System.currentTimeMillis())
       .setSettings(randomGameSettings().build());
@@ -170,18 +170,18 @@ public class DatabaseTest {
   public void joinedGames() {
     Player playerA = randomPlayer();
     Game gameA = randomGame()
-      .setPlayer(Turn.FIRST, playerA)
       .setSettings(randomGameSettings()
           .state(GameSettings.State.PLAYING)
+          .player(Turn.FIRST, playerA)
           .build())
       .build();
     String idA = db.saveGame(gameA);
     Player playerB = randomPlayer();
     Game gameB = randomGame()
-      .setPlayer(Turn.SECOND, playerB)
-      .setPlayer(Turn.FOURTH, playerA)
       .setSettings(randomGameSettings()
           .state(GameSettings.State.UNSTARTED)
+          .player(Turn.SECOND, playerB)
+          .player(Turn.FOURTH, playerA)
           .build())
       .build();
     String idB = db.saveGame(gameB);

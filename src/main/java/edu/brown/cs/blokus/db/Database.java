@@ -44,7 +44,8 @@ public class Database implements AutoCloseable {
   private static final Document SETTINGS_PROJECTION = new Document()
     .append("_id", true)
     .append("params", true)
-    .append("state", true);
+    .append("state", true)
+    .append("players", true);
 
   private final MongoClient client;
   private final MongoDatabase db;
@@ -154,8 +155,30 @@ public class Database implements AutoCloseable {
     * @return a GameSettings object
     */
   private static GameSettings parseSettings(Document doc) {
+    GameSettings.Builder builder
+      = new GameSettings.Builder(doc.getObjectId("_id").toString());
+
+    @SuppressWarnings("unchecked")
+    List<Document> playerDocs = doc.get("players", List.class);
+    final int playerCount = playerDocs.size();
+    for (int i = 0; i < playerCount; i++) {
+      Document playerDoc = playerDocs.get(i);
+      String playerId = playerDoc.getObjectId("_id").toString();
+
+      List<Shape> shapes = new ArrayList<>();
+      @SuppressWarnings("unchecked")
+      List<Integer> pieces = playerDoc.get("pieces", List.class);
+      for (int piece : pieces) {
+        shapes.add(Shape.values()[piece]);
+      }
+
+      Turn turn = Turn.values()[i];
+      builder.player(turn, new Player(playerId, shapes,
+            playerDoc.getInteger("score"), playerDoc.getBoolean("playing")));
+    }
+
     Document params = doc.get("params", Document.class);
-    return new GameSettings.Builder(doc.getObjectId("_id").toString())
+    return builder
       .type(GameSettings.Type.values()[params.getInteger("privacy")])
       .state(GameSettings.State.values()[doc.getInteger("state")])
       .maxPlayers(params.getInteger("num-players"))
@@ -188,25 +211,6 @@ public class Database implements AutoCloseable {
       }
     }
     gameBuilder.setGrid(grid);
-
-    @SuppressWarnings("unchecked")
-    List<Document> playerDocs = gameDoc.get("players", List.class);
-    final int playerCount = playerDocs.size();
-    for (int i = 0; i < playerCount; i++) {
-      Document playerDoc = playerDocs.get(i);
-      String playerId = playerDoc.getObjectId("_id").toString();
-
-      List<Shape> shapes = new ArrayList<>();
-      @SuppressWarnings("unchecked")
-      List<Integer> pieces = playerDoc.get("pieces", List.class);
-      for (int piece : pieces) {
-        shapes.add(Shape.values()[piece]);
-      }
-
-      Turn turn = Turn.values()[i];
-      gameBuilder.setPlayer(turn, new Player(playerId, shapes,
-            playerDoc.getInteger("score"), playerDoc.getBoolean("playing")));
-    }
 
     Document lastMoveDoc = gameDoc.get("curr_move", Document.class);
     gameBuilder.setTurn(Turn.values()[lastMoveDoc.getInteger("turn")]);

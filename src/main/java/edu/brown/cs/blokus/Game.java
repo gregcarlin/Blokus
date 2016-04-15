@@ -3,9 +3,7 @@ package edu.brown.cs.blokus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
@@ -22,11 +20,6 @@ public class Game {
    * Board.
    */
   private Board board;
-
-  /**
-   * Players.
-   */
-  private final Map<Turn, Player> players;
 
   /**
    * Current turn.
@@ -88,20 +81,6 @@ public class Game {
     }
 
     /**
-     * Sets the given player. The player is specified by turn: first, second,
-     * third, or fourth. If a player is not set with this method, the player
-     * defaults to a new player.
-     *
-     * @param turn which player to set
-     * @param player the player
-     * @return this builder
-     */
-    public Builder setPlayer(Turn turn, Player player) {
-      game.players.put(turn, player);
-      return this;
-    }
-
-    /**
      * Sets turn. If this method is not called, defaults to {@link Turn#FIRST}.
      *
      * @param turn turn
@@ -142,9 +121,6 @@ public class Game {
       if (game.board == null) {
         game.board = new Board(Board.DEFAULT_SIZE);
       }
-      if (game.players.size() == 0) {
-        throw new IllegalStateException("Game must have at least one player.");
-      }
       if (game.turn == null) {
         game.turn = Turn.FIRST;
       }
@@ -159,7 +135,6 @@ public class Game {
    * New game.
    */
   private Game() {
-    this.players = new EnumMap<>(Turn.class);
   }
 
   /**
@@ -327,24 +302,6 @@ public class Game {
   }
 
   /**
-   * Gets the specified player.
-   *
-   * @param turn turn
-   * @return player
-   */
-  public Player getPlayer(Turn turn) {
-    return players.get(turn);
-  }
-
-  /**
-    * Gets all players in this game.
-    * @return a collection of all players
-    */
-  public Collection<Player> getAllPlayers() {
-    return new HashSet<>(players.values());
-  }
-
-  /**
    * @return current turn
    */
   public Turn getTurn() {
@@ -366,5 +323,23 @@ public class Game {
     */
   public GameSettings getSettings() {
     return settings;
+  }
+
+  /**
+   * Gets the specified player.
+   *
+   * @param turn turn
+   * @return player
+   */
+  public Player getPlayer(Turn turn) {
+    return getSettings().getPlayer(turn);
+  }
+
+  /**
+    * Gets all players in this game.
+    * @return a collection of all players
+    */
+  public Collection<Player> getAllPlayers() {
+    return getSettings().getAllPlayers();
   }
 }
