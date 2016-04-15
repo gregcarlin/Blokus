@@ -138,4 +138,9 @@ public class Player {
       && remainingPieces.equals(other.remainingPieces)
       && score == other.score && playing == other.playing;
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, remainingPieces, score, playing);
+  }
 }
