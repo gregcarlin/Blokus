@@ -2,19 +2,29 @@
 
 <div class="container container-index">
 
-<form class="form-signin" action="/login" method="post">
-  <h2 class="form-signin-heading">Please sign in</h2>
-  <label for="inputEmail" class="sr-only">Email address</label>
-  <input type="text" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="username" />
-  <label for="inputPassword" class="sr-only">Password</label>
-  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password" />
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-</form>
-<form class="form-signin" action="/signup" method="post">
-  <input type="hidden" name="username" />
-  <input type="hidden" name="password" />
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-</form>
+<div class="row">
+<div class="col-md-8">
+<h1>Blokus</h1>
+</div>
+
+<div class="col-md-4">
+<div class="form-container">
+  <form class="form-signin" action="/login" method="post">
+    <label for="inputEmail" class="sr-only">Username</label>
+    <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus name="username" />
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password" />
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  </form>
+  <form class="form-signin" action="/signup" method="post">
+    <input type="hidden" name="username" />
+    <input type="hidden" name="password" />
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+  </form>
+</div>
+</div>
+
+</div><!-- /.row -->
 
 </div><!-- /.container -->
 
