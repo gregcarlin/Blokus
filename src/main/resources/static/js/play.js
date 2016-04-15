@@ -1,9 +1,12 @@
 board = document.getElementById("board");
 ctx = board.getContext("2d");
+boardRatio = 1.7;               //canvas width/height
 SIZE = 25;     					//size of squares
-supplyLeftEdge = 25*SIZE; 
+supplyLeftEdge = 23*SIZE; 
 size2 = Math.floor(SIZE/2);     //size for supply
 grid = []						//current game board
+
+colors = ["#FFFFFF","#0000FF","#EEEE00", "#FF0000","#00FF00"];
 
 remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
 
@@ -13,6 +16,8 @@ rotate = [1,0,0,1,1]; //2x2 matrix followed by parity, see orient function
 
 mode = "relaxing"; 
 //modes include "relaxing" -> "dragging" -> "positioning" 
+
+hovering = 0;
 
 curPieceX = 0; //grid locations
 curPieceY = 0;
@@ -31,7 +36,10 @@ function init() {    //sets up grid and remainingPieces
 	grid[i] = [];
 	for (j = 0; j < 20; j++) {
 		grid[i][j] = 0;
-}}
+	}}
+	
+	$("#player1").css("background-color",colors[1]);
+	
 }
 
 function orient(piece) {         // yay math
@@ -74,13 +82,19 @@ function drawGrid() {
 }
 
 function drawSupply() {
+	
+	hoveredPlayer = curPlayer;
+	if (hovering != 0) {
+		hoveredPlayer = hovering;
+	}
+	
 	for (m = 0; m < 3; m++) {
 	for (n = 0; n < 7; n++) {
 		var piece = 3*n + m;
-		if (remainingPieces[curPlayer][piece] == 1) {
+		if (remainingPieces[hoveredPlayer][piece] == 1) {
 			var xloc = supplyLeftEdge + (m*6+2)*size2;
 			var yloc = (n*6+2)*size2;
-			drawPiece(pieces[piece],curPlayer,xloc,yloc,size2);
+			drawPiece(pieces[piece],hoveredPlayer,xloc,yloc,size2);
 		}
 	}}
 	
@@ -95,6 +109,7 @@ function fillSquare(color,x,y,width) {  // x and y are bottom left corner
 
 function fillGridSquare(player, x, y) {   //fills row x col y gridsquare with color of player
 	if (player == 0) return;
+	if (hovering != 0 && hovering != player) return;
 	fillSquare(colors[player],SIZE*x,SIZE*y,SIZE,SIZE);
 }
 
@@ -129,133 +144,6 @@ function getMousePos(canvas,evt) {
     };
 }
 
-$("#board").mousemove(function(e){
-	
-	curMouseX = getMousePos(board,e).x;
-	curMouseY = board.height - getMousePos(board,e).y;
-	
-	if (mode == "dragging") {
-		curPieceX = Math.floor(curMouseX/SIZE);
-		curPieceY = Math.floor(curMouseY/SIZE);
-		drawGrid();
-		drawCurPiece();
-	}
-});
-
-$("#board").mousedown(function(e){
-	
-	if (mode == "positioning" && mouseOnPiece()) {
-		mode = "dragging";
-		$("i").hide();
-		return;
-	}
-	if (curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2) {
-		var supplyX = Math.floor((curMouseX - supplyLeftEdge)/(6*size2));
-		var supplyY = Math.floor(curMouseY/(6*size2));
-		var newPiece = supplyX + 3*supplyY;
-		if (remainingPieces[curPlayer][newPiece] == 0) return;
-		curPiece = newPiece;
-		curPieceX = Math.floor(curMouseX/SIZE);
-		curPieceY = Math.floor(curMouseY/SIZE);
-		drawGrid();
-		drawCurPiece();
-		mode = "dragging";
-		$("i").hide();
-		rotate = [1,0,0,1,1];
-	}
-});
-
-function toGrid(x) {
-	return Math.floor(x/SIZE)*SIZE;
-}
-
-$("#board").mouseup(function(e){
-	if (mode == "dragging") {
-		if (curMouseX < 20*SIZE) {
-			mode = "positioning";
-			$("i").show();
-			$("i").css("position","absolute");
-			$("i").css("left",(toGrid(e.clientX)-48)+"px");
-			$("#rot-right").css("top",(toGrid(e.clientY)-SIZE-10)+"px");
-			$("#rot-left").css("top",(toGrid(e.clientY)-10)+"px");
-			$("#flip-vert").css("top",(toGrid(e.clientY)+SIZE-10)+"px");
-			$("#flip-horiz").css("top",(toGrid(e.clientY)+2*SIZE-10)+"px");
-			$("#submit").css("top",(toGrid(e.clientY) + 3*SIZE-10)+"px");
-			
-			curPieceX = Math.floor(curMouseX/SIZE);
-			curPieceY = Math.floor(curMouseY/SIZE);
-		}
-		else {
-			mode = "relaxing";
-			drawGrid();
-		}
-	}
-});
-
-function rotLeft() {
-	var temp1 = rotate[1];
-	var temp2 = -1*rotate[0];
-	var temp3 = rotate[3];
-	var temp4 = -1*rotate[2];
-	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
-}
-
-function rotRight() {
-	var temp1 = -1*rotate[1];
-	var temp2 = rotate[0];
-	var temp3 = -1*rotate[3];
-	var temp4 = rotate[2];
-	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
-}
-
-$("#rot-left").on('click', function() {
-	if (rotate[4]) rotLeft();
-	else rotRight();
-	drawGrid();
-	drawCurPiece();
-});
-
-$("#rot-right").on('click', function() {
-	if (!rotate[4]) rotLeft();
-	else rotRight();
-	drawGrid();
-	drawCurPiece();
-});
-
-$("#flip-vert").on('click', function() {
-	rotate[2] = -1*rotate[2];
-	rotate[3] = -1*rotate[3];
-	rotate[4] = (rotate[4] + 1) % 2;
-	drawGrid();
-	drawCurPiece();
-});
-
-$("#flip-horiz").on('click', function() {
-	rotate[0] = -1*rotate[0];
-	rotate[1] = -1*rotate[1];
-	rotate[4] = (rotate[4] + 1) % 2;
-	drawGrid();
-	drawCurPiece();
-});
-
-
-$("#submit").on('click', function() {
-
-	//TODO IMPLEMENT CHECKS
-
-	mode = "relaxing";
-	var locs = orient(curPiece);
-	for (i = 0; i < locs.length/2; i++) {
-		grid[curPieceX+locs[2*i]][curPieceY+locs[2*i+1]] = curPlayer;
-	}
-	remainingPieces[curPlayer][curPiece] = 0;
-	rotate = [1,0,0,1,1];
-	curPlayer = (curPlayer + 1) % 5;
-	if (curPlayer == 0) curPlayer++;
-
-	drawGrid();
-	$("i").hide();	
-});
 
 // http://www.w3schools.com/js/js_cookies.asp
 function getCookie(cname) {
@@ -270,7 +158,7 @@ function getCookie(cname) {
 }
 
 $(document).ready(function(){
-	board.width = board.height*2;
+	board.width = board.height*boardRatio;
 	init();
 	drawGrid();
 	$("i").hide();

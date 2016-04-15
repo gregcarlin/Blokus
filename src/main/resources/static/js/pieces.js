@@ -1,4 +1,3 @@
-colors = ["#FFFFFF","#0000FF","#EEEE00", "#FF0000","#00FF00"];
 
 pieces = [
 [0, 0],

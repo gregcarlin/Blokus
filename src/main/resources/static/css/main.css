@@ -44,3 +44,17 @@ body {
 #board {
 	border: 2px solid black;
 }
+
+
+#players {
+	width: 200px;
+	height: 400px;
+	float: left;
+	padding: 10px;
+}
+
+.playerInfo {
+	height: 100px;
+	background-color: white;
+}
+
