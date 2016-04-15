@@ -44,7 +44,8 @@ public class Database implements AutoCloseable {
   private static final Document SETTINGS_PROJECTION = new Document()
     .append("_id", true)
     .append("params", true)
-    .append("state", true);
+    .append("state", true)
+    .append("players", true);
 
   private final MongoClient client;
   private final MongoDatabase db;
@@ -149,13 +150,45 @@ public class Database implements AutoCloseable {
   }
 
   /**
+    * Gets the name of a user.
+    * @param id the id of the user to get
+    * @return the user's name as a string, or null if invalid id
+    */
+  public String getName(String id) {
+    Document doc = users.find(new Document("_id", new ObjectId(id))).first();
+    return doc == null ? null : doc.getString("username");
+  }
+
+  /**
     * Creates a game settings object based on values in the given document.
     * @param doc a document from the games collection
     * @return a GameSettings object
     */
   private static GameSettings parseSettings(Document doc) {
+    GameSettings.Builder builder
+      = new GameSettings.Builder(doc.getObjectId("_id").toString());
+
+    @SuppressWarnings("unchecked")
+    List<Document> playerDocs = doc.get("players", List.class);
+    final int playerCount = playerDocs.size();
+    for (int i = 0; i < playerCount; i++) {
+      Document playerDoc = playerDocs.get(i);
+      String playerId = playerDoc.getObjectId("_id").toString();
+
+      List<Shape> shapes = new ArrayList<>();
+      @SuppressWarnings("unchecked")
+      List<Integer> pieces = playerDoc.get("pieces", List.class);
+      for (int piece : pieces) {
+        shapes.add(Shape.values()[piece]);
+      }
+
+      Turn turn = Turn.values()[i];
+      builder.player(turn, new Player(playerId, shapes,
+            playerDoc.getInteger("score"), playerDoc.getBoolean("playing")));
+    }
+
     Document params = doc.get("params", Document.class);
-    return new GameSettings.Builder(doc.getObjectId("_id").toString())
+    return builder
       .type(GameSettings.Type.values()[params.getInteger("privacy")])
       .state(GameSettings.State.values()[doc.getInteger("state")])
       .maxPlayers(params.getInteger("num-players"))
@@ -189,25 +222,6 @@ public class Database implements AutoCloseable {
     }
     gameBuilder.setGrid(grid);
 
-    @SuppressWarnings("unchecked")
-    List<Document> playerDocs = gameDoc.get("players", List.class);
-    final int playerCount = playerDocs.size();
-    for (int i = 0; i < playerCount; i++) {
-      Document playerDoc = playerDocs.get(i);
-      String playerId = playerDoc.getObjectId("_id").toString();
-
-      List<Shape> shapes = new ArrayList<>();
-      @SuppressWarnings("unchecked")
-      List<Integer> pieces = playerDoc.get("pieces", List.class);
-      for (int piece : pieces) {
-        shapes.add(Shape.values()[piece]);
-      }
-
-      Turn turn = Turn.values()[i];
-      gameBuilder.setPlayer(turn, new Player(playerId, shapes,
-            playerDoc.getInteger("score"), playerDoc.getBoolean("playing")));
-    }
-
     Document lastMoveDoc = gameDoc.get("curr_move", Document.class);
     gameBuilder.setTurn(Turn.values()[lastMoveDoc.getInteger("turn")]);
     gameBuilder.setLastTurnTime(lastMoveDoc.getLong("timestamp"));
@@ -228,9 +242,7 @@ public class Database implements AutoCloseable {
       = settings.hasId() ? new ObjectId(settings.getId()) : new ObjectId();
 
     List<Document> players = new ArrayList<>();
-    for (Turn turn : Turn.values()) {
-      Player player = game.getPlayer(turn);
-
+    for (Player player : game.getAllPlayers()) {
       List<Integer> pieces = new ArrayList<>();
       for (Shape shape : player.getRemainingPieces()) {
         pieces.add(shape.ordinal());
@@ -264,12 +276,14 @@ public class Database implements AutoCloseable {
   /**
     * Gets a list of games that are public and haven't been started yet.
     * @param page the 0-indexed page of data to load
+    * @param without the id of the player to exclude from the results
     * @return a set of game settings representing each game
     */
-  public List<GameSettings> getOpenGames(int page) {
-    FindIterable<Document> docs = games.find(new Document()
-        .append("params.privacy", GameSettings.Type.PUBLIC.ordinal())
-        .append("state", GameSettings.State.UNSTARTED.ordinal()))
+  public List<GameSettings> getOpenGames(int page, String without) {
+    FindIterable<Document> docs = games.find(and(
+        eq("params.privacy", GameSettings.Type.PUBLIC.ordinal()),
+        eq("state", GameSettings.State.UNSTARTED.ordinal()),
+        not(elemMatch("players", new Document("_id", new ObjectId(without))))))
       .skip(page * PAGE_SIZE)
       .projection(SETTINGS_PROJECTION);
 

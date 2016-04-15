@@ -1,10 +1,26 @@
-body {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #eee;
+@import url(https://fonts.googleapis.com/css?family=Orbitron:400);
+
+html, body {
+  height: 100%;
 }
 
 /* index/landing page */
+.container-index {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  height: 100%;
+}
+.container-index .row {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.container-index .col-md-8 h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 400;
+  font-size: 86px;
+  text-align: center;
+}
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -40,6 +56,25 @@ body {
   border-top-right-radius: 0;
 }
 
+/* main page */
+.navbar-static-top {
+  margin-bottom: 19px;
+}
+.container-main tr[onclick]:hover {
+  cursor: pointer;
+}
+.container-main ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.container-main ul li {
+  display: inline;
+}
+.container-main ul li:not(:last-child)::after {
+  content: ",";
+}
+
 /* play page */
 #board {
 	border: 2px solid black;
@@ -57,4 +92,3 @@ body {
 	height: 100px;
 	background-color: white;
 }
-

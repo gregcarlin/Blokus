@@ -53,9 +53,10 @@ public class Player {
   /**
    * Instantiates a player representing a player at the start of the game. At
    * the start of the game, the player has all pieces and a score of 0.
+   * @param id the player's unique id, or null if this player is new
    */
-  public Player() {
-    this(null, EnumSet.allOf(Shape.class), 0, true);
+  public Player(String id) {
+    this(id, EnumSet.allOf(Shape.class), 0, true);
   }
 
   /**
@@ -136,5 +137,10 @@ public class Player {
     return Objects.equals(id, other.id)
       && remainingPieces.equals(other.remainingPieces)
       && score == other.score && playing == other.playing;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, remainingPieces, score, playing);
   }
 }

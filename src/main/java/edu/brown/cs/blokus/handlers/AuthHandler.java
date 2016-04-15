@@ -28,6 +28,7 @@ public class AuthHandler implements Filter {
     String userId = db.getUserId(req.cookie("session"));
     req.attribute("user-id", userId);
     if (userId == null) {
+      res.redirect("/");
       Spark.halt(HTTP.UNAUTHORIZED,
           "You must be logged in to visit this page.");
     }
