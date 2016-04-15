@@ -2,7 +2,6 @@ package edu.brown.cs.blokus;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -95,35 +94,5 @@ public class Move {
    */
   public int getY() {
     return y;
-  }
-  
-  /**
-   * Whether this move uses the same shape, orientation, and coordinates as
-   * another move.
-   * 
-   * @param o other object
-   * @return equality with other object
-   */
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof Move)) {
-      return false;
-    }
-    Move other = (Move) o;
-    return this.shape == other.shape
-      && this.orientation == other.orientation
-      && this.x == other.x
-      && this.y == other.y;
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(shape, orientation, x, y);
-  }
-  
-  @Override
-  public String toString() {
-    return String.format("[Move: shape=%s, orientation=%s, x=%d, y=%d]",
-      shape, orientation, x, y);
   }
 }

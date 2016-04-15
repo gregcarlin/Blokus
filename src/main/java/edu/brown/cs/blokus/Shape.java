@@ -47,12 +47,12 @@ public enum Shape {
     
     /**
      * O
-     * OXO
+     * XOO
      */
     L4(0, 0,
-    -1, 0,
-    -1, 1,
-    1, 0),
+    0, 1,
+    1, 0,
+    2, 0),
     
     /**
      * OO
@@ -134,14 +134,14 @@ public enum Shape {
     
     /**
      * O
-     * OXO
+     * XOO
      * O
      */
     T5(0, 0,
-    -1, -1,
-    -1, 0,
-    -1, 1,
-    1, 0),
+    0, -1,
+    0, 1,
+    1, 0,
+    2, 0),
     
     /**
      * OO
@@ -212,11 +212,6 @@ public enum Shape {
      * Squares that this shape covers.
      */
     private final Set<Square> squares;
-    
-    /**
-     * Number of shapes.
-     */
-    public static final int NUM_SHAPES = 21;
     
     /**
      * New shape with given squares, where each pair of integers represents the

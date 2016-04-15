@@ -44,7 +44,8 @@ public class Player {
   public Player(String id, Collection<Shape> remainingPieces, int score,
       boolean playing) {
     this.id = id;
-    this.remainingPieces = EnumSet.copyOf(remainingPieces);
+    this.remainingPieces = remainingPieces.size() == 0 ?
+      Collections.emptySet() : EnumSet.copyOf(remainingPieces);
     this.score = score;
     this.playing = playing;
   }
@@ -136,10 +137,5 @@ public class Player {
     return Objects.equals(id, other.id)
       && remainingPieces.equals(other.remainingPieces)
       && score == other.score && playing == other.playing;
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, remainingPieces, score, playing);
   }
 }
