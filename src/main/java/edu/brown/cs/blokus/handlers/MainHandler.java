@@ -29,7 +29,8 @@ public class MainHandler implements TemplateViewRoute {
     final String user = req.attribute("user-id");
     return new ModelAndView(ImmutableMap.of(
           "openGames", db.getOpenGames(0, user),
-          "currGames", db.getGamesWith(user)),
+          "currGames", db.getGamesWith(user),
+          "db", db),
         "main.ftl");
   }
 }

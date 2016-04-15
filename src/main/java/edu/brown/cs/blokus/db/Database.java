@@ -150,6 +150,16 @@ public class Database implements AutoCloseable {
   }
 
   /**
+    * Gets the name of a user.
+    * @param id the id of the user to get
+    * @return the user's name as a string, or null if invalid id
+    */
+  public String getName(String id) {
+    Document doc = users.find(new Document("_id", new ObjectId(id))).first();
+    return doc == null ? null : doc.getString("username");
+  }
+
+  /**
     * Creates a game settings object based on values in the given document.
     * @param doc a document from the games collection
     * @return a GameSettings object

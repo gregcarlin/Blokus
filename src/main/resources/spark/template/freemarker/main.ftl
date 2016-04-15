@@ -62,7 +62,8 @@
       <table class="table table-striped table-hover">
         <thead>
           <tr>
-            <th>Player Count</th>
+            <th>Players</th>
+            <th>Max</th>
             <th>Timer</th>
           </tr>
         </thead>
@@ -70,13 +71,20 @@
           <#if currGames?? && (currGames?size > 0)>
             <#list currGames as game>
               <tr onclick="window.location='/auth/play/${game.getId()}'">
+                <td>
+                  <ul>
+                    <#list game.getAllPlayers() as player>
+                      <li>${db.getName(player.getId())}</li>
+                    </#list>
+                  </ul>
+                </td>
                 <td>${game.getMaxPlayers()}</td>
                 <td>${game.getTimer()}</td>
               </tr>
             </#list>
           <#else>
             <tr>
-              <td colspan="2">You are not currently in any games.</td>
+              <td colspan="3">You are not currently in any games.</td>
             </tr>
           </#if>
         </tbody>
@@ -86,7 +94,8 @@
       <table class="table table-striped table-hover">
         <thead>
           <tr>
-            <th>Player Count</th>
+            <th>Players</th>
+            <th>Max</th>
             <th>Timer</th>
           </tr>
         </thead>
@@ -100,7 +109,7 @@
             </#list>
           <#else>
             <tr>
-              <td colspan="2">There are no open games.</td>
+              <td colspan="3">There are no open games.</td>
             </tr>
           </#if>
         </tbody>

@@ -45,6 +45,17 @@
 .container-main tr[onclick]:hover {
   cursor: pointer;
 }
+.container-main ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.container-main ul li {
+  display: inline;
+}
+.container-main ul li:not(:last-child)::after {
+  content: ",";
+}
 
 /* play page */
 #board {
