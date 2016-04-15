@@ -1,11 +1,6 @@
 package edu.brown.cs.blokus;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -33,12 +28,10 @@ public class GameSettings {
   }
 
   private final String id;
-  private final Map<Turn, Player> players;
   private Type type = Type.PUBLIC;
   private State state = State.UNSTARTED;
   private int maxPlayers = 4;
   private int timer = 0;
-
 
   /**
     * Game settings builder.
@@ -109,28 +102,7 @@ public class GameSettings {
       return this;
     }
 
-    /**
-     * Sets the given player. The player is specified by turn: first, second,
-     * third, or fourth. If a player is not set with this method, the player
-     * defaults to a new player.
-     *
-     * @param turn which player to set
-     * @param player the player
-     * @return this builder
-     */
-    public Builder player(Turn turn, Player player) {
-      settings.players.put(turn, player);
-      return this;
-    }
-
     public GameSettings build() {
-      if (settings.players.size() == 0) {
-        throw new IllegalStateException("Game must have at least one player.");
-      }
-      if (settings.maxPlayers == 2) {
-        player(Turn.THIRD, settings.players.get(Turn.FIRST));
-        player(Turn.FOURTH, settings.players.get(Turn.SECOND));
-      }
       return settings;
     }
   }
@@ -140,7 +112,6 @@ public class GameSettings {
     * @param id the id of the associated game
     */
   private GameSettings(String id) {
-    this.players = new EnumMap<>(Turn.class);
     this.id = id;
   }
 
@@ -190,53 +161,5 @@ public class GameSettings {
     */
   public int getTimer() {
     return timer;
-  }
-
-  /**
-   * Gets the specified player.
-   *
-   * @param turn turn
-   * @return player
-   */
-  public Player getPlayer(Turn turn) {
-    return players.get(turn);
-  }
-
-  /**
-    * Gets all players in this game in turn order.
-    * @return an ordered list of all players
-    */
-  public List<Player> getAllPlayers() {
-    List<Player> rt = new ArrayList<>();
-    for (Turn turn : Turn.values()) {
-      if (players.containsKey(turn)) {
-        rt.add(players.get(turn));
-      }
-    }
-    return rt;
-  }
-
-  /**
-    * Adds a new player to the game.
-    * @param id the id of the user
-    */
-  public void addPlayer(String id) {
-    if (getState() != State.UNSTARTED) {
-      throw new IllegalStateException("Players can't join a game in progress.");
-    }
-
-    for (int i = 0; i < maxPlayers; i++) {
-      Turn turn = Turn.values()[i];
-      if (!players.containsKey(turn)) {
-        Player player = new Player(id);
-        players.put(turn, player);
-        if (maxPlayers == 2) {
-          players.put(turn.next().next(), player);
-        }
-        return;
-      }
-    }
-
-    throw new IllegalStateException("Game is already full.");
   }
 }
