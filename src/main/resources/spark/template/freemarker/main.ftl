@@ -103,6 +103,13 @@
           <#if openGames?? && (openGames?size > 0)>
             <#list openGames as game>
               <tr onclick="window.location='/auth/join/${game.getId()}'">
+                <td>
+                  <ul>
+                    <#list game.getAllPlayers() as player>
+                      <li>${db.getName(player.getId())}</li>
+                    </#list>
+                  </ul>
+                </td>
                 <td>${game.getMaxPlayers()}</td>
                 <td>${game.getTimer()}</td>
               </tr>

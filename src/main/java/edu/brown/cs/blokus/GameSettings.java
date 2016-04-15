@@ -1,9 +1,10 @@
 package edu.brown.cs.blokus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 
@@ -126,6 +127,10 @@ public class GameSettings {
       if (settings.players.size() == 0) {
         throw new IllegalStateException("Game must have at least one player.");
       }
+      if (settings.maxPlayers == 2) {
+        player(Turn.THIRD, settings.players.get(Turn.FIRST));
+        player(Turn.FOURTH, settings.players.get(Turn.SECOND));
+      }
       return settings;
     }
   }
@@ -198,10 +203,40 @@ public class GameSettings {
   }
 
   /**
-    * Gets all players in this game.
-    * @return a collection of all players
+    * Gets all players in this game in turn order.
+    * @return an ordered list of all players
     */
-  public Collection<Player> getAllPlayers() {
-    return new HashSet<>(players.values());
+  public List<Player> getAllPlayers() {
+    List<Player> rt = new ArrayList<>();
+    for (Turn turn : Turn.values()) {
+      if (players.containsKey(turn)) {
+        rt.add(players.get(turn));
+      }
+    }
+    return rt;
+  }
+
+  /**
+    * Adds a new player to the game.
+    * @param id the id of the user
+    */
+  public void addPlayer(String id) {
+    if (getState() != State.UNSTARTED) {
+      throw new IllegalStateException("Players can't join a game in progress.");
+    }
+
+    for (int i = 0; i < maxPlayers; i++) {
+      Turn turn = Turn.values()[i];
+      if (!players.containsKey(turn)) {
+        Player player = new Player(id);
+        players.put(turn, player);
+        if (maxPlayers == 2) {
+          players.put(turn.next().next(), player);
+        }
+        return;
+      }
+    }
+
+    throw new IllegalStateException("Game is already full.");
   }
 }

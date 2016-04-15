@@ -27,12 +27,15 @@ public class JoinHandler implements TemplateViewRoute {
 
   @Override
   public ModelAndView handle(Request req, Response res) {
+    final String userId = req.attribute("user-id");
     final String gameId = req.params("id");
     final Game game = db.getGame(gameId);
 
-    // TODO add player to game
+    game.getSettings().addPlayer(userId);
+    String newId = db.saveGame(game);
+    assert newId.equals(gameId);
 
-    res.redirect("/auth/play/" + gameId);
+    res.redirect("/auth/play/" + newId);
     return null;
   }
 }

@@ -1,6 +1,6 @@
 package edu.brown.cs.blokus.handlers;
 
-import java.util.Collections;
+import com.google.common.collect.ImmutableMap;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.db.Database;
@@ -8,6 +8,7 @@ import edu.brown.cs.blokus.db.Database;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
 import spark.TemplateViewRoute;
 
 
@@ -27,9 +28,14 @@ public class PlayHandler implements TemplateViewRoute {
 
   @Override
   public ModelAndView handle(Request req, Response res) {
+    final String user = req.attribute("user-id");
     final Game game = db.getGame(req.params("id"));
 
-    // TODO load data from game into view
-    return new ModelAndView(Collections.emptyMap(), "play.ftl");
+    if (!game.getAllPlayers().contains(user)) {
+      Spark.halt(HTTP.UNAUTHORIZED,
+          "You are not a member of this game.");
+    }
+
+    return new ModelAndView(ImmutableMap.of("game", game), "play.ftl");
   }
 }

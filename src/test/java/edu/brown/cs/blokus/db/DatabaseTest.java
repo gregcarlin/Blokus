@@ -56,10 +56,16 @@ public class DatabaseTest {
   }
 
   private static GameSettings.Builder randomGameSettings() {
-    return new GameSettings.Builder()
+    int maxPlayers = Math.random() < 0.5 ? 2 : 4;
+    GameSettings.Builder builder = new GameSettings.Builder();
+    for (int i = 0; i < maxPlayers; i++) {
+      builder.player(Turn.values()[i], randomPlayer());
+    }
+
+    return builder
       .type(GameSettings.Type.PUBLIC)
       .state(GameSettings.State.PLAYING)
-      .maxPlayers(Math.random() < 0.5 ? 2 : 4)
+      .maxPlayers(maxPlayers)
       .player(Turn.FIRST, randomPlayer())
       .player(Turn.SECOND, randomPlayer())
       .player(Turn.THIRD, randomPlayer())
@@ -179,6 +185,7 @@ public class DatabaseTest {
     Player playerB = randomPlayer();
     Game gameB = randomGame()
       .setSettings(randomGameSettings()
+          .maxPlayers(4)
           .state(GameSettings.State.UNSTARTED)
           .player(Turn.SECOND, playerB)
           .player(Turn.FOURTH, playerA)
