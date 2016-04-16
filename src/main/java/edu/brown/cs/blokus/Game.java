@@ -436,6 +436,18 @@ public class Game {
     return getSettings().getAllPlayers();
   }
 
+  /**
+    * Whether or not a player is a member of this game.
+    * @param id the id of the player to check
+    * @return true if they're a member, false otherwise
+    */
+  public boolean hasUser(String id) {
+    for (Player p : getAllPlayers()) {
+      if (id.equals(p.getId())) { return true; }
+    }
+    return false;
+  }
+
   public static void main(String[] args) {
     Board b = new Board(20);
     for (int x = 0; x < 20; x++) {

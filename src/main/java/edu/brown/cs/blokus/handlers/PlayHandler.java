@@ -31,7 +31,7 @@ public class PlayHandler implements TemplateViewRoute {
     final String user = req.attribute("user-id");
     final Game game = db.getGame(req.params("id"));
 
-    if (!game.getAllPlayers().contains(user)) {
+    if (!game.hasUser(user)) {
       Spark.halt(HTTP.UNAUTHORIZED,
           "You are not a member of this game.");
     }

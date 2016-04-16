@@ -126,7 +126,8 @@ public class Player {
   @Override
   public String toString() {
     return String.format(
-        "[Player: remainingPieces=%s, score=%s]", remainingPieces, score);
+        "[Player: id=%s, remainingPieces=%s, score=%s]",
+        id, remainingPieces, score);
   }
 
   @Override
