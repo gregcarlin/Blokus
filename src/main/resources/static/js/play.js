@@ -1,14 +1,28 @@
-board = document.getElementById("board");
-ctx = board.getContext("2d");
+//GAME SETTINGS
+
+//The colors the viewer is controlling.  0 is first for convenient indexing.
+youControl = [0,true,false,true,false]; 
+
+timed = true; // Timed or Untimed
+maxTime = 15; // Time per move in seconds
+gameStarted = true; // whether the game has started
+
+//BOARD PARAMETERS
+
 boardRatio = 1.7;               //canvas width/height
 SIZE = 25;     					//size of squares
 supplyLeftEdge = 23*SIZE; 
-size2 = Math.floor(SIZE/2);     //size for supply
-grid = []						//current game board
+size2 = Math.floor(SIZE/2);     //size for supply pieces
 
-colors = ["#FFFFFF","#0000FF","#EEEE00", "#FF0000","#00FF00"];
+colors = ["#FFFFFF","#00A0FF","#EEEE00", "#FF4000","#00FF00"];
+
+
+startTime = null;
+board = document.getElementById("board");
+ctx = board.getContext("2d");
 
 remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
+grid = []					    	//current game board
 
 curPlayer = 1;  //players are 1,2,3,4
 curPiece = 0;   //pieces range from 0 to 20
@@ -16,8 +30,9 @@ rotate = [1,0,0,1,1]; //2x2 matrix followed by parity, see orient function
 
 mode = "relaxing"; 
 //modes include "relaxing" -> "dragging" -> "positioning" 
+//also mode can be "notYourTurn"
 
-hovering = 0;
+hovering = 0; // which player is being hovered
 
 curPieceX = 0; //grid locations
 curPieceY = 0;
@@ -26,6 +41,7 @@ curMouseX = 0; //mouse locations within grid from bottom left
 curMouseY = 0;
 
 function init() {    //sets up grid and remainingPieces
+	
 	var foo = [];
 	for (i = 0; i < 21; i++) {
 		foo[i] = 1;
@@ -38,8 +54,75 @@ function init() {    //sets up grid and remainingPieces
 		grid[i][j] = 0;
 	}}
 	
-	$("#player1").css("background-color",colors[1]);
+	for (i = 1; i <= 4; i++) {
+		$("#player" + i).css("border-color",colors[i]);
+	}
 	
+	if (!gameStarted) {
+		drawGrid();
+		$("i").hide();
+		$(".timed").hide();
+		$("#alert").html("GAME NOT STARTED");
+		mode = "notYourTurn";
+		return;
+	}
+	
+	if (timed) {
+		var update = setInterval(processTime, 1000);
+	}
+	else {
+		$(".timed").hide();
+	}
+	
+	curPlayer = 0;
+	startNewTurn();
+	
+	
+}
+
+function startNewTurn() {
+	rotate = [1,0,0,1,1];
+	var newPlayer = (curPlayer + 1) % 5;
+	if (newPlayer == 0) newPlayer++;
+		
+	$("#player"+curPlayer).css("background-color",colors[0]);
+	$("#player"+newPlayer).css("background-color",colors[newPlayer]);
+	curPlayer = newPlayer;
+
+	if (youControl[curPlayer])  {
+		mode = "relaxing";
+		$("#alert").html("YOUR MOVE!");
+	}
+	else {
+		mode = "notYourTurn";
+		$("#alert").html("Awaiting Opponent...");
+	}
+
+	drawGrid();
+	$("i").hide();
+	
+	startTime = new Date();	
+	$("#time").html(maxTime);
+}
+
+function processTime() {
+	var d = new Date();
+	var remaining = Math.ceil(maxTime - (d - startTime)/1000);
+	if (remaining <= 0) {
+		startNewTurn();
+	}
+	$("#time").html(remaining);
+}
+
+function score(player) {
+	var score = 0;
+	var pList = remainingPieces[player];
+	for (p in pList) {
+		if (pList[p] == 0) {
+			score += pieces[p].length/2; 
+		}
+	}
+	return score;
 }
 
 function orient(piece) {         // yay math
@@ -55,7 +138,21 @@ function orient(piece) {         // yay math
 	return p;
 }
 
+function rotLeft() {
+	var temp1 = rotate[1];
+	var temp2 = -1*rotate[0];
+	var temp3 = rotate[3];
+	var temp4 = -1*rotate[2];
+	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
+}
 
+function rotRight() {
+	var temp1 = -1*rotate[1];
+	var temp2 = rotate[0];
+	var temp3 = -1*rotate[3];
+	var temp4 = rotate[2];
+	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
+}
 
 function drawGrid() {
 	ctx.clearRect(0, 0, board.width, board.height);
@@ -109,7 +206,7 @@ function fillSquare(color,x,y,width) {  // x and y are bottom left corner
 
 function fillGridSquare(player, x, y) {   //fills row x col y gridsquare with color of player
 	if (player == 0) return;
-	if (hovering != 0 && hovering != player) return;
+	//if (hovering != 0 && hovering != player) return;
 	fillSquare(colors[player],SIZE*x,SIZE*y,SIZE,SIZE);
 }
 
@@ -160,8 +257,6 @@ function getCookie(cname) {
 $(document).ready(function(){
 	board.width = board.height*boardRatio;
 	init();
-	drawGrid();
-	$("i").hide();
 
   var conn = new WebSocket('ws://' + window.location.host + '/live');
   conn.onopen = function() {

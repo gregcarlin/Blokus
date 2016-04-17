@@ -22,20 +22,32 @@
 
 <div class="container">
 
-<h1> PLAY BLOKUS </h1>
+<h1 id = "header"> 
+	<span id = "alert"> YOUR MOVE!</span> 
+	<span class = "timed"> Time Remaining:&nbsp&nbsp </span>
+	<span id = "time" class = "timed"><nobr> 5:00 </span>
+</h1>
 
 <div id = "players">
 	<div id = "player1" class = "playerInfo"> 
-	PLAYER 1 INFO
+		<div id = "playerName1"> Supreme Leader George </div>
+		SCORE:&nbsp
+		<span id = "playerScore1"> 0 </span>
 	</div><br>
 	<div id = "player2" class = "playerInfo"> 
-	PlAYER 2 INFO
+		<div id = "playerName2"> Aaron </div>
+		SCORE:&nbsp
+		<span id = "playerScore2"> 0 </span>
 	</div><br>
 	<div id = "player3" class = "playerInfo">
-	PlAYER 3 INFO
+		<div id = "playerName3"> Greg </div>
+		SCORE:&nbsp
+		<span id = "playerScore3"> 0 </span>
 	</div><br>
 	<div id = "player4" class = "playerInfo"> 
-	PLAYER 4 INFO
+		<div id = "playerName4"> Thomas </div>
+		SCORE:&nbsp
+		<span id = "playerScore4"> 0 <span>
 	</div>
 </div>
 <div id = "canvas">

@@ -6,7 +6,7 @@ $(".playerInfo").hover(function(e){
 	if (mode == "positioning") drawCurPiece();
 },function(e){
 	var p = $(this).attr('id').slice(-1);
-	if (p != curPlayer) {
+	if (p != curPlayer || !gameStarted) {
 		$(this).css("background-color","white");
 	}
 	hovering = 0;
@@ -14,6 +14,29 @@ $(".playerInfo").hover(function(e){
 	if (mode == "positioning") drawCurPiece();
 });
 
+
+function setCursor(newCursor) {
+	$("#board").css("cursor",newCursor);
+}
+function fixCursor() {
+	if (mode == "notYourTurn") {
+		setCursor("default");
+	}
+	else if (mode == "relaxing") {
+		if (curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2) 
+			setCursor("move");
+		else setCursor("default");
+	}
+	else if (mode == "dragging") {
+		setCursor("move");
+	}
+	else if (mode == "positioning") {
+		if ((curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2) 
+				|| mouseOnPiece())
+			setCursor("move");
+		else setCursor("default");
+	}
+}
 
 $("#board").mousemove(function(e){
 	
@@ -26,6 +49,8 @@ $("#board").mousemove(function(e){
 		drawGrid();
 		drawCurPiece();
 	}
+	
+	fixCursor();
 });
 
 $("#board").mousedown(function(e){
@@ -35,7 +60,8 @@ $("#board").mousedown(function(e){
 		$("i").hide();
 		return;
 	}
-	if (curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2) {
+	if ((mode != "notYourTurn") &&
+			(curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2)) {
 		var supplyX = Math.floor((curMouseX - supplyLeftEdge)/(6*size2));
 		var supplyY = Math.floor(curMouseY/(6*size2));
 		var newPiece = supplyX + 3*supplyY;
@@ -46,6 +72,7 @@ $("#board").mousedown(function(e){
 		drawGrid();
 		drawCurPiece();
 		mode = "dragging";
+		
 		$("i").hide();
 		rotate = [1,0,0,1,1];
 	}
@@ -57,6 +84,7 @@ function toGrid(x) {
 
 $("#board").mouseup(function(e){
 	if (mode == "dragging") {
+		$("#board").css("cursor","default");
 		if (curMouseX < 20*SIZE) {
 			mode = "positioning";
 			$("i").show();
@@ -77,22 +105,6 @@ $("#board").mouseup(function(e){
 		}
 	}
 });
-
-function rotLeft() {
-	var temp1 = rotate[1];
-	var temp2 = -1*rotate[0];
-	var temp3 = rotate[3];
-	var temp4 = -1*rotate[2];
-	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
-}
-
-function rotRight() {
-	var temp1 = -1*rotate[1];
-	var temp2 = rotate[0];
-	var temp3 = -1*rotate[3];
-	var temp4 = rotate[2];
-	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
-}
 
 $("#rot-left").on('click', function() {
 	if (rotate[4]) rotLeft();
@@ -129,20 +141,12 @@ $("#submit").on('click', function() {
 
 	//TODO IMPLEMENT CHECKS
 
-	mode = "relaxing";
 	var locs = orient(curPiece);
 	for (i = 0; i < locs.length/2; i++) {
 		grid[curPieceX+locs[2*i]][curPieceY+locs[2*i+1]] = curPlayer;
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
-	rotate = [1,0,0,1,1];
-	var newPlayer = (curPlayer + 1) % 5;
-	if (newPlayer == 0) newPlayer++;
+	$("#playerScore"+curPlayer).html(score(curPlayer));
 	
-	$("#player"+curPlayer).css("background-color",colors[0]);
-	$("#player"+newPlayer).css("background-color",colors[newPlayer]);
-	curPlayer = newPlayer;
-
-	drawGrid();
-	$("i").hide();	
+	startNewTurn();
 });

@@ -30,11 +30,11 @@ public class PlayHandler implements TemplateViewRoute {
   public ModelAndView handle(Request req, Response res) {
     final String user = req.attribute("user-id");
     final Game game = db.getGame(req.params("id"));
-
+    /*
     if (!game.getAllPlayers().contains(user)) {
       Spark.halt(HTTP.UNAUTHORIZED,
           "You are not a member of this game.");
-    }
+    }*/
 
     return new ModelAndView(ImmutableMap.of("game", game), "play.ftl");
   }
