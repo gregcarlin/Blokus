@@ -1,5 +1,6 @@
 package edu.brown.cs.blokus;
 
+import java.util.EnumSet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -24,9 +25,11 @@ public class GameTest {
     board1.setXY(1, 2, 1);
     board1.setXY(10, 10, 1);
     board1.setXY(11, 10, 2);
+    EnumSet<Shape> game1Shapes = EnumSet.allOf(Shape.class);
+    game1Shapes.remove(Shape.I1);
     game1 = new Game.Builder()
       .setSettings(new GameSettings.Builder()
-          .player(Turn.FIRST, new Player("one"))
+          .player(Turn.FIRST, new Player("one", game1Shapes, 0, true))
           .player(Turn.SECOND, new Player("two"))
           .player(Turn.THIRD, new Player("three"))
           .player(Turn.FOURTH, new Player("four"))

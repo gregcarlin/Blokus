@@ -167,11 +167,10 @@ public class Game {
     }
 
     // If this is the first turn, the move must cover the player's corner
-    // TODO make this work
-    /*if (firstMove(turn)) {
+    if (firstMove(turn)) {
       Square corner = getCorner(turn);
       return move.getSquares().contains(corner);
-    }*/
+    }
     
     // Get the squares that share an edge or corner with any square in the move
     Set<Square> edges = new HashSet<>();
@@ -434,6 +433,18 @@ public class Game {
     */
   public Collection<Player> getAllPlayers() {
     return getSettings().getAllPlayers();
+  }
+
+  /**
+    * Whether or not a player is a member of this game.
+    * @param id the id of the player to check
+    * @return true if they're a member, false otherwise
+    */
+  public boolean hasUser(String id) {
+    for (Player p : getAllPlayers()) {
+      if (id.equals(p.getId())) { return true; }
+    }
+    return false;
   }
 
   public static void main(String[] args) {
