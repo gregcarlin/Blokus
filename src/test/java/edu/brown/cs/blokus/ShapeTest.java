@@ -10,6 +10,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 
@@ -132,8 +133,38 @@ public class ShapeTest {
 
 
   }
-
-
-
-
+  
+  /**
+   * Test that the symmetries are correct.  By correct, we mean that no
+   * distinct orientations are left out.
+   */
+  @Test
+  public void testSymmetries() {
+    Set<Set<Square>> moves = new HashSet<>();
+    // The set of moves using the distinct orientations for each shape...
+    for (Shape s : Shape.values()) {
+      for (Orientation o : s.distinctOrientations()) {
+        for (int x = 0; x < Board.DEFAULT_SIZE; x++) {
+          for (int y = 0; y < Board.DEFAULT_SIZE; y++) {
+            moves.add(new Move(s, o, x, y).getSquares());
+          }
+        }
+      }
+    }
+    // should include all moves using _any_ orientation for each shape that
+    // don't go off the board
+    for (Shape s : Shape.values()) {
+      for (Orientation o : Orientation.values()) {
+        for (int x = 0; x < Board.DEFAULT_SIZE; x++) {
+          for (int y = 0; y < Board.DEFAULT_SIZE; y++) {
+            Set<Square> move = new Move(s, o, x, y).getSquares();
+            assertTrue(moves.contains(move)
+              || move.stream().anyMatch(q ->
+              q.getX() < 0 || q.getX() >= Board.DEFAULT_SIZE
+              || q.getY() < 0|| q.getY() >= Board.DEFAULT_SIZE));
+          }
+        }
+      }
+    }
+  }
 }

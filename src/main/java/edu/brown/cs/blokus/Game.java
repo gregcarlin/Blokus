@@ -1,8 +1,8 @@
 package edu.brown.cs.blokus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -321,14 +321,7 @@ public class Game {
       getPlayer(turn).removePiece(move.getShape());
     }
     LiveUpdater.moveMade(this, move);
-    pass();
-  }
-
-  /**
-   * Advances to the next turn.
-   */
-  public void pass() {
-    turn = turn.next();
+    turn = nextPlaying();
   }
 
   /**
@@ -339,10 +332,82 @@ public class Game {
    * @return
    */
   public boolean canMove(Turn turn) {
-    /*
-    TODO--I'll work on this next
-    */
-    return false;
+    boolean canMove = !getLegalMoves(turn).isEmpty();
+    if (!canMove) {
+      getPlayer(turn).stopPlaying();
+    }
+    return canMove;
+  }
+  
+  /**
+   * Returns a random move for the player with the given turn, or null if the
+   * player has no legal moves.
+   * 
+   * @param turn turn
+   * @return random move, if any
+   */
+  public Move getRandomMove(Turn turn) {
+    List<Move> legalMoves = getLegalMoves(turn);
+    if (legalMoves.isEmpty()) {
+      getPlayer(turn).stopPlaying();
+      return null;
+    }
+    return legalMoves.get((int) (Math.random() * legalMoves.size()));
+  }
+  
+  /**
+   * Gets legal moves for the player with the given turn.  No two moves in the
+   * returned list occupy exactly the same set of squares.  The list of sorted
+   * by number of squares occupied by the move, in ascending order.  Using a
+   * list instead of a set also allows quick choice of a random move.
+   * 
+   * @param turn turn
+   * @return legal moves
+   */
+  public List<Move> getLegalMoves(Turn turn) {
+    if (!getPlayer(turn).isPlaying()) {
+      return Collections.emptyList();
+    }
+    List<Move> legalMoves = new ArrayList<>();
+    for (Shape shape : getPlayer(turn).getRemainingPieces()) {
+      for (Orientation o : shape.distinctOrientations()) {
+        for (int x = 0, s = board.size(); x < s; x++) {
+          for (int y = 0; y < s; y++) {
+            Move move = new Move(shape, o, x, y);
+            if (isLegal(move)) {
+              legalMoves.add(move);
+            }
+          }
+        }
+      }
+    }
+    return legalMoves;
+  }
+  
+  /**
+   * Returns true if game is over: if no players have any more legal moves.
+   * 
+   * @return whether game is over
+   */
+  public boolean isGameOver() {
+    return getSettings().getAllPlayers().stream().noneMatch(p -> p.isPlaying());
+  }
+  
+  /**
+   * Returns the turn of the next player that is still playing, or null if no
+   * more players are playing.
+   * 
+   * @return next turn, if any
+   */
+  public Turn nextPlaying() {
+    Turn next = turn.next();
+    while (next != turn) {
+      if (getPlayer(next).isPlaying()) {
+        return next;
+      }
+      next = next.next();
+    }
+    return null;
   }
 
   /**
@@ -487,19 +552,23 @@ public class Game {
 
     long millisBefore = System.currentTimeMillis();
     int numMoves = 0;
+    Set<Set<Square>> moves = new HashSet<>();
     for (Shape s : g.getPlayer(Turn.FIRST).getRemainingPieces()) {
-      for (Orientation o : Orientation.values()) {
+      for (Orientation o : s.distinctOrientations()) {
         for (int x = 0; x < 20; x++) {
           for (int y = 0; y < 20; y++) {
-            if (g.isLegal(new Move(s, o, x, y))) {
-              numMoves++;
-            }
+            Move m = new Move(s, o, x, y);
+              if (moves.contains(m.getSquares())) {
+                System.out.println(s);
+              }
+              moves.add(m.getSquares());
           }
         }
       }
     }
     long millisAfter = System.currentTimeMillis();
     System.out.println("numMoves: " + numMoves);
+    System.out.println("moves.size(): " + moves.size());
     System.out.println(millisAfter - millisBefore);
   }
 }
