@@ -69,10 +69,19 @@ public final class Main {
       .accepts("db", "The name of the database to use.")
       .withRequiredArg().ofType(String.class)
       .defaultsTo(Database.DEFAULT_DB);
+    OptionSpec<File> keystoreSpec = parser
+      .accepts("keystore", "The path to the secure keystore.")
+      .withRequiredArg().ofType(File.class);
+    OptionSpec<String> keystorePassSpec = parser
+      .accepts("keystore-pass", "The password of the keystore.")
+      .withRequiredArg().ofType(String.class)
+      .defaultsTo("");
     OptionSet options = parser.parse(args);
 
     runSparkServer(options.valueOf(portSpec), options.valueOf(dbHostSpec),
-        options.valueOf(dbPortSpec), options.valueOf(dbSpec));
+        options.valueOf(dbPortSpec), options.valueOf(dbSpec),
+        options.has("keystore") ? options.valueOf(keystoreSpec) : null,
+        options.valueOf(keystorePassSpec));
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -88,11 +97,15 @@ public final class Main {
     return new FreeMarkerEngine(config);
   }
 
-  private void runSparkServer(int port,
-      String dbHost, int dbPort, String dbName) {
+  private void runSparkServer(int port, String dbHost, int dbPort,
+    String dbName, File keystore, String keyPass) {
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
     Spark.port(port);
+
+    if (keystore != null) {
+      Spark.secure(keystore.getAbsolutePath(), keyPass, null, keyPass);
+    }
 
     FreeMarkerEngine freeMarker = createEngine();
     Database db = new Database(dbHost, dbPort, dbName);
