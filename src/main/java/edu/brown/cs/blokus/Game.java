@@ -3,13 +3,11 @@ package edu.brown.cs.blokus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  * A game of Blokus. A game has a board and players. Games should be constructed
@@ -230,7 +228,7 @@ public class Game {
    * @param turn turn
    * @return whether square is a playable corner
    */
-  private boolean isCorner(Square square, Turn turn) {
+  public boolean isCorner(Square square, Turn turn) {
     Set<Square> edges = new HashSet<>();
     Set<Square> corners = new HashSet<>();
     // Which directions to check (don't check if we would go off the board)
@@ -309,17 +307,13 @@ public class Game {
   }
 
   /**
-   * Makes a move. If the turn player has the shape used by the move, updates
-   * the board and removes the shape from the turn player's remaining pieces.
-   * Regardless, advances to the next turn.
+   * Makes a move and advances to the next turn.
    *
    * @param move move
    */
   public void makeMove(Move move) {
-    if (getPlayer(turn).hasPiece(move.getShape())) {
-      board.makeMove(move, turn.mark());
-      getPlayer(turn).removePiece(move.getShape());
-    }
+    board.makeMove(move, turn.mark());
+    getPlayer(turn).usePiece(move.getShape());
     LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
   }
@@ -332,11 +326,23 @@ public class Game {
    * @return
    */
   public boolean canMove(Turn turn) {
-    boolean canMove = !getLegalMoves(turn).isEmpty();
-    if (!canMove) {
-      getPlayer(turn).stopPlaying();
+    if (!getPlayer(turn).isPlaying()) {
+      return false;
     }
-    return canMove;
+    for (Shape shape : getPlayer(turn).getRemainingPieces()) {
+      for (Orientation o : shape.distinctOrientations()) {
+        for (int x = 0, s = board.size(); x < s; x++) {
+          for (int y = 0; y < s; y++) {
+            Move move = new Move(shape, o, x, y);
+            if (isLegal(move)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    getPlayer(turn).stopPlaying();
+    return false;
   }
   
   /**
@@ -390,7 +396,7 @@ public class Game {
    * @return whether game is over
    */
   public boolean isGameOver() {
-    return getSettings().getAllPlayers().stream().noneMatch(p -> p.isPlaying());
+    return nextPlaying() == null;
   }
   
   /**
@@ -401,13 +407,20 @@ public class Game {
    */
   public Turn nextPlaying() {
     Turn next = turn.next();
-    while (next != turn) {
-      if (getPlayer(next).isPlaying()) {
+    do {
+      if (getPlayer(next).isPlaying() && canMove(next)) {
         return next;
       }
       next = next.next();
-    }
+    } while (next != turn.next());
     return null;
+  }
+  
+  /**
+   * @return the board
+   */
+  public Board getBoard() {
+    return board;
   }
 
   /**
@@ -510,65 +523,5 @@ public class Game {
       if (id.equals(p.getId())) { return true; }
     }
     return false;
-  }
-
-  public static void main(String[] args) {
-    Board b = new Board(20);
-    for (int x = 0; x < 20; x++) {
-      for (int y = 0; y < 20; y++) {
-        if (Math.random() > 0.5) {
-          b.setXY(x, y, 0);
-        } else {
-          b.setXY(x, y, 1 + (int) (Math.random() * 4));
-        }
-      }
-    }
-    Set<Shape> allShapes = EnumSet.allOf(Shape.class);
-    allShapes.remove(Shape.I1);
-    Game g = new Game.Builder()
-      .setBoard(b)
-      .setSettings(new GameSettings.Builder()
-        .player(Turn.FIRST, new Player("", allShapes, 1, true))
-        .player(Turn.SECOND, new Player(""))
-        .player(Turn.THIRD, new Player(""))
-        .player(Turn.FOURTH, new Player(""))
-        .build())
-      .setTurn(Turn.FIRST)
-      .build();
-    //long millisBefore = System.currentTimeMillis();
-    List<Square> firstSquares = new ArrayList<>();
-    for (int x = 0; x < 20; x++) {
-      for (int y = 0; y < 20; y++) {
-        Square s = new Square(x, y);
-        if (g.isCorner(s, Turn.FIRST)) {
-          firstSquares.add(new Square(x, y));
-        }
-      }
-    }
-    //long millisAfter = System.currentTimeMillis();
-    System.out.println("corners: " + firstSquares.size());
-    //System.out.println(millisAfter - millisBefore);
-    System.out.println();
-
-    long millisBefore = System.currentTimeMillis();
-    int numMoves = 0;
-    Set<Set<Square>> moves = new HashSet<>();
-    for (Shape s : g.getPlayer(Turn.FIRST).getRemainingPieces()) {
-      for (Orientation o : s.distinctOrientations()) {
-        for (int x = 0; x < 20; x++) {
-          for (int y = 0; y < 20; y++) {
-            Move m = new Move(s, o, x, y);
-              if (moves.contains(m.getSquares())) {
-                System.out.println(s);
-              }
-              moves.add(m.getSquares());
-          }
-        }
-      }
-    }
-    long millisAfter = System.currentTimeMillis();
-    System.out.println("numMoves: " + numMoves);
-    System.out.println("moves.size(): " + moves.size());
-    System.out.println(millisAfter - millisBefore);
   }
 }

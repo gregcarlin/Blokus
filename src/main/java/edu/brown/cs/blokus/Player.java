@@ -84,6 +84,16 @@ public class Player {
   public void removePiece(Shape piece) {
     remainingPieces.remove(piece);
   }
+  
+  /**
+   * Removes piece from set of remaining pieces and adds to score.
+   * 
+   * @param piece piece
+   */
+  public void usePiece(Shape piece) {
+    removePiece(piece);
+    addScore(piece.size());
+  }
 
   /**
    * @return the score

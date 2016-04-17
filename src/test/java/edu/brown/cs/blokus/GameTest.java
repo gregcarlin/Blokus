@@ -1,6 +1,10 @@
 package edu.brown.cs.blokus;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -9,12 +13,12 @@ import org.junit.BeforeClass;
  * Tests for {@link Game}.
  */
 public class GameTest {
-  
+
   /**
    * A game used for some general tests.
    */
   private static Game game1;
-  
+
   /**
    * Initialize the test games.
    */
@@ -29,11 +33,11 @@ public class GameTest {
     game1Shapes.remove(Shape.I1);
     game1 = new Game.Builder()
       .setSettings(new GameSettings.Builder()
-          .player(Turn.FIRST, new Player("one", game1Shapes, 0, true))
-          .player(Turn.SECOND, new Player("two"))
-          .player(Turn.THIRD, new Player("three"))
-          .player(Turn.FOURTH, new Player("four"))
-          .build())
+        .player(Turn.FIRST, new Player("one", game1Shapes, 0, true))
+        .player(Turn.SECOND, new Player("two"))
+        .player(Turn.THIRD, new Player("three"))
+        .player(Turn.FOURTH, new Player("four"))
+        .build())
       .setBoard(board1).build();
   }
 
@@ -62,16 +66,74 @@ public class GameTest {
 
   @Test
   public void testMakeMove() {
-    
+
   }
 
   @Test
   public void testPass() {
-    
+
   }
 
   @Test
   public void testCanMove() {
-    
+
+  }
+
+  /**
+   * Times finding corners by checking every square with isCorner.
+   */
+  public static void timeFindingCorners() {
+    Board b = new Board(20);
+    for (int x = 0; x < 20; x++) {
+      for (int y = 0; y < 20; y++) {
+        if (Math.random() > 0.5) {
+          b.setXY(x, y, 0);
+        } else {
+          b.setXY(x, y, 1 + (int) (Math.random() * 4));
+        }
+      }
+    }
+    Set<Shape> allShapes = EnumSet.allOf(Shape.class);
+    allShapes.remove(Shape.I1);
+    Game g = new Game.Builder()
+      .setBoard(b)
+      .setSettings(new GameSettings.Builder()
+        .player(Turn.FIRST, new Player("", allShapes, 1, true))
+        .player(Turn.SECOND, new Player(""))
+        .player(Turn.THIRD, new Player(""))
+        .player(Turn.FOURTH, new Player(""))
+        .build())
+      .setTurn(Turn.FIRST)
+      .build();
+    long millisBefore = System.currentTimeMillis();
+    List<Square> firstSquares = new ArrayList<>();
+    for (int x = 0; x < 20; x++) {
+      for (int y = 0; y < 20; y++) {
+        Square s = new Square(x, y);
+        if (g.isCorner(s, Turn.FIRST)) {
+          firstSquares.add(s);
+        }
+      }
+    }
+    long millisAfter = System.currentTimeMillis();
+    System.out.println("corners: " + firstSquares.size());
+    System.out.println(millisAfter - millisBefore);
+  }
+  
+  /**
+   * Simulates game by picking random moves.
+   */
+  public static void simulateGame() {
+    Game g = new Game.Builder().setSettings(new GameSettings.Builder()
+      .player(Turn.FIRST, new Player("1"))
+      .player(Turn.SECOND, new Player("2"))
+      .player(Turn.THIRD, new Player("3"))
+      .player(Turn.FOURTH, new Player("4")).build()).build();
+    while (g.getTurn() != null) {
+      g.makeMove(g.getRandomMove(g.getTurn()));
+    }
+    System.out.println(g.getBoard());
+    System.out.println(g.getAllPlayers().stream()
+      .map(p -> p.getScore()).collect(Collectors.toList()));
   }
 }
