@@ -85,6 +85,10 @@ public class Player {
     remainingPieces.remove(piece);
   }
   
+  void addPiece(Shape piece) {
+    remainingPieces.add(piece);
+  }
+  
   /**
    * Removes piece from set of remaining pieces and adds to score.
    * 
@@ -109,6 +113,10 @@ public class Player {
    */
   public void addScore(int add) {
     score += add;
+  }
+  
+  void subtractScore(int sub) {
+    score -= sub;
   }
 
   /**

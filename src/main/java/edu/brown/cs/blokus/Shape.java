@@ -310,6 +310,11 @@ public enum Shape {
    * Number of shapes.
    */
   public static final int NUM_SHAPES = 21;
+  
+  /**
+   * Maximum radius of a shape.
+   */
+  public static final int MAX_RADIUS = 2;
 
   /**
    * New shape with symmetries and given squares, where each pair of integers

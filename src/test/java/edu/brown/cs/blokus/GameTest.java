@@ -118,6 +118,7 @@ public class GameTest {
     long millisAfter = System.currentTimeMillis();
     System.out.println("corners: " + firstSquares.size());
     System.out.println(millisAfter - millisBefore);
+    System.out.println();
   }
   
   /**
@@ -135,5 +136,23 @@ public class GameTest {
     System.out.println(g.getBoard());
     System.out.println(g.getAllPlayers().stream()
       .map(p -> p.getScore()).collect(Collectors.toList()));
+  }
+  
+  public static void simulateGameSmart() {
+    Game g = new Game.Builder().setSettings(new GameSettings.Builder()
+      .player(Turn.FIRST, new Player("1"))
+      .player(Turn.SECOND, new Player("2"))
+      .player(Turn.THIRD, new Player("3"))
+      .player(Turn.FOURTH, new Player("4")).build()).build();
+    while (g.getTurn() != null) {
+      g.makeMove(g.bestMove(g.getTurn()));
+    }
+    System.out.println(g.getBoard());
+    System.out.println(g.getAllPlayers().stream()
+      .map(p -> p.getScore()).collect(Collectors.toList()));
+  }
+  
+  public static void main(String[] args) {
+    simulateGameSmart();
   }
 }

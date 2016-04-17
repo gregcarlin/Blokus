@@ -3,11 +3,14 @@ package edu.brown.cs.blokus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
+import java.util.function.Function;
 
 /**
  * A game of Blokus. A game has a board and players. Games should be constructed
@@ -317,6 +320,31 @@ public class Game {
     LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
   }
+  
+  /*
+  public void tryMove(Move move, Consumer<? super Game> f) {
+    board.makeMove(move, turn.mark());
+    getPlayer(turn).usePiece(move.getShape());
+    f.accept(this);
+    undoTryMove(move);
+  }
+  */
+  
+  public <T> T tryMove(Move move, Function<? super Game, T> f) {
+    board.makeMove(move, turn.mark());
+    getPlayer(turn).usePiece(move.getShape());
+    T result = f.apply(this);
+    undoTryMove(move);
+    return result;
+  }
+  
+  private void undoTryMove(Move move) {
+    for (Square square : move.getSquares()) {
+      board.setXY(square.getX(), square.getY(), 0);
+    }
+    getPlayer(turn).addPiece(move.getShape());
+    getPlayer(turn).subtractScore(move.getShape().size());
+  }
 
   /**
    * Whether the player can move. If not, the player's
@@ -523,5 +551,133 @@ public class Game {
       if (id.equals(p.getId())) { return true; }
     }
     return false;
+  }
+  
+  private Set<Square> getPlaces(Turn turn) {
+    Set<Square> places = new HashSet<>();
+    final int boardSize = board.size();
+    final int mark = turn.mark();
+    for (int x = 0; x < boardSize; x++) {
+      for (int y = 0; y < boardSize; y++) {
+        if (board.getXY(x, y) == mark) {
+          places.add(new Square(x, y));
+        }
+      }
+    }
+    return places;
+  }
+  
+  private Set<Square> getCorners(Turn turn) {
+    Set<Square> corners = new HashSet<>();
+    Set<Square> places = getPlaces(turn);
+    for (Square place : places) {
+      corners.add(place.translate(-1, -1));
+      corners.add(place.translate(-1, 1));
+      corners.add(place.translate(1, -1));
+      corners.add(place.translate(1, 1));
+    }
+    corners.removeAll(places);
+    return corners;
+  }
+  
+  private boolean[][] available(Turn turn) {
+    final int boardSize = board.size();
+    final int mark = turn.mark();
+    boolean[][] available = new boolean[boardSize + 2][boardSize + 2];
+    for (int r = 1; r <= boardSize; r++) {
+      for (int c = 1; c <= boardSize; c++) {
+        available[r][c] = true;
+      }
+    }
+    for (int r = 1; r <= boardSize; r++) {
+      for (int c = 1; c <= boardSize; c++) {
+        int boardMark = board.getRowColumn(r - 1, c - 1);
+        if (boardMark == mark) {
+          available[r][c] = false;
+          available[r + 1][c] = false;
+          available[r - 1][c] = false;
+          available[r][c + 1] = false;
+          available[r][c - 1] = false;
+        } else if (boardMark != 0) {
+          available[r][c] = false;
+        }
+      }
+    }
+    return available;
+  }
+  
+  private Set<Square> component(Turn turn, Square square) {
+    boolean[][] available = available(turn);
+    Set<Square> comp = new HashSet<>();
+    Stack<Square> toSearch = new Stack<>();
+    checkAvailable(available, comp, toSearch, square);
+    while (!toSearch.isEmpty()) {
+      Square current = toSearch.pop();
+      checkAvailable(available, comp, toSearch, current.translate(-1, 0));
+      checkAvailable(available, comp, toSearch, current.translate(1, 0));
+      checkAvailable(available, comp, toSearch, current.translate(0, -1));
+      checkAvailable(available, comp, toSearch, current.translate(0, 1));
+    }
+    return comp;
+  }
+  
+  private void checkAvailable(boolean[][] available, Set<Square> comp,
+    Stack<Square> toSearch, Square s) {
+    if (available[s.getX() + 1][s.getY() + 1] && !comp.contains(s)) {
+      comp.add(s);
+      toSearch.push(s);
+    }
+  }
+  
+  private int totalComponentValue(Turn turn) {
+    int sum = 0;
+    for (Square s : getCorners(turn)) {
+      sum += component(turn, s).size();
+    }
+    return sum;
+  }
+  
+  public Move bestMove(Turn turn) {
+    Move bestMove = null;
+    int bestValue = -1;
+    for (Move m : getLegalMoves(turn)) {
+      int value = tryMove(m, gt -> gt.totalComponentValue(turn));
+      if (value > bestValue) {
+        bestMove = m;
+        bestValue = value;
+      }
+    }
+    return bestMove;
+  }
+  
+  public static void main(String[] args) {
+    Board b = new Board(20);
+    for (int x = 0; x < 20; x++) {
+      for (int y = 0; y < 20; y++) {
+        if (Math.random() > 0.5) {
+          b.setXY(x, y, 0);
+        } else {
+          b.setXY(x, y, 1 + (int) (Math.random() * 4));
+        }
+      }
+    }
+    Set<Shape> allShapes = EnumSet.allOf(Shape.class);
+    allShapes.remove(Shape.I1);
+    Game g = new Game.Builder()
+      //.setBoard(b)
+      .setSettings(new GameSettings.Builder()
+        .player(Turn.FIRST, new Player(""/*, allShapes, 1, true*/))
+        .player(Turn.SECOND, new Player(""))
+        .player(Turn.THIRD, new Player(""))
+        .player(Turn.FOURTH, new Player(""))
+        .build())
+      .setTurn(Turn.FIRST)
+      .build();
+    long millisBefore = System.currentTimeMillis();
+    Move bestMove = g.bestMove(Turn.FIRST);
+    long millisAfter = System.currentTimeMillis();
+    System.out.println(bestMove);
+    System.out.println(millisAfter - millisBefore);
+    System.out.println();
   }
 }
