@@ -274,7 +274,7 @@ public enum Shape {
      * Initializes distinct orientations map.
      */
     static {
-      DISTINCT_ORIENTATIONS = new EnumMap(Symmetry.class);
+      DISTINCT_ORIENTATIONS = new EnumMap<>(Symmetry.class);
       DISTINCT_ORIENTATIONS.put(NONE, Collections.unmodifiableSet(
         EnumSet.allOf(Orientation.class)));
       DISTINCT_ORIENTATIONS.put(POINT, Collections.unmodifiableSet(EnumSet.of(

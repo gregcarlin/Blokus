@@ -11,6 +11,7 @@ import edu.brown.cs.blokus.handlers.JoinHandler;
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import edu.brown.cs.blokus.handlers.LoginHandler;
 import edu.brown.cs.blokus.handlers.MainHandler;
+import edu.brown.cs.blokus.handlers.MoveHandler;
 import edu.brown.cs.blokus.handlers.NewGameHandler;
 import edu.brown.cs.blokus.handlers.PlayHandler;
 import edu.brown.cs.blokus.handlers.SignoutHandler;
@@ -105,8 +106,9 @@ public final class Main {
     Spark.get("/signout", new SignoutHandler(), freeMarker);
     Spark.before("/auth/*", new AuthHandler(db));
     Spark.get("/auth/main", new MainHandler(db), freeMarker);
-    Spark.get("/auth/play/:id", new PlayHandler(db), freeMarker);
-    Spark.get("/auth/join/:id", new JoinHandler(db), freeMarker);
     Spark.post("/auth/new", new NewGameHandler(db), freeMarker);
+    Spark.get("/auth/join/:id", new JoinHandler(db), freeMarker);
+    Spark.get("/auth/play/:id", new PlayHandler(db), freeMarker);
+    Spark.post("/auth/move/:id", new MoveHandler(db));
   }
 }
