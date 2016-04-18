@@ -6,6 +6,14 @@ youControl = [0,true,false,true,false];
 timed = true; // Timed or Untimed
 maxTime = 15; // Time per move in seconds
 gameStarted = true; // whether the game has started
+gameover = false;   // whether the game is over
+
+startTime = null;
+
+remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
+grid = []					    	//current game board
+
+curPlayer = 1;  //players are 1,2,3,4
 
 //BOARD PARAMETERS
 
@@ -17,14 +25,10 @@ size2 = Math.floor(SIZE/2);     //size for supply pieces
 colors = ["#FFFFFF","#00A0FF","#EEEE00", "#FF4000","#00FF00"];
 
 
-startTime = null;
 board = document.getElementById("board");
 ctx = board.getContext("2d");
 
-remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
-grid = []					    	//current game board
 
-curPlayer = 1;  //players are 1,2,3,4
 curPiece = 0;   //pieces range from 0 to 20
 rotate = [1,0,0,1,1]; //2x2 matrix followed by parity, see orient function
 
@@ -41,7 +45,43 @@ curMouseX = 0; //mouse locations within grid from bottom left
 curMouseY = 0;
 
 function init() {    //sets up grid and remainingPieces
-	
+
+	var url = window.location.href; 
+	$.get(url+"/info", function(data) {
+		var response = JSON.parse(data);
+		grid = response.board;
+		var s = response.state;
+		if (s == 0) gameStarted = false;
+		if (s == 1) gameStarted = true;
+		if (s == 2) gameOver = true;
+		
+		
+		maxTime = response.params.timer;
+		
+		var serverTime = new Date(response.curr_move.timestamp);
+		
+		var curTime = new Date();
+		
+		var difference = Math.ceil((curTime - serverTime)/1000);
+		
+		if (difference < maxTime) startTime = serverTime;
+		
+		
+		var loadedBy = response.loaded-by;
+		for (i in response.players) {
+			var p = response.players[i];
+			remainingPieces[i+1] = p.pieces;
+			if (loadedBy == p._id) 
+				youControl[i+1] = true;
+			else youControl[i+1] = false;
+			
+			$("#playerName"+(i+1)).html(p.name);
+			
+		}
+		
+	});
+
+	/*
 	var foo = [];
 	for (i = 0; i < 21; i++) {
 		foo[i] = 1;
@@ -57,7 +97,7 @@ function init() {    //sets up grid and remainingPieces
 	for (i = 1; i <= 4; i++) {
 		$("#player" + i).css("border-color",colors[i]);
 	}
-	
+	*/
 	if (!gameStarted) {
 		drawGrid();
 		$("i").hide();
