@@ -26,7 +26,7 @@
   <div class="row">
     <div class="col-md-6">
       <h2>Create a new game</h2>
-      <form action="/auth/new" method="post">
+      <form class="form-create" action="/auth/new" method="post">
         <div class="btn-group btn-group-justified" data-toggle="buttons">
           <label class="btn btn-primary active">
             <input type="radio" name="type" id="public" autocomplete="off" checked value="public"> Public 
@@ -50,7 +50,7 @@
 
         <div class="input-group">
           <span class="input-group-addon" id="timer-addon">Timer (sec)</span>
-          <input type="number" class="form-control" min="0" name="timer" id="timer" aria-describedby="timer-addon" />
+          <input type="number" class="form-control" min="0" name="timer" id="timer" aria-describedby="timer-addon" value="60" required />
         </div>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Create Game</button>

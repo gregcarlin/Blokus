@@ -74,31 +74,25 @@ html, body {
 .container-main ul li:not(:last-child)::after {
   content: ",";
 }
+.form-create > div {
+  margin-bottom: 15px;
+}
 
 /* play page */
-
 #header {
 	margin-left: 300px;
 }
-
-
 #board {
 	border: 2px solid black;
 }
-
 #players {
 	width: 250px;
 	float: left;
 	padding: 10px;
 }
-
 .playerInfo {
 	width: 200px;
 	height: 100px;
 	border: 2px outset;
 	padding: 4px;
 }
-
-
-
-

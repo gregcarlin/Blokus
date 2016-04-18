@@ -38,7 +38,9 @@ public class NewGameHandler implements TemplateViewRoute {
     final QueryParamsMap qm = req.queryMap();
     final GameSettings.Type type = typeMap.get(qm.value("type"));
     final int count = Integer.parseInt(qm.value("count"));
-    final int timer = Integer.parseInt(qm.value("timer"));
+    final String rawTimer = qm.value("timer");
+    final int timer = rawTimer == null || rawTimer.isEmpty()
+        ? 60 : Integer.parseInt(rawTimer);
 
     GameSettings settings = new GameSettings.Builder()
       .type(type)

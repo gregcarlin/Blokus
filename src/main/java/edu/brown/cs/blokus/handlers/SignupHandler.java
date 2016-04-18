@@ -29,6 +29,11 @@ public class SignupHandler implements TemplateViewRoute {
     final String user = qm.value("username");
     final String pass = qm.value("password");
 
+    if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
+      // TODO report empty data
+      return null;
+    }
+
     String userId = db.createUser(user, pass);
     if (userId == null) {
       // TODO report user with same username

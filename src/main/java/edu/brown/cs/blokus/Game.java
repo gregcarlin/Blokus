@@ -117,7 +117,9 @@ public class Game {
       if (game.settings == null) {
         throw new IllegalStateException("Game settings must be set.");
       }
-      game.checkTime();
+      if (game.settings.getState() == GameSettings.State.PLAYING) {
+        game.checkTime();
+      }
       return game;
     }
   }
@@ -290,6 +292,9 @@ public class Game {
     settings.setLastTurnTime(timestamp);
     LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
+    if (turn == null) {
+      settings.setState(GameSettings.State.FINISHED);
+    }
   }
   
   public <T> T tryMove(Move move, Function<? super Game, T> f) {

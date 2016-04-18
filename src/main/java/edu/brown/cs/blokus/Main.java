@@ -114,7 +114,7 @@ public final class Main {
     Spark.webSocket("/live", LiveUpdater.class);
 
     // Setup Spark Routes
-    Spark.get("/", new IndexHandler(), freeMarker);
+    Spark.get("/", new IndexHandler(db), freeMarker);
     Spark.post("/login", new LoginHandler(db), freeMarker);
     Spark.post("/signup", new SignupHandler(db), freeMarker);
     Spark.get("/signout", new SignoutHandler(), freeMarker);

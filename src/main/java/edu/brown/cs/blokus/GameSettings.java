@@ -235,7 +235,7 @@ public class GameSettings {
     this.lastTurnTime = lastTurnTime;
   }
 
-  private void setState(State state) {
+  protected void setState(State state) {
     this.state = state;
     if (state == State.PLAYING) {
       setLastTurnTime(System.currentTimeMillis());
