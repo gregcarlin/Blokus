@@ -197,6 +197,18 @@ public class Database implements AutoCloseable {
   }
 
   /**
+    * Gets a raw game with a given id.
+    * @param id the id of the game to find
+    * @return the game's json, or null if not found
+    */
+  public String getGameRaw(String id) {
+    FindIterable<Document> docs
+      = games.find(new Document("_id", new ObjectId(id)));
+    Document doc = docs.first();
+    return doc == null ? null : doc.toJson();
+  }
+
+  /**
     * Gets a game with a given id.
     * @param id the id of the game to find
     * @return the game, or null if not found
