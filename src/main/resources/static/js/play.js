@@ -69,12 +69,9 @@ function init() {    //sets up grid and remainingPieces
 		
 		maxTime = response.params.timer;
 		
-		var serverTime = new Date(response.curr_move.timestamp);
-		
-		var curTime = new Date();
-		
-		var difference = Math.ceil((curTime - serverTime)/1000);
-		
+		var serverTime = parseInt(response.curr_move.timestamp.$numberLong);
+		var curTime = Date.now();
+		var difference = Math.ceil((curTime - serverTime) / 1000);
 		if (difference < maxTime) startTime = serverTime;
 		
 		
@@ -117,15 +114,11 @@ function init() {    //sets up grid and remainingPieces
 		}
 		
 		curPlayer = 0;
-		startNewTurn();
-		
-		
+		startNewTurn(false);
 	});
-
-	
 }
 
-function startNewTurn() {
+function startNewTurn(resetTime) {
 	rotate = [1,0,0,1,1];
 	var newPlayer = (curPlayer + 1) % 5;
 	if (newPlayer == 0) newPlayer++;
@@ -146,15 +139,15 @@ function startNewTurn() {
 	drawGrid();
 	$("i").hide();
 	
-	startTime = new Date();	
+	if (resetTime) startTime = Date.now();
 	$("#time").html(maxTime);
 }
 
 function processTime() {
-	var d = new Date();
-	var remaining = Math.ceil(maxTime - (d - startTime)/1000);
+	var d = Date.now();
+	var remaining = Math.ceil(maxTime - (d - startTime) / 1000);
 	if (remaining <= 0) {
-		startNewTurn();
+		startNewTurn(true);
 	}
 	$("#time").html(remaining);
 }

@@ -61,7 +61,6 @@ public class LiveUpdater {
   @OnWebSocketMessage
   public void message(Session session, String message) {
     if (Database.SESSIONS.containsKey(message)) {
-      System.out.println("recognized " + Database.SESSIONS.get(message));
       KNOWN_SESSIONS.put(Database.SESSIONS.get(message), session);
     }
   }

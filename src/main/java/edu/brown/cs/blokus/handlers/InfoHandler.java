@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.Request;
@@ -30,9 +31,14 @@ public class InfoHandler implements Route {
   @Override
   public Object handle(Request req, Response res) {
     final String user = req.attribute("user-id");
+    final String gameId = req.params("id");
+
+    // get and save game so timer is updated
+    Game rich = db.getGame(gameId);
+    db.saveGame(rich);
 
     JsonObject game
-      = GSON.fromJson(db.getGameRaw(req.params("id")), JsonObject.class);
+      = GSON.fromJson(db.getGameRaw(gameId), JsonObject.class);
     game.addProperty("_id",
         game.get("_id").getAsJsonObject().get("$oid").getAsString());
     game.addProperty("loaded_by", user);
