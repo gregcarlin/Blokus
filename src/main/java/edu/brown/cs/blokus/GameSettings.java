@@ -1,5 +1,7 @@
 package edu.brown.cs.blokus;
 
+import edu.brown.cs.blokus.handlers.LiveUpdater;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -124,13 +126,6 @@ public class GameSettings {
     }
 
     public GameSettings build() {
-      if (settings.players.size() == 0) {
-        throw new IllegalStateException("Game must have at least one player.");
-      }
-      if (settings.maxPlayers == 2) {
-        player(Turn.THIRD, settings.players.get(Turn.FIRST));
-        player(Turn.FOURTH, settings.players.get(Turn.SECOND));
-      }
       return settings;
     }
   }
@@ -216,6 +211,14 @@ public class GameSettings {
     return rt;
   }
 
+  private void setState(State state) {
+    this.state = state;
+    if (state == State.PLAYING) {
+      // TODO set last turn time to current time, aka the game start time
+    }
+    LiveUpdater.stateChanged(this);
+  }
+
   /**
     * Adds a new player to the game.
     * @param id the id of the user
@@ -225,15 +228,31 @@ public class GameSettings {
       throw new IllegalStateException("Players can't join a game in progress.");
     }
 
-    for (int i = 0; i < maxPlayers; i++) {
-      Turn turn = Turn.values()[i];
-      if (!players.containsKey(turn)) {
-        Player player = new Player(id);
-        players.put(turn, player);
-        if (maxPlayers == 2) {
-          players.put(turn.next().next(), player);
+    if (type == Type.LOCAL) { // for local games, all players have same id
+      if (players.size() > 0) {
+        throw new IllegalStateException("Game is already full.");
+      }
+
+      for (Turn turn : Turn.values()) {
+        players.put(turn, new Player(id));
+      }
+
+      setState(State.PLAYING);
+    } else { // insert player into next available slot
+      for (int i = 0; i < maxPlayers; i++) {
+        Turn turn = Turn.values()[i];
+        if (!players.containsKey(turn)) {
+          players.put(turn, new Player(id));
+          if (maxPlayers == 2) {
+            players.put(turn.next().next(), new Player(id));
+          }
+
+          if (players.size() == maxPlayers) {
+            setState(State.PLAYING);
+          }
+
+          return;
         }
-        return;
       }
     }
 

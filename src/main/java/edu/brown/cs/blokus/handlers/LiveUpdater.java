@@ -71,4 +71,9 @@ public class LiveUpdater {
       }
     }
   }
+
+  // should be called when game state changes
+  public static void stateChanged(GameSettings context) {
+    // TODO update relevant users
+  }
 }

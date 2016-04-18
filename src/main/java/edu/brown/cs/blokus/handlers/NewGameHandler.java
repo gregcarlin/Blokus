@@ -45,8 +45,8 @@ public class NewGameHandler implements TemplateViewRoute {
       .state(GameSettings.State.UNSTARTED)
       .maxPlayers(count)
       .timer(timer)
-      .player(Turn.FIRST, new Player(req.attribute("user-id")))
       .build();
+    settings.addPlayer(req.attribute("user-id"));
     Game game = new Game.Builder()
       .setSettings(settings)
       .build();
