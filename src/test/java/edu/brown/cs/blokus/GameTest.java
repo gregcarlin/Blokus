@@ -38,7 +38,8 @@ public class GameTest {
         .player(Turn.THIRD, new Player("three"))
         .player(Turn.FOURTH, new Player("four"))
         .build())
-      .setBoard(board1).build();
+      .setBoard(board1)
+      .setLastTurnTime(System.currentTimeMillis()).build();
   }
 
   /**
@@ -77,48 +78,6 @@ public class GameTest {
   @Test
   public void testCanMove() {
 
-  }
-
-  /**
-   * Times finding corners by checking every square with isCorner.
-   */
-  public static void timeFindingCorners() {
-    Board b = new Board(20);
-    for (int x = 0; x < 20; x++) {
-      for (int y = 0; y < 20; y++) {
-        if (Math.random() > 0.5) {
-          b.setXY(x, y, 0);
-        } else {
-          b.setXY(x, y, 1 + (int) (Math.random() * 4));
-        }
-      }
-    }
-    Set<Shape> allShapes = EnumSet.allOf(Shape.class);
-    allShapes.remove(Shape.I1);
-    Game g = new Game.Builder()
-      .setBoard(b)
-      .setSettings(new GameSettings.Builder()
-        .player(Turn.FIRST, new Player("", allShapes, 1, true))
-        .player(Turn.SECOND, new Player(""))
-        .player(Turn.THIRD, new Player(""))
-        .player(Turn.FOURTH, new Player(""))
-        .build())
-      .setTurn(Turn.FIRST)
-      .build();
-    long millisBefore = System.currentTimeMillis();
-    List<Square> firstSquares = new ArrayList<>();
-    for (int x = 0; x < 20; x++) {
-      for (int y = 0; y < 20; y++) {
-        Square s = new Square(x, y);
-        if (g.isCorner(s, Turn.FIRST)) {
-          firstSquares.add(s);
-        }
-      }
-    }
-    long millisAfter = System.currentTimeMillis();
-    System.out.println("corners: " + firstSquares.size());
-    System.out.println(millisAfter - millisBefore);
-    System.out.println();
   }
   
   /**

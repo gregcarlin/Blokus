@@ -28,6 +28,9 @@ public class Game {
    */
   private Turn turn;
 
+  /**
+   * Last turn time, in milliseconds.
+   */
   private long lastTurnTime;
 
   /**
@@ -129,6 +132,7 @@ public class Game {
       if (game.settings == null) {
         throw new IllegalStateException("Game settings must be set.");
       }
+      game.checkTime();
       return game;
     }
   }
@@ -137,6 +141,31 @@ public class Game {
    * New game.
    */
   private Game() {
+  }
+  
+  /**
+   * Checks the current time and makes random moves for players who should be
+   * skipped because they ran out of time.
+   */
+  public void checkTime() {
+    long timerMillis = 1000 * getSettings().getTimer();
+    long automaticMoveTime = lastTurnTime + timerMillis;
+    long currentTime = System.currentTimeMillis();
+    while (automaticMoveTime < currentTime && turn != null) {
+      makeMove(getRandomMove(turn));
+      lastTurnTime = automaticMoveTime;
+      automaticMoveTime += timerMillis;
+    }
+  }
+  
+  /**
+   * Returns the remaining time for the turn player, in milliseconds.
+   * 
+   * @return remaining time in milliseconds
+   */
+  public long remainingTimeMillis() {
+    checkTime();
+    return System.currentTimeMillis() - lastTurnTime;
   }
 
   /**
@@ -225,60 +254,6 @@ public class Game {
   }
 
   /**
-   * Whether the square is a playable corner for the player.
-   *
-   * @param square square
-   * @param turn turn
-   * @return whether square is a playable corner
-   */
-  public boolean isCorner(Square square, Turn turn) {
-    Set<Square> edges = new HashSet<>();
-    Set<Square> corners = new HashSet<>();
-    // Which directions to check (don't check if we would go off the board)
-    boolean checkLeft = square.getX() > 0;
-    boolean checkRight = square.getX() < board.size() - 1;
-    boolean checkDown = square.getY() > 0;
-    boolean checkUp = square.getY() < board.size() - 1;
-    // Squares that share an edge with a square in the move
-    if (checkLeft) {
-      edges.add(square.translate(-1, 0));
-    }
-    if (checkRight) {
-      edges.add(square.translate(1, 0));
-    }
-    if (checkDown) {
-      edges.add(square.translate(0, -1));
-    }
-    if (checkUp) {
-      edges.add(square.translate(0, 1));
-    }
-    // Squares that share a corner with a square in the move
-    if (checkLeft && checkUp) {
-      corners.add(square.translate(-1, 1));
-    }
-    if (checkRight && checkUp) {
-      corners.add(square.translate(1, 1));
-    }
-    if (checkRight && checkDown) {
-      corners.add(square.translate(1, -1));
-    }
-    if (checkLeft && checkDown) {
-      corners.add(square.translate(-1, -1));
-    }
-    corners.removeAll(edges);
-
-    // No squares in the move can share an edge with the player's pieces
-    if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
-      return false;
-    }
-    // Some square in the move must share a corner with the player's pieces
-    if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * Returns {@code true} if the player has not moved yet.
    *
    * @param turn turn
@@ -315,20 +290,22 @@ public class Game {
    * @param move move
    */
   public void makeMove(Move move) {
+    makeMove(move, System.currentTimeMillis());
+  }
+  
+  /**
+   * Makes a move with the given timestamp.
+   * 
+   * @param move move
+   * @param timestamp timestamp
+   */
+  public void makeMove(Move move, long timestamp) {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
+    lastTurnTime = timestamp;
     LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
   }
-  
-  /*
-  public void tryMove(Move move, Consumer<? super Game> f) {
-    board.makeMove(move, turn.mark());
-    getPlayer(turn).usePiece(move.getShape());
-    f.accept(this);
-    undoTryMove(move);
-  }
-  */
   
   public <T> T tryMove(Move move, Function<? super Game, T> f) {
     board.makeMove(move, turn.mark());
