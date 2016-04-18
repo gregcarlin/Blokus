@@ -70,6 +70,7 @@ public class DatabaseTest {
       .player(Turn.SECOND, randomPlayer())
       .player(Turn.THIRD, randomPlayer())
       .player(Turn.FOURTH, randomPlayer())
+      .lastTurnTime(System.currentTimeMillis())
       .timer((int) (Math.random() * 100000));
   }
 
@@ -95,7 +96,6 @@ public class DatabaseTest {
     return new Game.Builder()
       .setGrid(grid)
       .setTurn(Turn.values()[(int) (Math.random() * Turn.values().length)])
-      .setLastTurnTime(System.currentTimeMillis())
       .setSettings(randomGameSettings().build());
   }
 
@@ -105,6 +105,7 @@ public class DatabaseTest {
     assertEquals(expected.getState(), actual.getState());
     assertEquals(expected.getMaxPlayers(), actual.getMaxPlayers());
     assertEquals(expected.getTimer(), actual.getTimer());
+    assertEquals(expected.getLastTurnTime(), actual.getLastTurnTime());
   }
 
   private static void assertGameEquals(Game expected, Game actual) {
@@ -121,7 +122,6 @@ public class DatabaseTest {
     }
 
     assertEquals(expected.getTurn(), actual.getTurn());
-    assertEquals(expected.getLastTurnTime(), actual.getLastTurnTime());
 
     assertGameSettingsEquals(expected.getSettings(), actual.getSettings());
   }

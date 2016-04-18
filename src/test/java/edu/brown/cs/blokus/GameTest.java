@@ -37,9 +37,10 @@ public class GameTest {
         .player(Turn.SECOND, new Player("two"))
         .player(Turn.THIRD, new Player("three"))
         .player(Turn.FOURTH, new Player("four"))
+        .lastTurnTime(System.currentTimeMillis())
         .build())
       .setBoard(board1)
-      .setLastTurnTime(System.currentTimeMillis()).build();
+      .build();
   }
 
   /**

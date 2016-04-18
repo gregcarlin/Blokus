@@ -45,7 +45,8 @@ public class Database implements AutoCloseable {
     .append("_id", true)
     .append("params", true)
     .append("state", true)
-    .append("players", true);
+    .append("players", true)
+    .append("curr_move", true);
 
   private final MongoClient client;
   private final MongoDatabase db;
@@ -188,11 +189,13 @@ public class Database implements AutoCloseable {
     }
 
     Document params = doc.get("params", Document.class);
+    Document lastMoveDoc = doc.get("curr_move", Document.class);
     return builder
       .type(GameSettings.Type.values()[params.getInteger("privacy")])
       .state(GameSettings.State.values()[doc.getInteger("state")])
       .maxPlayers(params.getInteger("num-players"))
       .timer(params.getInteger("timer"))
+      .lastTurnTime(lastMoveDoc.getLong("timestamp"))
       .build();
   }
 
@@ -236,7 +239,6 @@ public class Database implements AutoCloseable {
 
     Document lastMoveDoc = gameDoc.get("curr_move", Document.class);
     gameBuilder.setTurn(Turn.values()[lastMoveDoc.getInteger("turn")]);
-    gameBuilder.setLastTurnTime(lastMoveDoc.getLong("timestamp"));
 
     return gameBuilder.build();
   }
@@ -276,7 +278,7 @@ public class Database implements AutoCloseable {
           .append("timer", settings.getTimer()))
       .append("curr_move", new Document()
           .append("turn", game.getTurn().ordinal())
-          .append("timestamp", game.getLastTurnTime()))
+          .append("timestamp", settings.getLastTurnTime()))
       .append("state", settings.getState().ordinal())
       .append("board", game.getGridAsList());
 

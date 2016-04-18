@@ -29,11 +29,6 @@ public class Game {
   private Turn turn;
 
   /**
-   * Last turn time, in milliseconds.
-   */
-  private long lastTurnTime;
-
-  /**
     * Game settings.
     */
   private GameSettings settings;
@@ -97,16 +92,6 @@ public class Game {
     }
 
     /**
-      * Sets the last turn time.
-      * @param lastTurnTime the time of last turn
-      * @return this builder
-      */
-    public Builder setLastTurnTime(long lastTurnTime) {
-      game.lastTurnTime = lastTurnTime;
-      return this;
-    }
-
-    /**
       * Sets game settings.
       * This method must be called.
       * @param settings game settings
@@ -149,11 +134,11 @@ public class Game {
    */
   public void checkTime() {
     long timerMillis = 1000 * getSettings().getTimer();
-    long automaticMoveTime = lastTurnTime + timerMillis;
+    long automaticMoveTime = settings.getLastTurnTime() + timerMillis;
     long currentTime = System.currentTimeMillis();
     while (automaticMoveTime < currentTime && turn != null) {
       makeMove(getRandomMove(turn));
-      lastTurnTime = automaticMoveTime;
+      settings.setLastTurnTime(automaticMoveTime);
       automaticMoveTime += timerMillis;
     }
   }
@@ -165,7 +150,7 @@ public class Game {
    */
   public long remainingTimeMillis() {
     checkTime();
-    return System.currentTimeMillis() - lastTurnTime;
+    return System.currentTimeMillis() - settings.getLastTurnTime();
   }
 
   /**
@@ -302,7 +287,7 @@ public class Game {
   public void makeMove(Move move, long timestamp) {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
-    lastTurnTime = timestamp;
+    settings.setLastTurnTime(timestamp);
     LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
   }
@@ -481,15 +466,6 @@ public class Game {
    */
   public Turn getTurn() {
     return turn;
-  }
-
-  /**
-    * Gets the timestamp of the last turn.
-    * @return the number of milliseconds elapsed between the epoch
-    * and the last turn
-    */
-  public long getLastTurnTime() {
-    return lastTurnTime;
   }
 
   /**

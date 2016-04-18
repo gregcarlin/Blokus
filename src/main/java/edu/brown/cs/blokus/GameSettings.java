@@ -40,6 +40,7 @@ public class GameSettings {
   private State state = State.UNSTARTED;
   private int maxPlayers = 4;
   private int timer = 0;
+  private long lastTurnTime; // unix time
 
 
   /**
@@ -122,6 +123,16 @@ public class GameSettings {
      */
     public Builder player(Turn turn, Player player) {
       settings.players.put(turn, player);
+      return this;
+    }
+
+    /**
+      * Sets the last turn time.
+      * @param lastTurnTime the time of last turn
+      * @return this builder
+      */
+    public Builder lastTurnTime(long lastTurnTime) {
+      settings.lastTurnTime = lastTurnTime;
       return this;
     }
 
@@ -211,10 +222,23 @@ public class GameSettings {
     return rt;
   }
 
+  /**
+    * Gets the timestamp of the last turn.
+    * @return the number of milliseconds elapsed between the epoch
+    * and the last turn
+    */
+  public long getLastTurnTime() {
+    return lastTurnTime;
+  }
+
+  protected void setLastTurnTime(long lastTurnTime) {
+    this.lastTurnTime = lastTurnTime;
+  }
+
   private void setState(State state) {
     this.state = state;
     if (state == State.PLAYING) {
-      // TODO set last turn time to current time, aka the game start time
+      setLastTurnTime(System.currentTimeMillis());
     }
     LiveUpdater.stateChanged(this);
   }
