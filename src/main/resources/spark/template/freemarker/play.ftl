@@ -23,32 +23,34 @@
 <div class="container">
 
 <h1 id = "header"> 
-	<span id = "alert"> YOUR MOVE!</span> 
+	<span id = "alert"> GAME NOT STARTED</span> 
 	<span class = "timed"> Time Remaining:&nbsp&nbsp </span>
-	<span id = "time" class = "timed"><nobr> 5:00 </span>
+	<span id = "time" class = "timed">0 </span>
 </h1>
 
 <div id = "players">
 	<div id = "player1" class = "playerInfo"> 
-		<div id = "playerName1"> Supreme Leader George </div>
+		<div id = "playerName1"> EMPTY </div>
 		SCORE:&nbsp
 		<span id = "playerScore1"> 0 </span>
 	</div><br>
 	<div id = "player2" class = "playerInfo"> 
-		<div id = "playerName2"> Aaron </div>
+		<div id = "playerName2"> EMPTY </div>
 		SCORE:&nbsp
 		<span id = "playerScore2"> 0 </span>
 	</div><br>
 	<div id = "player3" class = "playerInfo">
-		<div id = "playerName3"> Greg </div>
+		<div id = "playerName3"> EMPTY </div>
 		SCORE:&nbsp
 		<span id = "playerScore3"> 0 </span>
 	</div><br>
 	<div id = "player4" class = "playerInfo"> 
-		<div id = "playerName4"> Thomas </div>
+		<div id = "playerName4"> EMPTY </div>
 		SCORE:&nbsp
 		<span id = "playerScore4"> 0 <span>
 	</div>
+	<br>LINK TO JOIN GAME: <br>
+	<div id  = "link">  </div>
 </div>
 <div id = "canvas">
 	<canvas id = "board" height = "500">

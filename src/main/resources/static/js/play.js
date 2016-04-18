@@ -46,15 +46,26 @@ curMouseY = 0;
 
 function init() {    //sets up grid and remainingPieces
 
+	var foo = [];
+	for (i = 0; i < 21; i++) {
+		foo[i] = 0;
+	}
+	remainingPieces = [0,foo.slice(0),foo.slice(0),foo.slice(0),foo.slice(0)];
+
+
 	var url = window.location.href; 
+	
+	$("#link").html(url.replace(/play/i, 'join'));
+	
 	$.get(url+"/info", function(data) {
 		var response = JSON.parse(data);
+		console.log(response);
 		grid = response.board;
 		var s = response.state;
 		if (s == 0) gameStarted = false;
 		if (s == 1) gameStarted = true;
 		if (s == 2) gameOver = true;
-		
+		console.log(gameStarted);
 		
 		maxTime = response.params.timer;
 		
@@ -67,56 +78,50 @@ function init() {    //sets up grid and remainingPieces
 		if (difference < maxTime) startTime = serverTime;
 		
 		
-		var loadedBy = response.loaded-by;
-		for (i in response.players) {
+		var loadedBy = response.loaded_by;
+		for (i = 0; i < response.players.length; i++) {
 			var p = response.players[i];
-			remainingPieces[i+1] = p.pieces;
+			
+			for (idx in p.pieces) {
+				var p1 = p.pieces[idx];
+				remainingPieces[i+1][p1] = 1;
+			}
 			if (loadedBy == p._id) 
 				youControl[i+1] = true;
 			else youControl[i+1] = false;
 			
 			$("#playerName"+(i+1)).html(p.name);
+			console.log(p.name);
 			
 		}
+		curPlayer = response.curr_move.turn+1;
+		
+	
+		for (i = 1; i <= 4; i++) {
+			$("#player" + i).css("border-color",colors[i]);
+		}
+		if (!gameStarted) {
+			drawGrid();
+			$("i").hide();
+			$(".timed").hide();
+			$("#alert").html("GAME NOT STARTED");
+			mode = "notYourTurn";
+			return;
+		}
+		
+		if (timed) {
+			var update = setInterval(processTime, 1000);
+		}
+		else {
+			$(".timed").hide();
+		}
+		
+		curPlayer = 0;
+		startNewTurn();
+		
 		
 	});
 
-	/*
-	var foo = [];
-	for (i = 0; i < 21; i++) {
-		foo[i] = 1;
-	}
-	remainingPieces = [0,foo.slice(0),foo.slice(0),
-			foo.slice(0),foo].slice(0);
-	for (i = 0; i < 20; i++) {
-	grid[i] = [];
-	for (j = 0; j < 20; j++) {
-		grid[i][j] = 0;
-	}}
-	
-	for (i = 1; i <= 4; i++) {
-		$("#player" + i).css("border-color",colors[i]);
-	}
-	*/
-	if (!gameStarted) {
-		drawGrid();
-		$("i").hide();
-		$(".timed").hide();
-		$("#alert").html("GAME NOT STARTED");
-		mode = "notYourTurn";
-		return;
-	}
-	
-	if (timed) {
-		var update = setInterval(processTime, 1000);
-	}
-	else {
-		$(".timed").hide();
-	}
-	
-	curPlayer = 0;
-	startNewTurn();
-	
 	
 }
 
