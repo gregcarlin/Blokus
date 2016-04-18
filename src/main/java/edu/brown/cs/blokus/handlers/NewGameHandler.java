@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableMap;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
-import edu.brown.cs.blokus.Player;
-import edu.brown.cs.blokus.Turn;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.ModelAndView;
@@ -19,10 +17,11 @@ import spark.TemplateViewRoute;
   * Handles creation of new games.
   */
 public class NewGameHandler implements TemplateViewRoute {
-  private static final ImmutableMap<String, GameSettings.Type> typeMap =
+  private static final ImmutableMap<String, GameSettings.Type> TYPE_MAP =
     ImmutableMap.of("public", GameSettings.Type.PUBLIC,
         "private", GameSettings.Type.PRIVATE,
         "local", GameSettings.Type.LOCAL);
+  private static final int DEFAULT_TIMER = 60;
   private final Database db;
 
   /**
@@ -36,11 +35,11 @@ public class NewGameHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
     final QueryParamsMap qm = req.queryMap();
-    final GameSettings.Type type = typeMap.get(qm.value("type"));
+    final GameSettings.Type type = TYPE_MAP.get(qm.value("type"));
     final int count = Integer.parseInt(qm.value("count"));
     final String rawTimer = qm.value("timer");
     final int timer = rawTimer == null || rawTimer.isEmpty()
-        ? 60 : Integer.parseInt(rawTimer);
+        ? DEFAULT_TIMER : Integer.parseInt(rawTimer);
 
     GameSettings settings = new GameSettings.Builder()
       .type(type)

@@ -22,38 +22,60 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 
+/**
+  * The websocket handler that updates clients live.
+  */
 @WebSocket
 public class LiveUpdater {
   private static final Gson GSON = new Gson();
-  private static final Set<Session> unknownSessions = new HashSet<>();
+  private static final Set<Session> UNKNOWN_SESSIONS = new HashSet<>();
   // maps userId to session
-  private static final Map<String, Session> knownSessions = new HashMap<>();
+  private static final Map<String, Session> KNOWN_SESSIONS = new HashMap<>();
 
+  /**
+    * Should be called when connection to a new session.
+    * @param session the newly connected session
+    */
   @OnWebSocketConnect
   public void connected(Session session) {
-    unknownSessions.add(session);
+    UNKNOWN_SESSIONS.add(session);
   }
 
+  /**
+    * Should be called when a session is closed.
+    * @param session the closed session
+    * @param statusCode the status of the session
+    * @param reason the reason the session was closed
+    */
   @OnWebSocketClose
   public void closed(Session session, int statusCode, String reason) {
-    unknownSessions.remove(session);
-    knownSessions.values().remove(session);
+    UNKNOWN_SESSIONS.remove(session);
+    KNOWN_SESSIONS.values().remove(session);
   }
 
+  /**
+    * Should be called when a message is received from a session.
+    * @param session the session
+    * @param message the message
+    */
   @OnWebSocketMessage
   public void message(Session session, String message) {
-    if (Database.sessions.containsKey(message)) {
-      System.out.println("recognized " + Database.sessions.get(message));
-      knownSessions.put(Database.sessions.get(message), session);
+    if (Database.SESSIONS.containsKey(message)) {
+      System.out.println("recognized " + Database.SESSIONS.get(message));
+      KNOWN_SESSIONS.put(Database.SESSIONS.get(message), session);
     }
   }
 
-  // should be called when a move is made
+  /**
+    * Should be called when a move is made.
+    * @param context the game the move was made in
+    * @param move the move made
+    */
   public static void moveMade(Game context, Move move) {
     for (Player player : context.getAllPlayers()) {
       String playerId = player.getId();
-      if (knownSessions.containsKey(playerId)) {
-        Session session = knownSessions.get(playerId);
+      if (KNOWN_SESSIONS.containsKey(playerId)) {
+        Session session = KNOWN_SESSIONS.get(playerId);
         JsonObject jObj = new JsonObject();
         jObj.addProperty("piece", move.getShape().ordinal());
         jObj.addProperty("orientation", move.getOrientation().ordinal());
@@ -72,7 +94,10 @@ public class LiveUpdater {
     }
   }
 
-  // should be called when game state changes
+  /**
+    * Should be called when the state of a game changes.
+    * @param context the settings of the game whose state changed
+    */
   public static void stateChanged(GameSettings context) {
     // TODO update relevant users
   }

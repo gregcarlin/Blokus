@@ -8,29 +8,29 @@ package edu.brown.cs.blokus;
 public enum Turn {
 
   FIRST() {
-        @Override
-        public Turn next() {
-          return SECOND;
-        }
-      },
+    @Override
+    public Turn next() {
+      return SECOND;
+    }
+  },
   SECOND() {
-        @Override
-        public Turn next() {
-          return THIRD;
-        }
-      },
+    @Override
+    public Turn next() {
+      return THIRD;
+    }
+  },
   THIRD() {
-        @Override
-        public Turn next() {
-          return FOURTH;
-        }
-      },
+    @Override
+    public Turn next() {
+      return FOURTH;
+    }
+  },
   FOURTH() {
-        @Override
-        public Turn next() {
-          return FIRST;
-        }
-      };
+    @Override
+    public Turn next() {
+      return FIRST;
+    }
+  };
 
   /**
    * Gets the next turn.

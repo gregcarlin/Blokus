@@ -1,9 +1,6 @@
 package edu.brown.cs.blokus.handlers;
 
-import edu.brown.cs.blokus.db.Database;
-
 import spark.ModelAndView;
-import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;

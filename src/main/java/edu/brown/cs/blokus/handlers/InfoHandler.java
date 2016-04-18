@@ -4,10 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.blokus.Game;
-import edu.brown.cs.blokus.Move;
-import edu.brown.cs.blokus.Orientation;
-import edu.brown.cs.blokus.Shape;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.Request;

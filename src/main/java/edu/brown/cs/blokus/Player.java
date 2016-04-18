@@ -44,8 +44,8 @@ public class Player {
   public Player(String id, Collection<Shape> remainingPieces, int score,
       boolean playing) {
     this.id = id;
-    this.remainingPieces = remainingPieces.size() == 0 ?
-      Collections.emptySet() : EnumSet.copyOf(remainingPieces);
+    this.remainingPieces = remainingPieces.size() == 0
+      ? Collections.emptySet() : EnumSet.copyOf(remainingPieces);
     this.score = score;
     this.playing = playing;
   }
@@ -84,14 +84,14 @@ public class Player {
   public void removePiece(Shape piece) {
     remainingPieces.remove(piece);
   }
-  
+
   void addPiece(Shape piece) {
     remainingPieces.add(piece);
   }
-  
+
   /**
    * Removes piece from set of remaining pieces and adds to score.
-   * 
+   *
    * @param piece piece
    */
   public void usePiece(Shape piece) {
@@ -114,7 +114,7 @@ public class Player {
   public void addScore(int add) {
     score += add;
   }
-  
+
   void subtractScore(int sub) {
     score -= sub;
   }

@@ -1,13 +1,11 @@
 package edu.brown.cs.blokus;
 
-import edu.brown.cs.blokus.handlers.LiveUpdater;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import edu.brown.cs.blokus.handlers.LiveUpdater;
 
 
 /**
@@ -15,7 +13,7 @@ import java.util.Map;
  *
  * @author aaronzhang
  */
-public class GameSettings {
+public final class GameSettings {
   /**
     * Represents the type of a game.
     */
@@ -34,11 +32,13 @@ public class GameSettings {
     FINISHED // game is over
   }
 
+  private static final int DEFAULT_MAX_PLAYERS = 4;
+
   private final String id;
   private final Map<Turn, Player> players;
   private Type type = Type.PUBLIC;
   private State state = State.UNSTARTED;
-  private int maxPlayers = 4;
+  private int maxPlayers = DEFAULT_MAX_PLAYERS;
   private int timer = 0;
   private long lastTurnTime; // unix time
 
@@ -88,6 +88,7 @@ public class GameSettings {
     /**
       * Sets the maximum number of allowed players in the game.
       * Note: should be either 2 or 4
+      * @param maxPlayers the max player count
       * @return this builder
       */
     public Builder maxPlayers(int maxPlayers) {
@@ -102,6 +103,7 @@ public class GameSettings {
     /**
       * Sets the game timer.
       * 0 represents no timer.
+      * @param timer the timer in seconds
       * @return this builder
       */
     public Builder timer(int timer) {
@@ -136,6 +138,10 @@ public class GameSettings {
       return this;
     }
 
+    /**
+      * Builds the game settings instance.
+      * @return the game settings with the values set by this builder
+      */
     public GameSettings build() {
       return settings;
     }
@@ -245,9 +251,9 @@ public class GameSettings {
 
   /**
     * Adds a new player to the game.
-    * @param id the id of the user
+    * @param playerId the id of the user
     */
-  public void addPlayer(String id) {
+  public void addPlayer(String playerId) {
     if (getState() != State.UNSTARTED) {
       throw new IllegalStateException("Players can't join a game in progress.");
     }
@@ -258,7 +264,7 @@ public class GameSettings {
       }
 
       for (Turn turn : Turn.values()) {
-        players.put(turn, new Player(id));
+        players.put(turn, new Player(playerId));
       }
 
       setState(State.PLAYING);
@@ -266,9 +272,9 @@ public class GameSettings {
       for (int i = 0; i < maxPlayers; i++) {
         Turn turn = Turn.values()[i];
         if (!players.containsKey(turn)) {
-          players.put(turn, new Player(id));
+          players.put(turn, new Player(playerId));
           if (maxPlayers == 2) {
-            players.put(turn.next().next(), new Player(id));
+            players.put(turn.next().next(), new Player(playerId));
           }
 
           if (players.size() == maxPlayers) {

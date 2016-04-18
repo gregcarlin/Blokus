@@ -1,7 +1,5 @@
 package edu.brown.cs.blokus.handlers;
 
-import java.util.Collections;
-
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.db.Database;
 

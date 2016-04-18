@@ -96,11 +96,11 @@ public class Move {
   public int getY() {
     return y;
   }
-  
+
   /**
    * Whether this move uses the same shape, orientation, and coordinates as
    * another move.
-   * 
+   *
    * @param o other object
    * @return equality with other object
    */
@@ -115,12 +115,12 @@ public class Move {
       && this.x == other.x
       && this.y == other.y;
   }
-  
+
   @Override
   public int hashCode() {
     return Objects.hash(shape, orientation, x, y);
   }
-  
+
   @Override
   public String toString() {
     return String.format("[Move: shape=%s, orientation=%s, x=%d, y=%d]",

@@ -1,12 +1,13 @@
 package edu.brown.cs.blokus;
 
-import static edu.brown.cs.blokus.Shape.Symmetry.*;
-
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+
+import static edu.brown.cs.blokus.Shape.Symmetry.*;
+
 
 /**
  * A shape covers a set of squares.
@@ -20,14 +21,14 @@ public enum Shape {
    */
   I1(ALL,
     0, 0),
-  
+
   /**
    * XO
    */
   I2(POINT_LINE,
     0, 0,
     1, 0),
-  
+
   /**
    * OXO
    */
@@ -35,7 +36,7 @@ public enum Shape {
     0, 0,
     -1, 0,
     1, 0),
-  
+
   /**
    * O
    * XO
@@ -44,7 +45,7 @@ public enum Shape {
     0, 0,
     0, 1,
     1, 0),
-  
+
   /**
    * OXOO
    */
@@ -53,7 +54,7 @@ public enum Shape {
     -1, 0,
     1, 0,
     2, 0),
-  
+
   /**
    * O
    * OXO
@@ -63,7 +64,7 @@ public enum Shape {
     -1, 0,
     -1, 1,
     1, 0),
-  
+
   /**
    * OO
    * XO
@@ -73,7 +74,7 @@ public enum Shape {
     0, 1,
     1, 0,
     1, 1),
-  
+
   /**
    *  O
    * OXO
@@ -83,7 +84,7 @@ public enum Shape {
     -1, 0,
     0, 1,
     1, 0),
-  
+
   /**
    *  OO
    * OX
@@ -93,7 +94,7 @@ public enum Shape {
     -1, 0,
     0, 1,
     1, 1),
-  
+
   /**
    *  O
    *  XO
@@ -105,7 +106,7 @@ public enum Shape {
     0, -1,
     0, 1,
     1, 0),
-  
+
   /**
    * OOXOO
    */
@@ -115,7 +116,7 @@ public enum Shape {
     -1, 0,
     1, 0,
     2, 0),
-  
+
   /**
    *    O
    * OOXO
@@ -126,7 +127,7 @@ public enum Shape {
     -1, 0,
     1, 0,
     1, 1),
-  
+
   /**
    *   OO
    * OOX
@@ -137,7 +138,7 @@ public enum Shape {
     -1, 0,
     0, 1,
     1, 1),
-  
+
   /**
    * OO
    * XO
@@ -149,7 +150,7 @@ public enum Shape {
     0, 1,
     1, 0,
     1, 1),
-  
+
   /**
    * O
    * OXO
@@ -161,7 +162,7 @@ public enum Shape {
     -1, 0,
     -1, 1,
     1, 0),
-  
+
   /**
    * OO
    * X
@@ -173,7 +174,7 @@ public enum Shape {
     0, 1,
     1, -1,
     1, 1),
-  
+
   /**
    * O
    * O
@@ -185,7 +186,7 @@ public enum Shape {
     0, 2,
     1, 0,
     2, 0),
-  
+
   /**
    * O
    * OX
@@ -197,7 +198,7 @@ public enum Shape {
     -1, 0,
     0, -1,
     1, -1),
-  
+
   /**
    *  O
    * OXO
@@ -209,7 +210,7 @@ public enum Shape {
     0, -1,
     0, 1,
     1, 0),
-  
+
   /**
    *   O
    * OOXO
@@ -220,7 +221,7 @@ public enum Shape {
     -1, 0,
     0, 1,
     1, 0),
-  
+
   /**
    *  OO
    *  X
@@ -232,7 +233,7 @@ public enum Shape {
     0, -1,
     0, 1,
     1, 1);
-  
+
   /**
    * Symmetries of a shape. Symmetries describe orientations that make the shape
    * look the same. Two orientations make the shape "look the same" if the
@@ -268,7 +269,8 @@ public enum Shape {
     /**
      * Distinct orientations for each symmetry.
      */
-    private static final EnumMap<Symmetry, Set<Orientation>> DISTINCT_ORIENTATIONS;
+    private static final EnumMap<Symmetry, Set<Orientation>>
+    DISTINCT_ORIENTATIONS;
 
     /**
      * Initializes distinct orientations map.
@@ -310,7 +312,7 @@ public enum Shape {
    * Number of shapes.
    */
   public static final int NUM_SHAPES = 21;
-  
+
   /**
    * Maximum radius of a shape.
    */

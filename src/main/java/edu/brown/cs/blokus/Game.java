@@ -55,7 +55,7 @@ public class Game {
      * the number of the player that occupies it. Each inner array is a row. If
      * neither this method nor {@link Builder#setBoard(Board)} is called, then
      * the default grid is an empty grid with side length
-     * {@value Builder#DEFAULT_SIZE}.
+     * {@value Board#DEFAULT_SIZE}.
      *
      * @param grid grid
      * @return this builder
@@ -64,14 +64,14 @@ public class Game {
       game.board = new Board(grid);
       return this;
     }
-    
+
     /**
      * Sets the board. An alternative to {@link Builder#setGrid(int[][])},
      * possibly useful in testing if a board has already been built using Board
      * methods. If neither this method nor {@link Builder#setBoard(Board)} is
      * called, then the default grid is an empty grid with side length
-     * {@value Builder#DEFAULT_SIZE}.
-     * 
+     * {@value Board#DEFAULT_SIZE}.
+     *
      * @param board board
      * @return this builder
      */
@@ -129,7 +129,7 @@ public class Game {
    */
   private Game() {
   }
-  
+
   /**
    * Checks the current time and makes random moves for players who should be
    * skipped because they ran out of time.
@@ -144,10 +144,10 @@ public class Game {
       automaticMoveTime += timerMillis;
     }
   }
-  
+
   /**
    * Returns the remaining time for the turn player, in milliseconds.
-   * 
+   *
    * @return remaining time in milliseconds
    */
   public long remainingTimeMillis() {
@@ -171,7 +171,7 @@ public class Game {
     if (!getPlayer(turn).hasPiece(move.getShape())) {
       return false;
     }
-    
+
     // All squares in the move must be unoccupied squares on the board
     for (Square square : move.getSquares()) {
       if (!(square.getX() >= 0
@@ -188,7 +188,7 @@ public class Game {
       Square corner = getCorner(turn);
       return move.getSquares().contains(corner);
     }
-    
+
     // Get the squares that share an edge or corner with any square in the move
     Set<Square> edges = new HashSet<>();
     Set<Square> corners = new HashSet<>();
@@ -227,7 +227,7 @@ public class Game {
     }
     corners.removeAll(edges);
     edges.removeAll(move.getSquares());
-    
+
     // No squares in the move can share an edge with the player's pieces
     if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
       return false;
@@ -236,7 +236,7 @@ public class Game {
     if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -279,10 +279,10 @@ public class Game {
   public void makeMove(Move move) {
     makeMove(move, System.currentTimeMillis());
   }
-  
+
   /**
    * Makes a move with the given timestamp.
-   * 
+   *
    * @param move move
    * @param timestamp timestamp
    */
@@ -296,7 +296,7 @@ public class Game {
       settings.setState(GameSettings.State.FINISHED);
     }
   }
-  
+
   public <T> T tryMove(Move move, Function<? super Game, T> f) {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
@@ -304,7 +304,7 @@ public class Game {
     undoTryMove(move);
     return result;
   }
-  
+
   private void undoTryMove(Move move) {
     for (Square square : move.getSquares()) {
       board.setXY(square.getX(), square.getY(), 0);
@@ -317,8 +317,8 @@ public class Game {
    * Whether the player can move. If not, the player's
    * {@link Player#stopPlaying()} method will be called.
    *
-   * @param turn
-   * @return
+   * @param turn the turn of the player
+   * @return true if the player can move, false otherwise
    */
   public boolean canMove(Turn turn) {
     if (!getPlayer(turn).isPlaying()) {
@@ -339,11 +339,11 @@ public class Game {
     getPlayer(turn).stopPlaying();
     return false;
   }
-  
+
   /**
    * Returns a random move for the player with the given turn, or null if the
    * player has no legal moves.
-   * 
+   *
    * @param turn turn
    * @return random move, if any
    */
@@ -355,13 +355,13 @@ public class Game {
     }
     return legalMoves.get((int) (Math.random() * legalMoves.size()));
   }
-  
+
   /**
    * Gets legal moves for the player with the given turn.  No two moves in the
    * returned list occupy exactly the same set of squares.  The list of sorted
    * by number of squares occupied by the move, in ascending order.  Using a
    * list instead of a set also allows quick choice of a random move.
-   * 
+   *
    * @param turn turn
    * @return legal moves
    */
@@ -384,20 +384,20 @@ public class Game {
     }
     return legalMoves;
   }
-  
+
   /**
    * Returns true if game is over: if no players have any more legal moves.
-   * 
+   *
    * @return whether game is over
    */
   public boolean isGameOver() {
     return nextPlaying() == null;
   }
-  
+
   /**
    * Returns the turn of the next player that is still playing, or null if no
    * more players are playing.
-   * 
+   *
    * @return next turn, if any
    */
   public Turn nextPlaying() {
@@ -410,7 +410,7 @@ public class Game {
     } while (next != turn.next());
     return null;
   }
-  
+
   /**
    * @return the board
    */
@@ -510,7 +510,7 @@ public class Game {
     }
     return false;
   }
-  
+
   private Set<Square> getPlaces(Turn turn) {
     Set<Square> places = new HashSet<>();
     final int boardSize = board.size();
@@ -524,7 +524,7 @@ public class Game {
     }
     return places;
   }
-  
+
   private Set<Square> getCorners(Turn turn) {
     Set<Square> corners = new HashSet<>();
     Set<Square> places = getPlaces(turn);
@@ -537,7 +537,7 @@ public class Game {
     corners.removeAll(places);
     return corners;
   }
-  
+
   private boolean[][] available(Turn turn) {
     final int boardSize = board.size();
     final int mark = turn.mark();
@@ -563,7 +563,7 @@ public class Game {
     }
     return available;
   }
-  
+
   private Set<Square> component(Turn turn, Square square) {
     boolean[][] available = available(turn);
     Set<Square> comp = new HashSet<>();
@@ -578,7 +578,7 @@ public class Game {
     }
     return comp;
   }
-  
+
   private void checkAvailable(boolean[][] available, Set<Square> comp,
     Stack<Square> toSearch, Square s) {
     if (available[s.getX() + 1][s.getY() + 1] && !comp.contains(s)) {
@@ -586,7 +586,7 @@ public class Game {
       toSearch.push(s);
     }
   }
-  
+
   private int totalComponentValue(Turn turn) {
     int sum = 0;
     for (Square s : getCorners(turn)) {
@@ -594,7 +594,7 @@ public class Game {
     }
     return sum;
   }
-  
+
   public Move bestMove(Turn turn) {
     Move bestMove = null;
     int bestValue = -1;
@@ -607,7 +607,7 @@ public class Game {
     }
     return bestMove;
   }
-  
+
   public static void main(String[] args) {
     Board b = new Board(20);
     for (int x = 0; x < 20; x++) {

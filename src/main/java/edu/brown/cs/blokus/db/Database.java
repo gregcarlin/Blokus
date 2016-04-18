@@ -2,11 +2,9 @@ package edu.brown.cs.blokus.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Set;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -36,7 +34,7 @@ public class Database implements AutoCloseable {
   public static final String DEFAULT_DB = "blokus";
 
   // maps sessionHash to userId
-  public static final Map<String, String> sessions = new HashMap<>();
+  public static final Map<String, String> SESSIONS = new HashMap<>();
 
   // the number of games to list in a single page
   private static final int PAGE_SIZE = 20;
@@ -137,7 +135,7 @@ public class Database implements AutoCloseable {
     */
   public String logIn(String userId) {
     String hash = UUID.randomUUID().toString();
-    sessions.put(hash, userId);
+    SESSIONS.put(hash, userId);
     return hash;
   }
 
@@ -147,7 +145,7 @@ public class Database implements AutoCloseable {
     * @return the id of the associated user, or null if none
     */
   public String getUserId(String hash) {
-    return sessions.get(hash);
+    return SESSIONS.get(hash);
   }
 
   /**
