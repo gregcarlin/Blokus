@@ -268,6 +268,7 @@ public final class GameSettings {
       }
 
       setState(State.PLAYING);
+      return;
     } else { // insert player into next available slot
       for (int i = 0; i < maxPlayers; i++) {
         Turn turn = Turn.values()[i];
