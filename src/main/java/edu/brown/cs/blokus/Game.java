@@ -135,7 +135,10 @@ public class Game {
    * skipped because they ran out of time.
    */
   public void checkTime() {
-    long timerMillis = 1000 * getSettings().getTimer();
+    final int timer = settings.getTimer();
+    if (timer == 0) { return; }
+
+    long timerMillis = 1000 * timer;
     long automaticMoveTime = settings.getLastTurnTime() + timerMillis;
     long currentTime = System.currentTimeMillis();
     while (automaticMoveTime < currentTime && turn != null) {
@@ -151,6 +154,7 @@ public class Game {
    * @return remaining time in milliseconds
    */
   public long remainingTimeMillis() {
+    if (settings.getTimer() == 0) { return Long.MAX_VALUE; }
     checkTime();
     return System.currentTimeMillis() - settings.getLastTurnTime();
   }
