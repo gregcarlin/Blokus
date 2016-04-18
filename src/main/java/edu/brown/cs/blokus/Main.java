@@ -7,6 +7,7 @@ import edu.brown.cs.blokus.db.Database;
 import edu.brown.cs.blokus.handlers.AuthHandler;
 import edu.brown.cs.blokus.handlers.ExceptionPrinter;
 import edu.brown.cs.blokus.handlers.IndexHandler;
+import edu.brown.cs.blokus.handlers.InfoHandler;
 import edu.brown.cs.blokus.handlers.JoinHandler;
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import edu.brown.cs.blokus.handlers.LoginHandler;
@@ -122,6 +123,7 @@ public final class Main {
     Spark.post("/auth/new", new NewGameHandler(db), freeMarker);
     Spark.get("/auth/join/:id", new JoinHandler(db), freeMarker);
     Spark.get("/auth/play/:id", new PlayHandler(db), freeMarker);
-    Spark.post("/auth/move/:id", new MoveHandler(db));
+    Spark.get("/auth/play/:id/info", new InfoHandler(db));
+    Spark.post("/auth/play/:id/move", new MoveHandler(db));
   }
 }

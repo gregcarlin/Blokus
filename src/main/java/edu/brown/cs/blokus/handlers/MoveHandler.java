@@ -19,7 +19,6 @@ import spark.Route;
   */
 public class MoveHandler implements Route {
   private static final Gson GSON = new Gson();
-  private static final String PASS = status(true);
   private static final String FAIL = status(false);
 
   private final Database db;
@@ -56,12 +55,19 @@ public class MoveHandler implements Route {
     }
 
     game.makeMove(move);
-    return PASS;
+    return status(true, game.getTurn().ordinal());
   }
 
   private static String status(boolean flag) {
     JsonObject jObj = new JsonObject();
     jObj.addProperty("success", flag);
+    return GSON.toJson(jObj);
+  }
+
+  private static String status(boolean flag, int next) {
+    JsonObject jObj = new JsonObject();
+    jObj.addProperty("success", flag);
+    jObj.addProperty("next_player", next);
     return GSON.toJson(jObj);
   }
 }

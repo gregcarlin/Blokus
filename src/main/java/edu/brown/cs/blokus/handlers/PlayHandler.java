@@ -1,6 +1,6 @@
 package edu.brown.cs.blokus.handlers;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.db.Database;
@@ -36,6 +36,6 @@ public class PlayHandler implements TemplateViewRoute {
           "You are not a member of this game.");
     }
 
-    return new ModelAndView(ImmutableMap.of("game", game), "play.ftl");
+    return new ModelAndView(Collections.emptyMap(), "play.ftl");
   }
 }
