@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-//import edu.brown.cs.blokus.handlers.LiveUpdater;
+import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -294,7 +294,7 @@ public class Game {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
     settings.setLastTurnTime(timestamp);
-    //LiveUpdater.moveMade(this, move);
+    LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
     if (turn == null) {
       settings.setState(GameSettings.State.FINISHED);
