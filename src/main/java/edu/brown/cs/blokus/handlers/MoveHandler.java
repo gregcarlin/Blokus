@@ -33,7 +33,7 @@ public class MoveHandler implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-    final String user = req.attribute("user-id");
+  	final String user = req.attribute("user-id");
     final Game game = db.getGame(req.params("id"));
 
     // if it's not this user's turn

@@ -52,7 +52,6 @@ function init() {    //sets up grid and remainingPieces
 	}
 	remainingPieces = [0,foo.slice(0),foo.slice(0),foo.slice(0),foo.slice(0)];
 
-
 	var url = window.location.href; 
 	
 	$("#link").html(url.replace(/play/i, 'join'));
@@ -88,6 +87,7 @@ function init() {    //sets up grid and remainingPieces
 			else youControl[i+1] = false;
 			
 			$("#playerName"+(i+1)).html(p.name);
+			$("#playerScore"+(i+1)).html(p.score);
 			console.log(p.name);
 			
 		}
@@ -112,9 +112,9 @@ function init() {    //sets up grid and remainingPieces
 		else {
 			$(".timed").hide();
 		}
-		
-		curPlayer = 0;
+		curPlayer = curPlayer -1;
 		startNewTurn(false);
+		
 	});
 }
 
@@ -176,21 +176,31 @@ function orient(piece) {         // yay math
 	return p;
 }
 
-function rotLeft() {
-	var temp1 = rotate[1];
-	var temp2 = -1*rotate[0];
-	var temp3 = rotate[3];
-	var temp4 = -1*rotate[2];
-	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
+function rotLeft(r) {
+	var temp1 = r[1];
+	var temp2 = -1*r[0];
+	var temp3 = r[3];
+	var temp4 = -1*r[2];
+	var temp5 = r[4];
+	return [temp1,temp2,temp3,temp4,temp5];
 }
 
-function rotRight() {
-	var temp1 = -1*rotate[1];
-	var temp2 = rotate[0];
-	var temp3 = -1*rotate[3];
-	var temp4 = rotate[2];
-	rotate = [temp1,temp2,temp3,temp4,rotate[4]];
+function rotRight(r) {
+	var temp1 = -1*r[1];
+	var temp2 = r[0];
+	var temp3 = -1*r[3];
+	var temp4 = r[2];
+	return [temp1,temp2,temp3,temp4,r[4]];
 }
+
+function flipVert(r) {
+	return [r[0],r[1],-1*r[2],-1*r[3],(r[4] + 1) % 2];
+}
+
+function flipHoriz(r) {
+	return [-1*r[0],-1*r[1],r[2],r[3],(r[4] + 1) % 2];
+}
+
 
 function drawGrid() {
 	ctx.clearRect(0, 0, board.width, board.height);

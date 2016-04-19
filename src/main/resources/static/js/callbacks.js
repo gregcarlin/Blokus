@@ -107,31 +107,27 @@ $("#board").mouseup(function(e){
 });
 
 $("#rot-left").on('click', function() {
-	if (rotate[4]) rotLeft();
-	else rotRight();
+	if (rotate[4]) rotate = rotLeft(rotate);
+	else rotate = rotRight(rotate);
 	drawGrid();
 	drawCurPiece();
 });
 
 $("#rot-right").on('click', function() {
-	if (!rotate[4]) rotLeft();
-	else rotRight();
+	if (!rotate[4]) rotate = rotLeft(rotate);
+	else rotate = rotRight(rotate);
 	drawGrid();
 	drawCurPiece();
 });
 
 $("#flip-vert").on('click', function() {
-	rotate[2] = -1*rotate[2];
-	rotate[3] = -1*rotate[3];
-	rotate[4] = (rotate[4] + 1) % 2;
+	rotate = flipVert(rotate);
 	drawGrid();
 	drawCurPiece();
 });
 
 $("#flip-horiz").on('click', function() {
-	rotate[0] = -1*rotate[0];
-	rotate[1] = -1*rotate[1];
-	rotate[4] = (rotate[4] + 1) % 2;
+	rotate = flipHoriz(rotate);
 	drawGrid();
 	drawCurPiece();
 });
@@ -142,11 +138,18 @@ $("#submit").on('click', function() {
 	//TODO IMPLEMENT CHECKS
 
 	var locs = orient(curPiece);
+	
+	var url = window.location.href; 
+		
+	$.post(url+"/move", 
+		{piece: curPiece, orientation: getOrientation(rotate), x: curPieceX, y: curPieceY},
+		function(data) {});
+	
 	for (i = 0; i < locs.length/2; i++) {
 		grid[curPieceX+locs[2*i]][curPieceY+locs[2*i+1]] = curPlayer;
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
 	$("#playerScore"+curPlayer).html(score(curPlayer));
 	
-	startNewTurn();
+	startNewTurn(true);
 });
