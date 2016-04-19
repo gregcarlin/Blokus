@@ -141,12 +141,15 @@ $("#submit").on('click', function() {
 	
 	var url = window.location.href; 
 		
-	$.post(url+"/move", 
-		{piece: curPiece, orientation: getOrientation(rotate), x: curPieceX, y: curPieceY},
-		function(data) {});
+	$.post(url+"/move", {
+    piece: curPiece,
+    orientation: getOrientation(rotate),
+    x: curPieceX,
+    y: curPieceY
+  });
 	
 	for (i = 0; i < locs.length/2; i++) {
-		grid[curPieceX+locs[2*i]][curPieceY+locs[2*i+1]] = curPlayer;
+		grid[grid.length-1-(curPieceY+locs[2*i+1])][curPieceX+locs[2*i]] = curPlayer;
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
 	$("#playerScore"+curPlayer).html(score(curPlayer));

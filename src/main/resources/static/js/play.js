@@ -220,7 +220,7 @@ function drawGrid() {
 
 	for (i=0;i<20;i++) {
 	for (j = 0;j<20;j++) {
-		fillGridSquare(grid[i][j],i,j);
+		fillGridSquare(grid[i][j],j,grid.length-1-i);
 	}}
 	
 	drawSupply();
