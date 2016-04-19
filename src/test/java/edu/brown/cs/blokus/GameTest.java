@@ -1,5 +1,6 @@
 package edu.brown.cs.blokus;
 
+import edu.brown.cs.blokus.ai.AI;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+
+import edu.brown.cs.blokus.ai.TotalComponentSizeAI;
 
 /**
  * Tests for {@link Game}.
@@ -99,13 +102,14 @@ public class GameTest {
   }
   
   public static void simulateGameSmart() {
+    AI ai = new TotalComponentSizeAI();
     Game g = new Game.Builder().setSettings(new GameSettings.Builder()
       .player(Turn.FIRST, new Player("1"))
       .player(Turn.SECOND, new Player("2"))
       .player(Turn.THIRD, new Player("3"))
       .player(Turn.FOURTH, new Player("4")).build()).build();
     while (g.getTurn() != null) {
-      g.makeMove(g.bestMove(g.getTurn()));
+      g.makeMove(ai.suggestMove(g));
     }
     System.out.println(g.getBoard());
     System.out.println(g.getAllPlayers().stream()

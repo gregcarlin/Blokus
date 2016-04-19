@@ -151,6 +151,21 @@ public class Board {
   public int[][] getGrid() {
     return copyOf(grid);
   }
+  
+  /**
+   * Gets a copy of the grid indexed by x and y-coordinates.
+   * 
+   * @return grid indexed by x and y-coordinates
+   */
+  public int[][] getGridXY() {
+    int[][] gridXY = new int[grid.length][grid.length];
+    for (int x = 0; x < gridXY.length; x++) {
+      for (int y = 0; y < gridXY.length; y++) {
+        gridXY[x][y] = getXY(x, y);
+      }
+    }
+    return gridXY;
+  }
 
   /**
    * Makes a move on the board with the specified mark and returns this board.
