@@ -1,5 +1,7 @@
 package edu.brown.cs.blokus.handlers;
 
+import java.util.Map;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -8,6 +10,7 @@ import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Orientation;
 import edu.brown.cs.blokus.Shape;
 import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.parse.BodyParser;
 
 import spark.Request;
 import spark.Response;
@@ -33,7 +36,7 @@ public class MoveHandler implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-  	final String user = req.attribute("user-id");
+    final String user = req.attribute("user-id");
     final Game game = db.getGame(req.params("id"));
 
     // if it's not this user's turn
@@ -41,12 +44,12 @@ public class MoveHandler implements Route {
       return FAIL;
     }
 
-    JsonObject jObj = GSON.fromJson(req.body(), JsonObject.class);
-    Shape shape = Shape.values()[jObj.get("piece").getAsInt()];
+    BodyParser body = new BodyParser(req.body());
+    Shape shape = Shape.values()[body.getInt("piece")];
     Orientation orientation
-      = Orientation.values()[jObj.get("orientation").getAsInt()];
-    int x = jObj.get("x").getAsInt();
-    int y = jObj.get("y").getAsInt();
+      = Orientation.values()[body.getInt("orientation")];
+    int x = body.getInt("x");
+    int y = body.getInt("y");
     Move move = new Move(shape, orientation, x, y);
 
     // if it's an illegal move
