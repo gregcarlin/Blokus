@@ -453,6 +453,15 @@ public class Game {
   public int[][] getGrid() {
     return board.getGrid();
   }
+  
+  /**
+   * Gets the grid of the board, indexed by x and y-coordinates.
+   * 
+   * @return grid indexed by x and y-coordinates
+   */
+  public int[][] getGridXY() {
+    return board.getGridXY();
+  }
 
   /**
     * Gets the grid of the board as a 2d list.
