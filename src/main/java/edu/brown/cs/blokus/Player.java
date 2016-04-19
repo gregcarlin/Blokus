@@ -14,6 +14,9 @@ import java.util.Set;
  */
 public class Player {
 
+  /**
+   * ID.
+   */
   private final String id;
 
   /**
@@ -33,6 +36,16 @@ public class Player {
   private boolean playing;
 
   /**
+   * Bonus for using all pieces.
+   */
+  private static final int BONUS_ALL_PIECES = 15;
+
+  /**
+   * Bonus for using the one-piece last.
+   */
+  private static final int BONUS_ONE_LAST = 5;
+
+  /**
    * Instantiates player with remaining pieces, score, and whether the player is
    * still playing.
    *
@@ -42,7 +55,7 @@ public class Player {
    * @param playing whether the player is still playing
    */
   public Player(String id, Collection<Shape> remainingPieces, int score,
-      boolean playing) {
+    boolean playing) {
     this.id = id;
     this.remainingPieces = remainingPieces.size() == 0
       ? Collections.emptySet() : EnumSet.copyOf(remainingPieces);
@@ -53,6 +66,7 @@ public class Player {
   /**
    * Instantiates a player representing a player at the start of the game. At
    * the start of the game, the player has all pieces and a score of 0.
+   *
    * @param id the player's unique id, or null if this player is new
    */
   public Player(String id) {
@@ -85,10 +99,6 @@ public class Player {
     remainingPieces.remove(piece);
   }
 
-  void addPiece(Shape piece) {
-    remainingPieces.add(piece);
-  }
-
   /**
    * Removes piece from set of remaining pieces and adds to score.
    *
@@ -97,6 +107,22 @@ public class Player {
   public void usePiece(Shape piece) {
     removePiece(piece);
     addScore(piece.size());
+    if (remainingPieces.isEmpty()) {
+      addScore(BONUS_ALL_PIECES);
+      if (piece == Shape.I1) {
+        addScore(BONUS_ONE_LAST);
+      }
+    }
+  }
+
+  /**
+   * Undoes a move.
+   *
+   * @param piece piece
+   */
+  public void undoUsePiece(Shape piece) {
+    remainingPieces.add(piece);
+    score -= piece.size();
   }
 
   /**
@@ -115,10 +141,6 @@ public class Player {
     score += add;
   }
 
-  void subtractScore(int sub) {
-    score -= sub;
-  }
-
   /**
    * @return whether the player is still playing
    */
@@ -134,9 +156,10 @@ public class Player {
   }
 
   /**
-    * Gets this player's unique id.
-    * @return the of id this player as a string
-    */
+   * Gets this player's unique id.
+   *
+   * @return the of id this player as a string
+   */
   public String getId() {
     return id;
   }
@@ -144,13 +167,15 @@ public class Player {
   @Override
   public String toString() {
     return String.format(
-        "[Player: id=%s, remainingPieces=%s, score=%s]",
-        id, remainingPieces, score);
+      "[Player: id=%s, remainingPieces=%s, score=%s]",
+      id, remainingPieces, score);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Player)) { return false; }
+    if (!(obj instanceof Player)) {
+      return false;
+    }
 
     Player other = (Player) obj;
     return Objects.equals(id, other.id)

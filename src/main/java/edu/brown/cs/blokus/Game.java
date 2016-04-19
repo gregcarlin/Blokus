@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import edu.brown.cs.blokus.handlers.LiveUpdater;
+//import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -294,13 +294,24 @@ public class Game {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
     settings.setLastTurnTime(timestamp);
-    LiveUpdater.moveMade(this, move);
+    //LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
     if (turn == null) {
       settings.setState(GameSettings.State.FINISHED);
     }
   }
 
+  /**
+   * Tries a move and applies the function to the game after the move is made.
+   * When trying a move, the board and players are updated, but not game
+   * settings.  The game is reverted to its original state after the function
+   * returns.
+   * 
+   * @param <T> function return type
+   * @param move move to try
+   * @param f function on game state after move
+   * @return result of function
+   */
   public <T> T tryMove(Move move, Function<? super Game, T> f) {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
@@ -309,12 +320,16 @@ public class Game {
     return result;
   }
 
+  /**
+   * Returns the game to its original state after trying a move.
+   * 
+   * @param move move to undo
+   */
   private void undoTryMove(Move move) {
     for (Square square : move.getSquares()) {
       board.setXY(square.getX(), square.getY(), 0);
     }
-    getPlayer(turn).addPiece(move.getShape());
-    getPlayer(turn).subtractScore(move.getShape().size());
+    getPlayer(turn).undoUsePiece(move.getShape());
   }
 
   /**
@@ -390,12 +405,20 @@ public class Game {
   }
 
   /**
-   * Returns true if game is over: if no players have any more legal moves.
+   * Returns whether the game is over.  If so, updates the game state in the
+   * game settings.
    *
    * @return whether game is over
    */
   public boolean isGameOver() {
-    return nextPlaying() == null;
+    if (getSettings().getState() == GameSettings.State.FINISHED) {
+      return true;
+    }
+    boolean gameOver = nextPlaying() == null;
+    if (gameOver) {
+      getSettings().setState(GameSettings.State.FINISHED);
+    }
+    return gameOver;
   }
 
   /**
@@ -515,102 +538,7 @@ public class Game {
     return false;
   }
 
-  private Set<Square> getPlaces(Turn turn) {
-    Set<Square> places = new HashSet<>();
-    final int boardSize = board.size();
-    final int mark = turn.mark();
-    for (int x = 0; x < boardSize; x++) {
-      for (int y = 0; y < boardSize; y++) {
-        if (board.getXY(x, y) == mark) {
-          places.add(new Square(x, y));
-        }
-      }
-    }
-    return places;
-  }
-
-  private Set<Square> getCorners(Turn turn) {
-    Set<Square> corners = new HashSet<>();
-    Set<Square> places = getPlaces(turn);
-    for (Square place : places) {
-      corners.add(place.translate(-1, -1));
-      corners.add(place.translate(-1, 1));
-      corners.add(place.translate(1, -1));
-      corners.add(place.translate(1, 1));
-    }
-    corners.removeAll(places);
-    return corners;
-  }
-
-  private boolean[][] available(Turn turn) {
-    final int boardSize = board.size();
-    final int mark = turn.mark();
-    boolean[][] available = new boolean[boardSize + 2][boardSize + 2];
-    for (int r = 1; r <= boardSize; r++) {
-      for (int c = 1; c <= boardSize; c++) {
-        available[r][c] = true;
-      }
-    }
-    for (int r = 1; r <= boardSize; r++) {
-      for (int c = 1; c <= boardSize; c++) {
-        int boardMark = board.getRowColumn(r - 1, c - 1);
-        if (boardMark == mark) {
-          available[r][c] = false;
-          available[r + 1][c] = false;
-          available[r - 1][c] = false;
-          available[r][c + 1] = false;
-          available[r][c - 1] = false;
-        } else if (boardMark != 0) {
-          available[r][c] = false;
-        }
-      }
-    }
-    return available;
-  }
-
-  private Set<Square> component(Turn turn, Square square) {
-    boolean[][] available = available(turn);
-    Set<Square> comp = new HashSet<>();
-    Stack<Square> toSearch = new Stack<>();
-    checkAvailable(available, comp, toSearch, square);
-    while (!toSearch.isEmpty()) {
-      Square current = toSearch.pop();
-      checkAvailable(available, comp, toSearch, current.translate(-1, 0));
-      checkAvailable(available, comp, toSearch, current.translate(1, 0));
-      checkAvailable(available, comp, toSearch, current.translate(0, -1));
-      checkAvailable(available, comp, toSearch, current.translate(0, 1));
-    }
-    return comp;
-  }
-
-  private void checkAvailable(boolean[][] available, Set<Square> comp,
-    Stack<Square> toSearch, Square s) {
-    if (available[s.getX() + 1][s.getY() + 1] && !comp.contains(s)) {
-      comp.add(s);
-      toSearch.push(s);
-    }
-  }
-
-  private int totalComponentValue(Turn turn) {
-    int sum = 0;
-    for (Square s : getCorners(turn)) {
-      sum += component(turn, s).size();
-    }
-    return sum;
-  }
-
-  public Move bestMove(Turn turn) {
-    Move bestMove = null;
-    int bestValue = -1;
-    for (Move m : getLegalMoves(turn)) {
-      int value = tryMove(m, gt -> gt.totalComponentValue(turn));
-      if (value > bestValue) {
-        bestMove = m;
-        bestValue = value;
-      }
-    }
-    return bestMove;
-  }
+  
 
   public static void main(String[] args) {
     Board b = new Board(20);
@@ -626,7 +554,7 @@ public class Game {
     Set<Shape> allShapes = EnumSet.allOf(Shape.class);
     allShapes.remove(Shape.I1);
     Game g = new Game.Builder()
-      //.setBoard(b)
+      .setBoard(b)
       .setSettings(new GameSettings.Builder()
         .player(Turn.FIRST, new Player(""/*, allShapes, 1, true*/))
         .player(Turn.SECOND, new Player(""))
@@ -635,11 +563,5 @@ public class Game {
         .build())
       .setTurn(Turn.FIRST)
       .build();
-    long millisBefore = System.currentTimeMillis();
-    Move bestMove = g.bestMove(Turn.FIRST);
-    long millisAfter = System.currentTimeMillis();
-    System.out.println(bestMove);
-    System.out.println(millisAfter - millisBefore);
-    System.out.println();
   }
 }
