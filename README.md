@@ -10,3 +10,5 @@
 * --dbhost [string] - specifies the host address of the database to connect to
 * --dbport [int] - specifies the port the database to connect to is running on
 * --db [string] - specifies the name of the database to connect to
+* --keystore [string] - specifies a path to a secure keystore for use with ssl
+* --keystore-pass [string] - the password to the above specified keystore
