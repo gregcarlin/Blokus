@@ -252,13 +252,17 @@ public class Game {
 
     // No squares in the move can share an edge with the player's pieces
     if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
+      System.out.println(String.format(
+        "Move %s shares an edge with the %s player's piece", move, turn));
       return false;
     }
     // Some square in the move must share a corner with the player's pieces
     if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
+      System.out.println(String.format(
+        "Move %s does not share a corner with the %s player's piece", move, turn));
       return false;
     }
-
+    System.out.println(String.format("Move %s is legal for the %s player", move, turn));
     return true;
   }
 
