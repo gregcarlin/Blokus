@@ -1,5 +1,8 @@
 package edu.brown.cs.blokus;
 
+import edu.brown.cs.blokus.ai.AI;
+import edu.brown.cs.blokus.ai.RandomAI;
+import edu.brown.cs.blokus.ai.TotalComponentSizeAI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +12,6 @@ import java.util.List;
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 import java.util.function.Function;
 
 /**
@@ -29,8 +31,8 @@ public class Game {
   private Turn turn;
 
   /**
-    * Game settings.
-    */
+   * Game settings.
+   */
   private GameSettings settings;
 
   /**
@@ -92,11 +94,11 @@ public class Game {
     }
 
     /**
-      * Sets game settings.
-      * This method must be called.
-      * @param settings game settings
-      * @return this builder
-      */
+     * Sets game settings. This method must be called.
+     *
+     * @param settings game settings
+     * @return this builder
+     */
     public Builder setSettings(GameSettings settings) {
       game.settings = settings;
       return this;
@@ -136,7 +138,9 @@ public class Game {
    */
   public void checkTime() {
     final int timer = settings.getTimer();
-    if (timer == 0) { return; }
+    if (timer == 0) {
+      return;
+    }
 
     long timerMillis = 1000 * timer;
     long automaticMoveTime = settings.getLastTurnTime() + timerMillis;
@@ -154,24 +158,27 @@ public class Game {
    * @return remaining time in milliseconds
    */
   public long remainingTimeMillis() {
-    if (settings.getTimer() == 0) { return Long.MAX_VALUE; }
+    if (settings.getTimer() == 0) {
+      return Long.MAX_VALUE;
+    }
     checkTime();
     return System.currentTimeMillis() - settings.getLastTurnTime();
   }
 
   /**
-   * Whether the move is legal. For a move to be legal, the turn player must
-   * have the piece being played. All the squares that the move covers must be
-   * unoccupied squares on the board. No square in the move can share an edge
-   * with a square already on the board with the same color. At least one square
-   * in the move must share a corner with a square already on the board with the
-   * same color.
+   * Whether the move is legal for the player with the given turn. For a move to
+   * be legal, the turn player must have the piece being played. All the squares
+   * that the move covers must be unoccupied squares on the board. No square in
+   * the move can share an edge with a square already on the board with the same
+   * color. At least one square in the move must share a corner with a square
+   * already on the board with the same color.
    *
    * @param move move
+   * @param turn turn
    * @return whether the move is legal
    */
-  public boolean isLegal(Move move) {
-    // Turn player must have the piece being played
+  public boolean isLegal(Move move, Turn turn) {
+    // Player must have the piece being played
     if (!getPlayer(turn).hasPiece(move.getShape())) {
       return false;
     }
@@ -179,10 +186,10 @@ public class Game {
     // All squares in the move must be unoccupied squares on the board
     for (Square square : move.getSquares()) {
       if (!(square.getX() >= 0
-          && square.getX() < board.size()
-          && square.getY() >= 0
-          && square.getY() < board.size()
-          && board.getXY(square.getX(), square.getY()) == 0)) {
+        && square.getX() < board.size()
+        && square.getY() >= 0
+        && square.getY() < board.size()
+        && board.getXY(square.getX(), square.getY()) == 0)) {
         return false;
       }
     }
@@ -242,6 +249,16 @@ public class Game {
     }
 
     return true;
+  }
+  
+  /**
+   * Whether the move is legal for the turn player.
+   * 
+   * @param move move
+   * @return whether the move is legal
+   */
+  public boolean isLegal(Move move) {
+    return isLegal(move, turn);
   }
 
   /**
@@ -304,9 +321,9 @@ public class Game {
   /**
    * Tries a move and applies the function to the game after the move is made.
    * When trying a move, the board and players are updated, but not game
-   * settings.  The game is reverted to its original state after the function
+   * settings. The game is reverted to its original state after the function
    * returns.
-   * 
+   *
    * @param <T> function return type
    * @param move move to try
    * @param f function on game state after move
@@ -322,7 +339,7 @@ public class Game {
 
   /**
    * Returns the game to its original state after trying a move.
-   * 
+   *
    * @param move move to undo
    */
   private void undoTryMove(Move move) {
@@ -348,7 +365,7 @@ public class Game {
         for (int x = 0, s = board.size(); x < s; x++) {
           for (int y = 0; y < s; y++) {
             Move move = new Move(shape, o, x, y);
-            if (isLegal(move)) {
+            if (isLegal(move, turn)) {
               return true;
             }
           }
@@ -376,10 +393,10 @@ public class Game {
   }
 
   /**
-   * Gets legal moves for the player with the given turn.  No two moves in the
-   * returned list occupy exactly the same set of squares.  The list of sorted
-   * by number of squares occupied by the move, in ascending order.  Using a
-   * list instead of a set also allows quick choice of a random move.
+   * Gets legal moves for the player with the given turn. No two moves in the
+   * returned list occupy exactly the same set of squares. The list of sorted by
+   * number of squares occupied by the move, in ascending order. Using a list
+   * instead of a set also allows quick choice of a random move.
    *
    * @param turn turn
    * @return legal moves
@@ -394,7 +411,7 @@ public class Game {
         for (int x = 0, s = board.size(); x < s; x++) {
           for (int y = 0; y < s; y++) {
             Move move = new Move(shape, o, x, y);
-            if (isLegal(move)) {
+            if (isLegal(move, turn)) {
               legalMoves.add(move);
             }
           }
@@ -405,8 +422,8 @@ public class Game {
   }
 
   /**
-   * Returns whether the game is over.  If so, updates the game state in the
-   * game settings.
+   * Returns whether the game is over. If so, updates the game state in the game
+   * settings.
    *
    * @return whether game is over
    */
@@ -453,10 +470,10 @@ public class Game {
   public int[][] getGrid() {
     return board.getGrid();
   }
-  
+
   /**
    * Gets the grid of the board, indexed by x and y-coordinates.
-   * 
+   *
    * @return grid indexed by x and y-coordinates
    */
   public int[][] getGridXY() {
@@ -464,9 +481,10 @@ public class Game {
   }
 
   /**
-    * Gets the grid of the board as a 2d list.
-    * @return a list of lists
-    */
+   * Gets the grid of the board as a 2d list.
+   *
+   * @return a list of lists
+   */
   public List<List<Integer>> getGridAsList() {
     List<List<Integer>> rt = new ArrayList<>();
     int[][] grid = getGrid();
@@ -510,9 +528,10 @@ public class Game {
   }
 
   /**
-    * Gets the settings of this game.
-    * @return the game settings
-    */
+   * Gets the settings of this game.
+   *
+   * @return the game settings
+   */
   public GameSettings getSettings() {
     return settings;
   }
@@ -528,49 +547,84 @@ public class Game {
   }
 
   /**
-    * Gets all players in this game.
-    * @return a collection of all players
-    */
+   * Gets all players in this game.
+   *
+   * @return a collection of all players
+   */
   public Collection<Player> getAllPlayers() {
     return getSettings().getAllPlayers();
   }
 
   /**
-    * Whether or not a player is a member of this game.
-    * @param id the id of the player to check
-    * @return true if they're a member, false otherwise
-    */
+   * Whether or not a player is a member of this game.
+   *
+   * @param id the id of the player to check
+   * @return true if they're a member, false otherwise
+   */
   public boolean hasUser(String id) {
     for (Player p : getAllPlayers()) {
-      if (id.equals(p.getId())) { return true; }
+      if (id.equals(p.getId())) {
+        return true;
+      }
     }
     return false;
   }
 
-  
-
   public static void main(String[] args) {
     Board b = new Board(20);
+    //b.setXY(10, 10, 1);
+    //b.setXY(10, 12, 1);
+
     for (int x = 0; x < 20; x++) {
       for (int y = 0; y < 20; y++) {
-        if (Math.random() > 0.5) {
-          b.setXY(x, y, 0);
-        } else {
-          b.setXY(x, y, 1 + (int) (Math.random() * 4));
-        }
+        b.setXY(x, y, (int) (Math.random() * 5));
       }
     }
+
     Set<Shape> allShapes = EnumSet.allOf(Shape.class);
     allShapes.remove(Shape.I1);
     Game g = new Game.Builder()
       .setBoard(b)
       .setSettings(new GameSettings.Builder()
-        .player(Turn.FIRST, new Player(""/*, allShapes, 1, true*/))
+        .player(Turn.FIRST, new Player("", allShapes, 1, true))
         .player(Turn.SECOND, new Player(""))
         .player(Turn.THIRD, new Player(""))
         .player(Turn.FOURTH, new Player(""))
         .build())
       .setTurn(Turn.FIRST)
       .build();
+    int sum = 0;
+    List<Move> moves = new ArrayList<>();
+    for (Shape s : g.getPlayer(Turn.FIRST).getRemainingPieces()) {
+      for (Orientation o : s.distinctOrientations()) {
+        for (int x = 0; x < 20; x++) {
+          for (int y = 0; y < 20; y++) {
+            moves.add(new Move(s, o, x, y));
+          }
+        }
+      }
+    }
+    long before = System.currentTimeMillis();
+    /*
+     List<Move> found = new ArrayList<>();
+     for (Move m : g.getLegalMoves(Turn.FIRST)) {
+     if (m.getSquares().contains(new Square(11, 11))) {
+     System.out.println(m);
+     found.add(m);
+     }
+     }
+     */
+    AI.simulateGame(TotalComponentSizeAI::new, RandomAI::new, RandomAI::new, RandomAI::new);
+    /*
+     g.calculate();
+     for (Move m : moves) {
+     if (g.isLegal2(m)) {
+     sum++;
+     }
+     }
+     */
+    long after = System.currentTimeMillis();
+    System.out.println("time: " + (after - before));
+    System.out.println(sum);
   }
 }

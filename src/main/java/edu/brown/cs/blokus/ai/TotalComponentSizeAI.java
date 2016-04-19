@@ -4,6 +4,8 @@ import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.Turn;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * AI that makes a move based on total component size.  Total component size is
@@ -27,11 +29,14 @@ public class TotalComponentSizeAI implements AI {
    * @return total component size
    */
   public int totalComponentSize(Game g, Turn turn) {
-    int sum = 0;
-    for (Square s : Evaluator.getCorners(g, turn)) {
-      sum += Evaluator.component(g, turn, s).size();
+    Set<Square> componentSquares = new HashSet<>();
+    Set<Square> availableCorners = Evaluator.getAvailableCorners(g, turn);
+    for (Square corner : availableCorners) {
+      if (!componentSquares.contains(corner)) {
+        componentSquares.addAll(Evaluator.component(g, turn, corner));
+      }
     }
-    return sum;
+    return componentSquares.size();
   }
 
   /**
@@ -45,7 +50,8 @@ public class TotalComponentSizeAI implements AI {
     Move bestMove = null;
     int bestValue = -1;
     for (Move m : g.getLegalMoves(turn)) {
-      int value = g.tryMove(m, g2 -> totalComponentSize(g2, turn));
+      int value = g.tryMove(m,
+        g2 -> totalComponentSize(g2, turn) + 2 * m.getSquares().size());
       if (value > bestValue) {
         bestMove = m;
         bestValue = value;

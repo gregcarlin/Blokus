@@ -5,8 +5,11 @@ import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.Turn;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Static methods that evaluate a game.  These methods can be used by AIs.
@@ -92,6 +95,33 @@ public class Evaluator {
       }
     }
     return available;
+  }
+
+  /**
+   * Gets available corners.  Available corners are corners where the player
+   * would be able to play the 1-piece, if the player has it.
+   * 
+   * @param g game
+   * @param turn turn
+   * @return available corners
+   */
+  public static Set<Square> getAvailableCorners(Game g, Turn turn) {
+    boolean[][] available = available(g, turn);
+    Set<Square> corners = getCorners(g, turn);
+    Iterator<Square> cornersItr = corners.iterator();
+    while (cornersItr.hasNext()) {
+      Square s = cornersItr.next();
+      if (!available[s.getX() + 1][s.getY() + 1]) {
+        cornersItr.remove();
+      }
+    }
+    return corners;
+    /*
+    boolean[][] available = available(g, turn);
+    Set<Square> corners = getCorners(g, turn);
+    corners.removeIf(s -> !available[s.getX() + 1][s.getY() + 1]);
+    return corners;
+    */
   }
 
   /**
