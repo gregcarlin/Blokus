@@ -184,8 +184,6 @@ public class Game {
   public boolean isLegal(Move move, Turn turn) {
     // Player must have the piece being played
     if (!getPlayer(turn).hasPiece(move.getShape())) {
-      System.out.println(String.format(
-        "Move %s is not legal because %s player does not have piece", move, turn));
       return false;
     }
 
@@ -196,8 +194,6 @@ public class Game {
         && square.getY() >= 0
         && square.getY() < board.size()
         && board.getXY(square.getX(), square.getY()) == 0)) {
-        System.out.println(String.format(
-          "Move %s is not legal because square %s is off the board", move, square));
         return false;
       }
     }
@@ -206,8 +202,6 @@ public class Game {
     if (firstMove(turn)) {
       Square corner = getCorner(turn);
       boolean b = move.getSquares().contains(corner);
-      System.out.println(String.format(
-        "Does move %s cover the %s player's starting corner? ", move, turn) + b);
       return b;
     }
 
@@ -252,17 +246,12 @@ public class Game {
 
     // No squares in the move can share an edge with the player's pieces
     if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
-      System.out.println(String.format(
-        "Move %s shares an edge with the %s player's piece", move, turn));
       return false;
     }
     // Some square in the move must share a corner with the player's pieces
     if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
-      System.out.println(String.format(
-        "Move %s does not share a corner with the %s player's piece", move, turn));
       return false;
     }
-    System.out.println(String.format("Move %s is legal for the %s player", move, turn));
     return true;
   }
   

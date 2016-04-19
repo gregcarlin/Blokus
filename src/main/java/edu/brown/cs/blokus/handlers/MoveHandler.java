@@ -58,6 +58,7 @@ public class MoveHandler implements Route {
     }
 
     game.makeMove(move);
+    db.saveGame(game);
     return status(true, game.getTurn().ordinal());
   }
 
