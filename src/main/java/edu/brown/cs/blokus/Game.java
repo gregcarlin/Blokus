@@ -265,6 +265,80 @@ public class Game {
     System.out.println(String.format("Move %s is legal for the %s player", move, turn));
     return true;
   }
+  
+  public boolean isLegalNoDebug(Move move, Turn turn) {
+    // Player must have the piece being played
+    if (!getPlayer(turn).hasPiece(move.getShape())) {
+      return false;
+    }
+
+    // All squares in the move must be unoccupied squares on the board
+    for (Square square : move.getSquares()) {
+      if (!(square.getX() >= 0
+        && square.getX() < board.size()
+        && square.getY() >= 0
+        && square.getY() < board.size()
+        && board.getXY(square.getX(), square.getY()) == 0)) {
+        return false;
+      }
+    }
+
+    // If this is the first turn, the move must cover the player's corner
+    if (firstMove(turn)) {
+      Square corner = getCorner(turn);
+      boolean b = move.getSquares().contains(corner);
+      return b;
+    }
+
+    // Get the squares that share an edge or corner with any square in the move
+    Set<Square> edges = new HashSet<>();
+    Set<Square> corners = new HashSet<>();
+    for (Square square : move.getSquares()) {
+      // Which directions to check (don't check if we would go off the board)
+      boolean checkLeft = square.getX() > 0;
+      boolean checkRight = square.getX() < board.size() - 1;
+      boolean checkDown = square.getY() > 0;
+      boolean checkUp = square.getY() < board.size() - 1;
+      // Squares that share an edge with a square in the move
+      if (checkLeft) {
+        edges.add(square.translate(-1, 0));
+      }
+      if (checkRight) {
+        edges.add(square.translate(1, 0));
+      }
+      if (checkDown) {
+        edges.add(square.translate(0, -1));
+      }
+      if (checkUp) {
+        edges.add(square.translate(0, 1));
+      }
+      // Squares that share a corner with a square in the move
+      if (checkLeft && checkUp) {
+        corners.add(square.translate(-1, 1));
+      }
+      if (checkRight && checkUp) {
+        corners.add(square.translate(1, 1));
+      }
+      if (checkRight && checkDown) {
+        corners.add(square.translate(1, -1));
+      }
+      if (checkLeft && checkDown) {
+        corners.add(square.translate(-1, -1));
+      }
+    }
+    corners.removeAll(edges);
+    edges.removeAll(move.getSquares());
+
+    // No squares in the move can share an edge with the player's pieces
+    if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
+      return false;
+    }
+    // Some square in the move must share a corner with the player's pieces
+    if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
+      return false;
+    }
+    return true;
+  }
 
   /**
    * Whether the move is legal for the turn player.
@@ -380,7 +454,7 @@ public class Game {
         for (int x = 0, s = board.size(); x < s; x++) {
           for (int y = 0; y < s; y++) {
             Move move = new Move(shape, o, x, y);
-            if (isLegal(move, turn)) {
+            if (isLegalNoDebug(move, turn)) {
               return true;
             }
           }
@@ -426,7 +500,7 @@ public class Game {
         for (int x = 0, s = board.size(); x < s; x++) {
           for (int y = 0; y < s; y++) {
             Move move = new Move(shape, o, x, y);
-            if (isLegal(move, turn)) {
+            if (isLegalNoDebug(move, turn)) {
               legalMoves.add(move);
             }
           }
