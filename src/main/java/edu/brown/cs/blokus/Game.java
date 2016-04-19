@@ -9,10 +9,14 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import edu.brown.cs.blokus.handlers.LiveUpdater;
+//import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+
+import com.google.common.collect.Iterables;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * A game of Blokus. A game has a board and players. Games should be constructed
@@ -180,6 +184,8 @@ public class Game {
   public boolean isLegal(Move move, Turn turn) {
     // Player must have the piece being played
     if (!getPlayer(turn).hasPiece(move.getShape())) {
+      System.out.println(String.format(
+        "Move %s is not legal because %s player does not have piece", move, turn));
       return false;
     }
 
@@ -190,6 +196,8 @@ public class Game {
         && square.getY() >= 0
         && square.getY() < board.size()
         && board.getXY(square.getX(), square.getY()) == 0)) {
+        System.out.println(String.format(
+          "Move %s is not legal because square %s is off the board", move, square));
         return false;
       }
     }
@@ -197,7 +205,10 @@ public class Game {
     // If this is the first turn, the move must cover the player's corner
     if (firstMove(turn)) {
       Square corner = getCorner(turn);
-      return move.getSquares().contains(corner);
+      boolean b = move.getSquares().contains(corner);
+      System.out.println(String.format(
+        "Does move %s cover the %s player's starting corner? ", move, turn) + b);
+      return b;
     }
 
     // Get the squares that share an edge or corner with any square in the move
@@ -250,10 +261,10 @@ public class Game {
 
     return true;
   }
-  
+
   /**
    * Whether the move is legal for the turn player.
-   * 
+   *
    * @param move move
    * @return whether the move is legal
    */
@@ -311,7 +322,7 @@ public class Game {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
     settings.setLastTurnTime(timestamp);
-    LiveUpdater.moveMade(this, move);
+    //LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
     if (turn == null) {
       settings.setState(GameSettings.State.FINISHED);
@@ -570,7 +581,7 @@ public class Game {
     return false;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     Board b = new Board(20);
     //b.setXY(10, 10, 1);
     //b.setXY(10, 12, 1);
@@ -593,17 +604,7 @@ public class Game {
         .build())
       .setTurn(Turn.FIRST)
       .build();
-    int sum = 0;
-    List<Move> moves = new ArrayList<>();
-    for (Shape s : g.getPlayer(Turn.FIRST).getRemainingPieces()) {
-      for (Orientation o : s.distinctOrientations()) {
-        for (int x = 0; x < 20; x++) {
-          for (int y = 0; y < 20; y++) {
-            moves.add(new Move(s, o, x, y));
-          }
-        }
-      }
-    }
+    //TotalComponentSizeAI ai = new TotalComponentSizeAI();
     long before = System.currentTimeMillis();
     /*
      List<Move> found = new ArrayList<>();
@@ -614,7 +615,8 @@ public class Game {
      }
      }
      */
-    AI.simulateGame(TotalComponentSizeAI::new, RandomAI::new, RandomAI::new, RandomAI::new);
+    //AI.simulateAndSaveGame(TotalComponentSizeAI::new, RandomAI::new,
+      //RandomAI::new, RandomAI::new, "/home/aaronzhang/game1.blksgf");
     /*
      g.calculate();
      for (Move m : moves) {
@@ -625,6 +627,5 @@ public class Game {
      */
     long after = System.currentTimeMillis();
     System.out.println("time: " + (after - before));
-    System.out.println(sum);
   }
 }
