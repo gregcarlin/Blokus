@@ -46,7 +46,7 @@ curMouseY = 0;
 
 function init() {    //sets up grid and remainingPieces
 	
-	$.get(url+"/info", initRequest(data));
+	$.get(url+"/info", initRequest);
 }
 
 function initRequest(data) {
@@ -145,7 +145,7 @@ function processTime() {
 	var d = Date.now();
 	var remaining = Math.ceil(maxTime - (d - startTime) / 1000);
 	if (remaining <= 0) {
-		$.get(url+"/info", initRequest(data));
+		$.get(url+"/info", initRequest);
 	}
 	else $("#time").html(remaining);
 }
@@ -300,6 +300,8 @@ function getCookie(cname) {
     return "";
 }
 
+mostRecentX = null;
+mostRecentY = null;
 $(document).ready(function(){
 	board.width = board.height*boardRatio;
 	init();
@@ -317,8 +319,12 @@ $(document).ready(function(){
   conn.onmessage = function(msg) {
     var json = JSON.parse(msg.data);
     
-    curPiece = json.piece;
+    if (json.x == mostRecentX && json.y == mostRecentY) return;
     
+    mostRecentX = json.x;
+    mostRecentY = json.y;
+    
+    curPiece = json.piece;
     curPieceX = json.x;
     curPieceY = json.y;
     rotate = getRotate(json.orientation);

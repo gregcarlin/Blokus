@@ -151,17 +151,13 @@ function submitMove() {
 $("#submit").on('click', function() {
 
 	//TODO IMPLEMENT CHECKS
-
-	
-	
-	var url = window.location.href; 
 		
 	$.post(url+"/move", {
-    piece: curPiece,
-    orientation: getOrientation(rotate),
-    x: curPieceX,
-    y: curPieceY
-  });
+	    piece: curPiece,
+	    orientation: getOrientation(rotate),
+	    x: curPieceX,
+	    y: curPieceY
+  	});
 	
 	
 });
