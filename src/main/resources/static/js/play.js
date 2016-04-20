@@ -319,6 +319,7 @@ $(document).ready(function(){
     var json = JSON.parse(msg.data);
     
     curPiece = json.piece;
+    
     curPieceX = json.x;
     curPieceY = json.y;
     rotate = getRotate(json.orientation);

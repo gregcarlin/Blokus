@@ -161,7 +161,7 @@ $("#submit").on('click', function() {
     orientation: getOrientation(rotate),
     x: curPieceX,
     y: curPieceY
-  }, function() { submitMove(); });
+  });
 	
 	
 });
