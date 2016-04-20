@@ -32,3 +32,17 @@ function getOrientation(rot) {
 	if (_.isEqual(rot, rotLeft(rotLeft(flipVert([1,0,0,1,1]))))) return 6;
 	if (_.isEqual(rot, rotLeft(rotLeft(rotLeft(flipVert([1,0,0,1,1])))))) return 7;
 }
+
+function getRotate(n) {
+	var r = [1,0,0,1,1];
+	if (n == 0) return r;
+	if (n == 1) return rotLeft(r);
+	if (n == 2) return rotLeft(rotLeft(r));
+	if (n == 3) return rotLeft(rotLeft(rotLeft(r)));
+	if (n == 4) return flipVert(r);
+	if (n == 5) return rotLeft(flipVert(r));
+	if (n == 6) return rotLeft(rotLeft(flipVert(r)));
+	if (n == 7) return rotLeft(rotLeft(rotLeft(flipVert(r))));
+}
+
+

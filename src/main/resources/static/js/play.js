@@ -316,7 +316,14 @@ $(document).ready(function(){
   };
   // received when someone else makes a move
   conn.onmessage = function(msg) {
-    var json = JSON.parse(msg);
+    var json = JSON.parse(msg.data);
+    
+    curPiece = json.piece;
+    curPieceX = json.x;
+    curPieceY = json.y;
+    rotate = getRotate(json.orientation);
+    submitMove();
+    
     // TODO update screen
   };
 });

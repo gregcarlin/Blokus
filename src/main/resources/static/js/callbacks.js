@@ -133,11 +133,26 @@ $("#flip-horiz").on('click', function() {
 });
 
 
+function isLegal() {
+	
+}
+
+function submitMove() {
+	var locs = orient(curPiece);
+	for (i = 0; i < locs.length/2; i++) {
+		grid[grid.length-1-(curPieceY+locs[2*i+1])][curPieceX+locs[2*i]] = curPlayer;
+	}
+	remainingPieces[curPlayer][curPiece] = 0;
+	$("#playerScore"+curPlayer).html(score(curPlayer));
+	
+	startNewTurn(true);
+}
+
 $("#submit").on('click', function() {
 
 	//TODO IMPLEMENT CHECKS
 
-	var locs = orient(curPiece);
+	
 	
 	var url = window.location.href; 
 		
@@ -146,13 +161,7 @@ $("#submit").on('click', function() {
     orientation: getOrientation(rotate),
     x: curPieceX,
     y: curPieceY
-  });
+  }, function() { submitMove(); });
 	
-	for (i = 0; i < locs.length/2; i++) {
-		grid[grid.length-1-(curPieceY+locs[2*i+1])][curPieceX+locs[2*i]] = curPlayer;
-	}
-	remainingPieces[curPlayer][curPiece] = 0;
-	$("#playerScore"+curPlayer).html(score(curPlayer));
 	
-	startNewTurn(true);
 });
