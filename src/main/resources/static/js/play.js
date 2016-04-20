@@ -306,7 +306,8 @@ $(document).ready(function(){
 	board.width = board.height*boardRatio;
 	init();
 
-  var conn = new WebSocket('ws://' + window.location.host + '/live');
+  var wsProt = window.location.protocol == 'https:' ? 'wss' : 'ws';
+  var conn = new WebSocket(wsProt + '://' + window.location.host + '/live');
   conn.onopen = function() {
     conn.send(getCookie('session'));
   };
