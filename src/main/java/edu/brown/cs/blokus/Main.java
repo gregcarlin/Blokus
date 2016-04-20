@@ -105,6 +105,10 @@ public final class Main {
     Spark.port(port);
 
     if (keystore != null) {
+      Spark.get("/", (req, res) -> {
+        res.redirect("https://" + req.host());
+        return null;
+      });
       Spark.secure(keystore.getAbsolutePath(), keyPass, null, keyPass);
     }
 
