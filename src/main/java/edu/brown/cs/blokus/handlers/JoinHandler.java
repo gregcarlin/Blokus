@@ -1,6 +1,7 @@
 package edu.brown.cs.blokus.handlers;
 
 import edu.brown.cs.blokus.Game;
+import edu.brown.cs.blokus.Player;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.ModelAndView;
@@ -28,6 +29,14 @@ public class JoinHandler implements TemplateViewRoute {
     final String userId = req.attribute("user-id");
     final String gameId = req.params("id");
     final Game game = db.getGame(gameId);
+
+    // if user is already in this game, just redirect them to the actual game
+    for (Player player : game.getAllPlayers()) {
+      if (player.getId().equals(userId)) {
+        res.redirect("/auth/play/" + gameId);
+        return null;
+      }
+    }
 
     game.getSettings().addPlayer(userId);
     String newId = db.saveGame(game);
