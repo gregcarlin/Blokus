@@ -50,13 +50,25 @@ public class TotalComponentSizeAI implements AI {
     Move bestMove = null;
     int bestValue = -1;
     for (Move m : g.getLegalMoves(turn)) {
-      int value = g.tryMove(m,
-        g2 -> totalComponentSize(g2, turn) + 2 * m.getSquares().size());
+      int value = g.tryMove(m, h -> eval(h, turn, m));
       if (value > bestValue) {
         bestMove = m;
         bestValue = value;
       }
     }
     return bestMove;
+  }
+  
+  /**
+   * Calculates a score for a move.
+   * 
+   * @param g game
+   * @param turn turn
+   * @param m move
+   * @return score for move
+   */
+  public int eval(Game g, Turn turn, Move m) {
+    return g.tryMove(m,
+      h -> totalComponentSize(h, turn) + 2 * m.getSquares().size());
   }
 }
