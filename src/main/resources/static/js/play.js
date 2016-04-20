@@ -76,6 +76,7 @@ function initRequest(data) {
 	var loadedBy = response.loaded_by;
 	for (i = 0; i < response.players.length; i++) {
 		var p = response.players[i];
+    if (!p) continue;
 		
 		for (idx in p.pieces) {
 			var p1 = p.pieces[idx];
@@ -339,7 +340,5 @@ $(document).ready(function(){
     curPieceY = json.y;
     rotate = getRotate(json.orientation);
     submitMove();
-    
-    // TODO update screen
   };
 });

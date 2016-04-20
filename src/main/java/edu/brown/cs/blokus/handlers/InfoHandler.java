@@ -2,6 +2,8 @@ package edu.brown.cs.blokus.handlers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import edu.brown.cs.blokus.Game;
@@ -45,11 +47,16 @@ public class InfoHandler implements Route {
     JsonArray players = game.getAsJsonArray("players");
     final int len = players.size();
     for (int i = 0; i < len; i++) {
-      JsonObject player = players.get(i).getAsJsonObject();
-      String id = player.get("_id").getAsJsonObject().get("$oid").getAsString();
-      player.addProperty("_id", id);
-      player.addProperty("name", db.getName(id));
-      players.set(i, player);
+      JsonElement oPlayer = players.get(i);
+      if (oPlayer == null || oPlayer instanceof JsonNull) {
+        players.set(i, null);
+      } else {
+        JsonObject player = oPlayer.getAsJsonObject();
+        String id = player.get("_id").getAsJsonObject().get("$oid").getAsString();
+        player.addProperty("_id", id);
+        player.addProperty("name", db.getName(id));
+        players.set(i, player);
+      }
     }
     game.add("players", players);
 
