@@ -9,14 +9,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-//import edu.brown.cs.blokus.handlers.LiveUpdater;
+import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-
-import com.google.common.collect.Iterables;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.stream.Collectors;
 
 /**
  * A game of Blokus. A game has a board and players. Games should be constructed
@@ -201,82 +197,7 @@ public class Game {
     // If this is the first turn, the move must cover the player's corner
     if (firstMove(turn)) {
       Square corner = getCorner(turn);
-      boolean b = move.getSquares().contains(corner);
-      return b;
-    }
-
-    // Get the squares that share an edge or corner with any square in the move
-    Set<Square> edges = new HashSet<>();
-    Set<Square> corners = new HashSet<>();
-    for (Square square : move.getSquares()) {
-      // Which directions to check (don't check if we would go off the board)
-      boolean checkLeft = square.getX() > 0;
-      boolean checkRight = square.getX() < board.size() - 1;
-      boolean checkDown = square.getY() > 0;
-      boolean checkUp = square.getY() < board.size() - 1;
-      // Squares that share an edge with a square in the move
-      if (checkLeft) {
-        edges.add(square.translate(-1, 0));
-      }
-      if (checkRight) {
-        edges.add(square.translate(1, 0));
-      }
-      if (checkDown) {
-        edges.add(square.translate(0, -1));
-      }
-      if (checkUp) {
-        edges.add(square.translate(0, 1));
-      }
-      // Squares that share a corner with a square in the move
-      if (checkLeft && checkUp) {
-        corners.add(square.translate(-1, 1));
-      }
-      if (checkRight && checkUp) {
-        corners.add(square.translate(1, 1));
-      }
-      if (checkRight && checkDown) {
-        corners.add(square.translate(1, -1));
-      }
-      if (checkLeft && checkDown) {
-        corners.add(square.translate(-1, -1));
-      }
-    }
-    corners.removeAll(edges);
-    edges.removeAll(move.getSquares());
-
-    // No squares in the move can share an edge with the player's pieces
-    if (edges.stream().anyMatch(s -> board.getSquare(s) == turn.mark())) {
-      return false;
-    }
-    // Some square in the move must share a corner with the player's pieces
-    if (corners.stream().noneMatch(s -> board.getSquare(s) == turn.mark())) {
-      return false;
-    }
-    return true;
-  }
-  
-  public boolean isLegalNoDebug(Move move, Turn turn) {
-    // Player must have the piece being played
-    if (!getPlayer(turn).hasPiece(move.getShape())) {
-      return false;
-    }
-
-    // All squares in the move must be unoccupied squares on the board
-    for (Square square : move.getSquares()) {
-      if (!(square.getX() >= 0
-        && square.getX() < board.size()
-        && square.getY() >= 0
-        && square.getY() < board.size()
-        && board.getXY(square.getX(), square.getY()) == 0)) {
-        return false;
-      }
-    }
-
-    // If this is the first turn, the move must cover the player's corner
-    if (firstMove(turn)) {
-      Square corner = getCorner(turn);
-      boolean b = move.getSquares().contains(corner);
-      return b;
+      return move.getSquares().contains(corner);
     }
 
     // Get the squares that share an edge or corner with any square in the move
@@ -389,7 +310,7 @@ public class Game {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
     settings.setLastTurnTime(timestamp);
-    //LiveUpdater.moveMade(this, move);
+    LiveUpdater.moveMade(this, move);
     turn = nextPlaying();
     if (turn == null) {
       settings.setState(GameSettings.State.FINISHED);
@@ -443,7 +364,7 @@ public class Game {
         for (int x = 0, s = board.size(); x < s; x++) {
           for (int y = 0; y < s; y++) {
             Move move = new Move(shape, o, x, y);
-            if (isLegalNoDebug(move, turn)) {
+            if (isLegal(move, turn)) {
               return true;
             }
           }
@@ -489,7 +410,7 @@ public class Game {
         for (int x = 0, s = board.size(); x < s; x++) {
           for (int y = 0; y < s; y++) {
             Move move = new Move(shape, o, x, y);
-            if (isLegalNoDebug(move, turn)) {
+            if (isLegal(move, turn)) {
               legalMoves.add(move);
             }
           }
@@ -673,25 +594,8 @@ public class Game {
       .build();
     //TotalComponentSizeAI ai = new TotalComponentSizeAI();
     long before = System.currentTimeMillis();
-    /*
-     List<Move> found = new ArrayList<>();
-     for (Move m : g.getLegalMoves(Turn.FIRST)) {
-     if (m.getSquares().contains(new Square(11, 11))) {
-     System.out.println(m);
-     found.add(m);
-     }
-     }
-     */
     //AI.simulateAndSaveGame(TotalComponentSizeAI::new, RandomAI::new,
       //RandomAI::new, RandomAI::new, "/home/aaronzhang/game1.blksgf");
-    /*
-     g.calculate();
-     for (Move m : moves) {
-     if (g.isLegal2(m)) {
-     sum++;
-     }
-     }
-     */
     long after = System.currentTimeMillis();
     System.out.println("time: " + (after - before));
   }
