@@ -1,6 +1,7 @@
 package edu.brown.cs.blokus.db;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,8 @@ public class Database implements AutoCloseable {
     final int playerCount = playerDocs.size();
     for (int i = 0; i < playerCount; i++) {
       Document playerDoc = playerDocs.get(i);
+      if (playerDoc == null) continue;
+
       String playerId = playerDoc.getObjectId("_id").toString();
 
       List<Shape> shapes = new ArrayList<>();
@@ -253,23 +256,26 @@ public class Database implements AutoCloseable {
     ObjectId id
       = settings.hasId() ? new ObjectId(settings.getId()) : new ObjectId();
 
-    List<Document> players = new ArrayList<>();
-    for (Player player : game.getAllPlayers()) {
+    Document[] players = new Document[Turn.values().length];
+    for (Turn turn : Turn.values()) {
+      Player player = game.getPlayer(turn);
+      if (player == null) continue;
+
       List<Integer> pieces = new ArrayList<>();
       for (Shape shape : player.getRemainingPieces()) {
         pieces.add(shape.ordinal());
       }
 
-      players.add(new Document()
+      players[turn.ordinal()] = new Document()
           .append("_id", new ObjectId(player.getId()))
           .append("pieces", pieces)
           .append("score", player.getScore())
-          .append("playing", player.isPlaying()));
+          .append("playing", player.isPlaying());
     }
 
     Document gameDoc = new Document()
       .append("_id", id)
-      .append("players", players)
+      .append("players", Arrays.asList(players))
       .append("params", new Document()
           .append("privacy", settings.getType().ordinal())
           .append("num-players", settings.getMaxPlayers())
