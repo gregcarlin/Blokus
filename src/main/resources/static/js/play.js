@@ -6,9 +6,10 @@ youControl = [0,true,false,true,false];
 timed = true; // Timed or Untimed
 maxTime = 15; // Time per move in seconds
 gameStarted = true; // whether the game has started
-gameover = false;   // whether the game is over
+gameOver = false;   // whether the game is over
 
 startTime = null;
+update = null;
 
 remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
 grid = []					    	//current game board
@@ -57,13 +58,11 @@ function initRequest(data) {
 	remainingPieces = [0,foo.slice(0),foo.slice(0),foo.slice(0),foo.slice(0)];
 	
 	var response = JSON.parse(data);
-	console.log(response);
 	grid = response.board;
 	var s = response.state;
 	if (s == 0) gameStarted = false;
 	if (s == 1) gameStarted = true;
 	if (s == 2) gameOver = true;
-	console.log(gameStarted);
 	
 	maxTime = response.params.timer;
 	if (maxTime == 0) timed = false;
@@ -88,7 +87,6 @@ function initRequest(data) {
 		
 		$("#playerName"+(i+1)).html(p.name);
 		$("#playerScore"+(i+1)).html(p.score);
-		console.log(p.name);
 		
 	}
 	curPlayer = response.curr_move.turn+1;
@@ -103,11 +101,23 @@ function initRequest(data) {
 		$(".timed").hide();
 		$("#alert").html("GAME NOT STARTED");
 		mode = "notYourTurn";
-		return;
 		$("#link").html(url.replace(/play/i, 'join'));
+		return;
+	}
+	if (gameStarted) {
+		$(".linkPart").hide();
+	}
+	if (gameOver) {
+		drawGrid();
+		$("i").hide();
+		$(".timed").hide();
+		$("#alert").html("GAME COMPLETED");
+		mode = "notYourTurn";
+		update = null;
+		return;
 	}
 	if (timed) {
-		var update = setInterval(processTime, 1000);
+		update = setInterval(processTime, 1000);
 	}
 	else {
 		$(".timed").hide();

@@ -49,8 +49,8 @@
 		SCORE:&nbsp
 		<span id = "playerScore4"> 0 <span>
 	</div>
-	<br>LINK TO JOIN GAME: <br>
-	<div id  = "link">  </div>
+	<br> <span class = "linkPart"> LINK TO JOIN GAME: </span><br>
+	<div id  = "link" class = "linkPart">  </div>
 </div>
 <div id = "canvas">
 	<canvas id = "board" height = "500">
