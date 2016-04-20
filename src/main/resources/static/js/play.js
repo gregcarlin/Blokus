@@ -67,6 +67,7 @@ function init() {    //sets up grid and remainingPieces
 		console.log(gameStarted);
 		
 		maxTime = response.params.timer;
+		if (maxTime == 0) timed = false;
 		
 		var serverTime = parseInt(response.curr_move.timestamp.$numberLong);
 		var curTime = Date.now();
@@ -105,7 +106,6 @@ function init() {    //sets up grid and remainingPieces
 			mode = "notYourTurn";
 			return;
 		}
-		
 		if (timed) {
 			var update = setInterval(processTime, 1000);
 		}
