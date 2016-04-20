@@ -270,7 +270,7 @@ public final class GameSettings {
       setState(State.PLAYING);
       return;
     } else { // insert player into next available slot
-      for (int i = 0; i < maxPlayers; i++) {
+      for (int i = 0; i < DEFAULT_MAX_PLAYERS; i++) {
         Turn turn = Turn.values()[i];
         if (!players.containsKey(turn)) {
           players.put(turn, new Player(playerId));
@@ -278,7 +278,7 @@ public final class GameSettings {
             players.put(turn.next().next(), new Player(playerId));
           }
 
-          if (players.size() == maxPlayers) {
+          if (players.size() == DEFAULT_MAX_PLAYERS) {
             setState(State.PLAYING);
           }
 
