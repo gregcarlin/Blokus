@@ -22,6 +22,7 @@ boardRatio = 1.7;               //canvas width/height
 SIZE = 25;     					//size of squares
 supplyLeftEdge = 23*SIZE; 
 size2 = Math.floor(SIZE/2);     //size for supply pieces
+dotSize = SIZE/3.3;
 
 colors = ["#FFFFFF","#00A0FF","#EEEE00", "#FF4000","#00FF00"];
 
@@ -232,6 +233,11 @@ function drawGrid() {
 		fillGridSquare(grid[i][j],j,grid.length-1-i);
 	}}
 	
+	drawDot(1,0,19);
+	drawDot(2,19,19);
+	drawDot(3,19,0);
+	drawDot(4,0,0);
+	
 	drawSupply();
 }
 
@@ -265,6 +271,15 @@ function fillGridSquare(player, x, y) {   //fills row x col y gridsquare with co
 	if (player == 0) return;
 	//if (hovering != 0 && hovering != player) return;
 	fillSquare(colors[player],SIZE*x,SIZE*y,SIZE,SIZE);
+}
+
+function drawDot(player, x, y) { 
+	ctx.save();
+	ctx.beginPath();
+    ctx.arc(SIZE*(x+.5), board.height-SIZE*(y+.5), dotSize, 0, 2 * Math.PI, false);
+    ctx.fillStyle = colors[player];
+    ctx.fill();
+    ctx.restore();
 }
 
 function drawPiece(piece,player,x,y,squareSize) {   // x and y are bottom left corner of 0,0 in the piece

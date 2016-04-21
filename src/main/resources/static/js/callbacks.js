@@ -90,6 +90,9 @@ $("#board").mouseup(function(e){
 			$("i").show();
 			$("i").css("position","absolute");
 			$("i").css("left",(toGrid(e.clientX)-48)+"px");
+			
+			displaySubmit(); 
+			
 			$("#rot-right").css("top",(toGrid(e.clientY)-SIZE-10)+"px");
 			$("#rot-left").css("top",(toGrid(e.clientY)-10)+"px");
 			$("#flip-vert").css("top",(toGrid(e.clientY)+SIZE-10)+"px");
@@ -111,6 +114,7 @@ $("#rot-left").on('click', function() {
 	else rotate = rotRight(rotate);
 	drawGrid();
 	drawCurPiece();
+	displaySubmit(); 
 });
 
 $("#rot-right").on('click', function() {
@@ -118,23 +122,85 @@ $("#rot-right").on('click', function() {
 	else rotate = rotRight(rotate);
 	drawGrid();
 	drawCurPiece();
+	displaySubmit(); 
 });
 
 $("#flip-vert").on('click', function() {
 	rotate = flipVert(rotate);
 	drawGrid();
 	drawCurPiece();
+	displaySubmit(); 
 });
 
 $("#flip-horiz").on('click', function() {
 	rotate = flipHoriz(rotate);
 	drawGrid();
 	drawCurPiece();
+	displaySubmit(); 
 });
 
+function displaySubmit() {
+	if (isLegal()) {
+		$("#submit").show();
+	}
+	else {
+		$("#submit").hide();
+	}
+}
+
+function isColor(color,row,column) {
+	if (row < 0 || column < 0 || row >= 20 || column >= 20) return false;
+	return (grid[row][column] == color);
+}
 
 function isLegal() {
+	var locs = orient(curPiece);
+	 
+	 for (i = 0; i < locs.length/2; i++) {
+	 	var row =  grid.length-1-(curPieceY+locs[2*i+1]);
+	 	var col = curPieceX+locs[2*i];
+	 
+	 	if (row < 0 || row >= 20 || col < 0 || col >= 20) {
+	 		return false;
+	 	}
+		if (grid[row][col] != 0) {
+			return false;
+		}
+		
+	}
+	if (score(curPlayer) == 0) {
+		for (i = 0; i < locs.length/2; i++) {
+	 		var row =  grid.length-1-(curPieceY+locs[2*i+1]);
+	 		var col = curPieceX+locs[2*i];
+	 		if (curPlayer == 1 && row == 0 && col == 0) return true;
+	 		if (curPlayer == 2 && row == 0 && col == 19) return true;
+	 		if (curPlayer == 3 && row == 19 && col == 19) return true;
+	 		if (curPlayer == 4 && row == 19 && col == 0) return true;
+	 	}
+	 	return false;
+	}
 	
+	for (i = 0; i < locs.length/2; i++) {
+	 	var row =  grid.length-1-(curPieceY+locs[2*i+1]);
+	 	var col = curPieceX+locs[2*i];
+	 	
+		if (isColor(curPlayer,row + 1,col) || 
+			isColor(curPlayer,row - 1,col) || 
+			isColor(curPlayer,row,col + 1) || 
+			isColor(curPlayer,row,col - 1))
+				return false;
+	}
+	for (i = 0; i < locs.length/2; i++) {
+	 	var row =  grid.length-1-(curPieceY+locs[2*i+1]);
+	 	var col = curPieceX+locs[2*i];
+	 	
+		if (isColor(curPlayer,row + 1,col + 1) || 
+			isColor(curPlayer,row + 1,col - 1) || 
+			isColor(curPlayer,row - 1,col + 1) || 
+			isColor(curPlayer,row - 1,col - 1)) 
+				return true;	
+	}
+	return false;
 }
 
 function submitMove() {
@@ -149,15 +215,12 @@ function submitMove() {
 }
 
 $("#submit").on('click', function() {
-
-	//TODO IMPLEMENT CHECKS
-		
 	$.post(url+"/move", {
 	    piece: curPiece,
 	    orientation: getOrientation(rotate),
 	    x: curPieceX,
 	    y: curPieceY
-  	});
-	
+  	},
+  	function(data) {console.log(data);} );
 	
 });
