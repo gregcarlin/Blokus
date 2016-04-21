@@ -30,27 +30,29 @@
 
 <div id = "players">
 	<div id = "player1" class = "playerInfo"> 
-		<div id = "playerName1"> EMPTY </div>
-		SCORE:&nbsp
+		<div id = "playerName1" class = "playerName"> EMPTY </div>
+		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore1"> 0 </span>
 	</div><br>
 	<div id = "player2" class = "playerInfo"> 
-		<div id = "playerName2"> EMPTY </div>
-		SCORE:&nbsp
+		<div id = "playerName2" class = "playerName"> EMPTY </div>
+		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore2"> 0 </span>
 	</div><br>
 	<div id = "player3" class = "playerInfo">
-		<div id = "playerName3"> EMPTY </div>
-		SCORE:&nbsp
+		<div id = "playerName3" class = "playerName"> EMPTY </div>
+		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore3"> 0 </span>
 	</div><br>
 	<div id = "player4" class = "playerInfo"> 
-		<div id = "playerName4"> EMPTY </div>
-		SCORE:&nbsp
+		<div id = "playerName4" class = "playerName"> EMPTY </div>
+		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore4"> 0 <span>
 	</div>
-	<br> <span class = "linkPart"> LINK TO JOIN GAME: </span><br>
-	<div id  = "link" class = "linkPart">  </div>
+	<div id = "linkDiv">
+		<br> <span class = "linkPart"> LINK TO JOIN GAME: </span><br>
+		<div id  = "link" class = "linkPart">  </div>
+	</div>
 </div>
 <div id = "canvas">
 	<canvas id = "board" height = "500">

@@ -18,13 +18,14 @@ curPlayer = 1;  //players are 1,2,3,4
 
 //BOARD PARAMETERS
 
-boardRatio = 1.7;               //canvas width/height
+boardRatio = 1.5;               //canvas width/height
 SIZE = 25;     					//size of squares
-supplyLeftEdge = 23*SIZE; 
+supplyLeftEdge = 21*SIZE; 
 size2 = Math.floor(SIZE/2);     //size for supply pieces
 dotSize = SIZE/3.3;
 
-colors = ["#FFFFFF","#00A0FF","#EEEE00", "#FF4000","#00FF00"];
+colors = ["#EDEEEF","#00A0FF","#EEEE00", "#FF4000","#00FF00"];
+lightColors = ["#FFFFFF","#CCFFFF","#FFFFCC", "#FFCCCC","#CCFFCC"];
 
 
 board = document.getElementById("board");
@@ -48,6 +49,9 @@ curMouseY = 0;
 
 function init() {    //sets up grid and remainingPieces
 	
+	for (i = 1; i <= 4; i++) {
+		highlightInfo(i,false);
+	}
 	$.get(url+"/info", initRequest);
 }
 
@@ -133,8 +137,8 @@ function startNewTurn(resetTime) {
 	var newPlayer = (curPlayer + 1) % 5;
 	if (newPlayer == 0) newPlayer++;
 		
-	$("#player"+curPlayer).css("background-color",colors[0]);
-	$("#player"+newPlayer).css("background-color",colors[newPlayer]);
+	highlightInfo(curPlayer,false);
+	highlightInfo(newPlayer,true);
 	curPlayer = newPlayer;
 
 	if (youControl[curPlayer])  {
@@ -211,10 +215,21 @@ function flipHoriz(r) {
 	return [-1*r[0],-1*r[1],r[2],r[3],(r[4] + 1) % 2];
 }
 
+function highlightInfo(player,shouldHighlight) {
+	if (shouldHighlight) {
+		//$("#player"+player).css("background-color",colors[player]);
+		$("#player"+player).css("border","7px double black");
+	}
+	else {
+		//$("#player"+player).css("background-color",lightColors[player]);
+		$("#player"+player).css("background","linear-gradient("+lightColors[player]+","+colors[player]+")");
+		$("#player"+player).css("border","1px outset"+colors[player]);
+	}
+}
 
 function drawGrid() {
 	ctx.clearRect(0, 0, board.width, board.height);
-	ctx.fillStyle = colors[0];
+	ctx.fillStyle = "white";
 	ctx.fillRect(0,0,board.width,board.height);
 	ctx.beginPath();
 	
@@ -233,10 +248,10 @@ function drawGrid() {
 		fillGridSquare(grid[i][j],j,grid.length-1-i);
 	}}
 	
-	drawDot(1,0,19);
-	drawDot(2,19,19);
-	drawDot(3,19,0);
-	drawDot(4,0,0);
+	if (score(1) == 0) drawDot(1,0,19);
+	if (score(2) == 0) drawDot(2,19,19);
+	if (score(3) == 0) drawDot(3,19,0);
+	if (score(4) == 0) drawDot(4,0,0);
 	
 	drawSupply();
 }
@@ -267,10 +282,24 @@ function fillSquare(color,x,y,width) {  // x and y are bottom left corner
 	ctx.restore();
 }
 
+
+function fillPieceSquare(color,x,y,width) {  // x and y are bottom left corner
+	ctx.save();
+		
+	var grd = ctx.createLinearGradient(x,board.height-y-width, x, board.height-y-width+4*width);
+	grd.addColorStop(0, color);
+	grd.addColorStop(1, "black");
+
+	ctx.fillStyle = grd;
+	ctx.fillRect(x,board.height-y-width,width,width);
+	
+	ctx.restore();
+}
+
 function fillGridSquare(player, x, y) {   //fills row x col y gridsquare with color of player
-	if (player == 0) return;
+	if (player == 0) fillSquare(colors[player],SIZE*x+1,SIZE*y+1,SIZE-1,SIZE-1);
 	//if (hovering != 0 && hovering != player) return;
-	fillSquare(colors[player],SIZE*x,SIZE*y,SIZE,SIZE);
+	else fillPieceSquare(colors[player],SIZE*x+1,SIZE*y+1,SIZE-1,SIZE-1);
 }
 
 function drawDot(player, x, y) { 
@@ -284,7 +313,7 @@ function drawDot(player, x, y) {
 
 function drawPiece(piece,player,x,y,squareSize) {   // x and y are bottom left corner of 0,0 in the piece
 	for (i = 0; i < piece.length/2; i++) {
-		fillSquare(colors[player],x+squareSize*piece[2*i],
+		fillPieceSquare(colors[player],x+squareSize*piece[2*i],
 			y+squareSize*piece[2*i+1],squareSize);
 	}
 }

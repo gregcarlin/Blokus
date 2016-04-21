@@ -57,8 +57,6 @@ public class Move {
     this.squares = new HashSet<>();
     shape.getSquares().forEach(
         s -> this.squares.add(orientation.imageOf(s).translate(x, y)));
-    System.out.println(this.toString());
-    System.out.println(this.getSquares().toString());
   }
 
   /**

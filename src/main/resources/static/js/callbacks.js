@@ -1,14 +1,15 @@
 $(".playerInfo").hover(function(e){
 	var p = $(this).attr('id').slice(-1);
-	$(this).css("background-color",colors[p]);
+	if (p != curPlayer || !gameStarted) 
+		$(this).css("border","3px solid black");
 	hovering = p;
 	drawGrid();
 	if (mode == "positioning") drawCurPiece();
 },function(e){
 	var p = $(this).attr('id').slice(-1);
-	if (p != curPlayer || !gameStarted) {
-		$(this).css("background-color","white");
-	}
+	if (p != curPlayer || !gameStarted) 
+		$(this).css("border","1px outset"+colors[p]);
+	
 	hovering = 0;
 	drawGrid();
 	if (mode == "positioning") drawCurPiece();

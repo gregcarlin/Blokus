@@ -92,7 +92,18 @@ html, body {
 }
 .playerInfo {
 	width: 200px;
-	height: 100px;
-	border: 2px outset;
+	height: 80px;
+	border: 1px outset;
 	padding: 4px;
+	font-size: 20px;
+	font-family: helvetica;
+}
+#linkDiv {
+	word-wrap: break-word;
+	width: 200px;
+}
+
+.playerName {
+	text-align: center;
+	font-size: 24px;
 }
