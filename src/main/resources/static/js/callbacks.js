@@ -215,6 +215,12 @@ function submitMove() {
 }
 
 $("#submit").on('click', function() {
+	console.log( {
+	    piece: curPiece,
+	    orientation: getOrientation(rotate),
+	    x: curPieceX,
+	    y: curPieceY
+  	});
 	$.post(url+"/move", {
 	    piece: curPiece,
 	    orientation: getOrientation(rotate),
