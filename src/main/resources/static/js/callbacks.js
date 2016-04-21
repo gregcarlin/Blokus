@@ -215,6 +215,9 @@ function submitMove() {
 }
 
 $("#submit").on('click', function() {
+	console.log(rotate);
+	console.log(flipHoriz(rotate));
+	console.log(getOrientation(rotate));
 	console.log( {
 	    piece: curPiece,
 	    orientation: getOrientation(rotate),
