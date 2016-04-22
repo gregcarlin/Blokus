@@ -124,7 +124,6 @@ function initRequest(data) {
 	}
 	if (timed) {
 		update = setInterval(processTime, 1000);
-		$(".timed").show();
 	}
 	else {
 		$(".timed").hide();
@@ -375,15 +374,24 @@ $(document).ready(function(){
   conn.onmessage = function(msg) {
     var json = JSON.parse(msg.data);
     
-    if (json.x == mostRecentX && json.y == mostRecentY) return;
-    
-    mostRecentX = json.x;
-    mostRecentY = json.y;
-    
-    curPiece = json.piece;
-    curPieceX = json.x;
-    curPieceY = json.y;
-    rotate = getRotate(json.orientation);
-    submitMove();
+    switch (json.code) {
+      case 0:
+        if (json.x == mostRecentX && json.y == mostRecentY) return;
+        
+        mostRecentX = json.x;
+        mostRecentY = json.y;
+        
+        curPiece = json.piece;
+        curPieceX = json.x;
+        curPieceY = json.y;
+        rotate = getRotate(json.orientation);
+        submitMove();
+        break;
+      case 1:
+        $.get(url+"/info", initRequest);
+        break;
+      default:
+        alert('Unsupported socket code ' + json.code);
+    }
   };
 });
