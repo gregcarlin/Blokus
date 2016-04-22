@@ -124,6 +124,7 @@ function initRequest(data) {
 	}
 	if (timed) {
 		update = setInterval(processTime, 1000);
+    $(".timed").show();
 	}
 	else {
 		$(".timed").hide();
