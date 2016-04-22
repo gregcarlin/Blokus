@@ -88,6 +88,11 @@ $("#board").mouseup(function(e){
 		$("#board").css("cursor","default");
 		if (curMouseX < 20*SIZE) {
 			mode = "positioning";
+			
+			console.log(rotate);
+			console.log(getOrientation(rotate));
+			
+			
 			$("i").show();
 			$("i").css("position","absolute");
 			$("i").css("left",(toGrid(e.clientX)-48)+"px");
@@ -217,7 +222,6 @@ function submitMove() {
 
 $("#submit").on('click', function() {
 	console.log(rotate);
-	console.log(flipHoriz(rotate));
 	console.log(getOrientation(rotate));
 	console.log( {
 	    piece: curPiece,
