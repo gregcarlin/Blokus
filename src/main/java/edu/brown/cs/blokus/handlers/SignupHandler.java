@@ -34,6 +34,11 @@ public class SignupHandler implements TemplateViewRoute {
       return null;
     }
 
+    if (user.length() > 15) {
+      // TODO report oversized username
+      return null;
+    }
+
     String userId = db.createUser(user, pass);
     if (userId == null) {
       // TODO report user with same username
