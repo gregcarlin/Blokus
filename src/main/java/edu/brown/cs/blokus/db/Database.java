@@ -281,7 +281,7 @@ public class Database implements AutoCloseable {
           .append("num-players", settings.getMaxPlayers())
           .append("timer", settings.getTimer()))
       .append("curr_move", new Document()
-          .append("turn", game.getTurn().ordinal())
+          .append("turn", game.isGameOver() ? -1 : game.getTurn().ordinal())
           .append("timestamp", settings.getLastTurnTime()))
       .append("state", settings.getState().ordinal())
       .append("board", game.getGridAsList());

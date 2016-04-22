@@ -427,14 +427,20 @@ public class Game {
    * @return whether game is over
    */
   public boolean isGameOver() {
-    if (getSettings().getState() == GameSettings.State.FINISHED) {
-      return true;
+    switch (getSettings().getState()) {
+      case FINISHED:
+        return true;
+      case UNSTARTED:
+        return false;
+      case PLAYING:
+        boolean gameOver = nextPlaying() == null;
+        if (gameOver) {
+          getSettings().setState(GameSettings.State.FINISHED);
+        }
+        return gameOver;
+      default:
+        throw new IllegalStateException("wut");
     }
-    boolean gameOver = nextPlaying() == null;
-    if (gameOver) {
-      getSettings().setState(GameSettings.State.FINISHED);
-    }
-    return gameOver;
   }
 
   /**
