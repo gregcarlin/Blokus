@@ -246,7 +246,6 @@ public final class GameSettings {
     if (state == State.PLAYING) {
       setLastTurnTime(System.currentTimeMillis());
     }
-    LiveUpdater.stateChanged(this);
   }
 
   /**
@@ -268,6 +267,7 @@ public final class GameSettings {
       }
 
       setState(State.PLAYING);
+      LiveUpdater.playerJoined(this);
       return;
     } else { // insert player into next available slot
       for (int i = 0; i < DEFAULT_MAX_PLAYERS; i++) {
@@ -282,6 +282,7 @@ public final class GameSettings {
             setState(State.PLAYING);
           }
 
+          LiveUpdater.playerJoined(this);
           return;
         }
       }

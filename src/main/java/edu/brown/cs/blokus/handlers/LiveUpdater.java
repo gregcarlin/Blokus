@@ -65,27 +65,13 @@ public class LiveUpdater {
     }
   }
 
-  /**
-    * Should be called when a move is made.
-    * @param context the game the move was made in
-    * @param move the move made
-    */
-  public static void moveMade(Game context, Move move) {
-    for (Player player : context.getAllPlayers()) {
+  private static void sendToGame(GameSettings recipient, JsonObject msg) {
+    for (Player player : recipient.getAllPlayers()) {
       String playerId = player.getId();
       if (KNOWN_SESSIONS.containsKey(playerId)) {
         Session session = KNOWN_SESSIONS.get(playerId);
-        JsonObject jObj = new JsonObject();
-        jObj.addProperty("piece", move.getShape().ordinal());
-        jObj.addProperty("orientation", move.getOrientation().ordinal());
-        jObj.addProperty("x", move.getX());
-        jObj.addProperty("y", move.getY());
-        boolean playing
-          = context.getSettings().getState() == GameSettings.State.PLAYING;
-        jObj.addProperty("next_player",
-            playing ? context.getTurn().ordinal() : -1);
         try {
-          session.getRemote().sendString(GSON.toJson(jObj));
+          session.getRemote().sendString(GSON.toJson(msg));
         } catch (IOException e) {
           System.err.println(e);
         }
@@ -94,10 +80,32 @@ public class LiveUpdater {
   }
 
   /**
-    * Should be called when the state of a game changes.
-    * @param context the settings of the game whose state changed
+    * Should be called when a move is made.
+    * @param context the game the move was made in
+    * @param move the move made
     */
-  public static void stateChanged(GameSettings context) {
-    // TODO update relevant users
+  public static void moveMade(Game context, Move move) {
+    JsonObject jObj = new JsonObject();
+    jObj.addProperty("code", 0);
+    jObj.addProperty("piece", move.getShape().ordinal());
+    jObj.addProperty("orientation", move.getOrientation().ordinal());
+    jObj.addProperty("x", move.getX());
+    jObj.addProperty("y", move.getY());
+    boolean playing
+      = context.getSettings().getState() == GameSettings.State.PLAYING;
+    jObj.addProperty("next_player",
+        playing ? context.getTurn().ordinal() : -1);
+
+    sendToGame(context.getSettings(), jObj);
+  }
+
+  /**
+    * Should be called when a players joins a game.
+    * @param context the settings of the game that added a player
+    */
+  public static void playerJoined(GameSettings context) {
+    JsonObject jObj = new JsonObject();
+    jObj.addProperty("code", 1);
+    sendToGame(context, jObj);
   }
 }
