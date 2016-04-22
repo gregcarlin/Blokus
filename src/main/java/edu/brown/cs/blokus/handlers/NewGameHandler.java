@@ -21,7 +21,6 @@ public class NewGameHandler implements TemplateViewRoute {
     ImmutableMap.of("public", GameSettings.Type.PUBLIC,
         "private", GameSettings.Type.PRIVATE,
         "local", GameSettings.Type.LOCAL);
-  private static final int DEFAULT_TIMER = 60;
   private final Database db;
 
   /**
@@ -39,7 +38,7 @@ public class NewGameHandler implements TemplateViewRoute {
     final int count = Integer.parseInt(qm.value("count"));
     final String rawTimer = qm.value("timer");
     final int timer = rawTimer == null || rawTimer.isEmpty()
-        ? DEFAULT_TIMER : Integer.parseInt(rawTimer);
+        ? 0 : Integer.parseInt(rawTimer);
 
     GameSettings settings = new GameSettings.Builder()
       .type(type)

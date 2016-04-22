@@ -80,6 +80,9 @@ html, body {
 .form-create > div {
   margin-bottom: 15px;
 }
+.input-group-timer {
+  display: none;
+}
 
 /* play page */
 #header {

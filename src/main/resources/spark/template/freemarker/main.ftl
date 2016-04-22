@@ -49,10 +49,11 @@
           </label>
         </div>
 
-        <div class="input-group">
+        <div class="input-group input-group-timer">
           <span class="input-group-addon" id="timer-addon">Timer (sec)</span>
-          <input type="number" class="form-control" min="0" name="timer" id="timer" aria-describedby="timer-addon" value="60" required />
+          <input type="number" class="form-control" min="0" name="timer" id="timer" aria-describedby="timer-addon" value="0" required />
         </div>
+        <a href="#" id="timer-btn">Add Timer</a>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Create Game</button>
       </form>
@@ -128,5 +129,5 @@
 </div> <!-- /container -->
 
 </#assign>
-<#assign js>index</#assign>
+<#assign js>main</#assign>
 <#include "template.ftl">
