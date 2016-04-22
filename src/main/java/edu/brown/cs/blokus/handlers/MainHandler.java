@@ -30,6 +30,7 @@ public class MainHandler implements TemplateViewRoute {
     return new ModelAndView(ImmutableMap.of(
           "openGames", db.getOpenGames(0, user),
           "currGames", db.getGamesWith(user),
+          "username", db.getName(user),
           "db", db),
         "main.ftl");
   }

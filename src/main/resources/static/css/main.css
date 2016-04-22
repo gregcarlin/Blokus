@@ -60,6 +60,9 @@ html, body {
 .navbar-static-top {
   margin-bottom: 19px;
 }
+.navbar-static-top .navbar-right .static:hover {
+  color: #777;
+}
 .container-main tr[onclick]:hover {
   cursor: pointer;
 }

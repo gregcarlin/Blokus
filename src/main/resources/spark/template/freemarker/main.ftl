@@ -14,6 +14,7 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
+        <li><a class="static">${username}</a></li>
         <li><a href="/signout">Sign out</a></li>
       </ul>
     </div><!--/.nav-collapse -->
