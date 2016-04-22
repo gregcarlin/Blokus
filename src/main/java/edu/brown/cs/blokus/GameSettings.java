@@ -290,4 +290,9 @@ public final class GameSettings {
 
     throw new IllegalStateException("Game is already full.");
   }
+
+  @Override
+  public String toString() {
+    return String.format("GameSettings[id=%s, players=%s, state=%d]", id, players, state.ordinal());
+  }
 }

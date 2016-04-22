@@ -605,4 +605,9 @@ public class Game {
     long after = System.currentTimeMillis();
     System.out.println("time: " + (after - before));
   }
+
+  @Override
+  public String toString() {
+    return String.format("Game[turn=%d,settings=%s]", turn.ordinal(), settings);
+  }
 }

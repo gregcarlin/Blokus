@@ -180,7 +180,7 @@ public class Player {
     Player other = (Player) obj;
     return Objects.equals(id, other.id)
       && remainingPieces.equals(other.remainingPieces)
-      && score == other.score && playing == other.playing;
+      && score == other.score;
   }
 
   @Override

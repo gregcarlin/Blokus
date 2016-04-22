@@ -1,5 +1,6 @@
 package edu.brown.cs.blokus.db;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,13 +72,16 @@ public class DatabaseTest {
       .player(Turn.THIRD, randomPlayer())
       .player(Turn.FOURTH, randomPlayer())
       .lastTurnTime(System.currentTimeMillis())
-      .timer((int) (Math.random() * 100000));
+      .timer((int) (Math.random() * 100000) + 60);
   }
 
   private static List<Shape> randomShapes() {
     List<Shape> all = Arrays.asList(Shape.values());
     Collections.shuffle(all);
-    return all.subList(0, (int) (Math.random() * all.size()));
+    List<Shape> some
+      = new ArrayList<>(all.subList(0, (int) (Math.random() * all.size())));
+    some.add(Shape.I1);
+    return some;
   }
 
   private static Player randomPlayer() {
@@ -89,7 +93,7 @@ public class DatabaseTest {
     int[][] grid = new int[20][20];
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
-        grid[i][j] = (int) (Math.random() * 4);
+        grid[i][j] = 0;
       }
     }
 
@@ -177,7 +181,7 @@ public class DatabaseTest {
     Player playerA = randomPlayer();
     Game gameA = randomGame()
       .setSettings(randomGameSettings()
-          .state(GameSettings.State.PLAYING)
+          .state(GameSettings.State.UNSTARTED)
           .player(Turn.FIRST, playerA)
           .build())
       .build();
