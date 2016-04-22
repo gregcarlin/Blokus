@@ -95,7 +95,7 @@ public class DatabaseTest {
 
     return new Game.Builder()
       .setGrid(grid)
-      .setTurn(Turn.values()[(int) (Math.random() * Turn.values().length)])
+      .setTurn(Turn.FIRST)
       .setSettings(randomGameSettings().build());
   }
 

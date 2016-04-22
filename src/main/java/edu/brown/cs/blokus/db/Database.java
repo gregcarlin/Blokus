@@ -239,7 +239,8 @@ public class Database implements AutoCloseable {
     gameBuilder.setGrid(grid);
 
     Document lastMoveDoc = gameDoc.get("curr_move", Document.class);
-    gameBuilder.setTurn(Turn.values()[lastMoveDoc.getInteger("turn")]);
+    int turnInt = lastMoveDoc.getInteger("turn");
+    gameBuilder.setTurn(Turn.values()[turnInt < 0 ? 0 : turnInt]);
 
     return gameBuilder.build();
   }
