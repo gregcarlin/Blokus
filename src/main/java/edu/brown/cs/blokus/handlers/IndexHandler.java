@@ -2,6 +2,8 @@ package edu.brown.cs.blokus.handlers;
 
 import java.util.Collections;
 
+import com.google.common.collect.ImmutableMap;
+
 import edu.brown.cs.blokus.db.Database;
 
 import spark.ModelAndView;
@@ -31,6 +33,9 @@ public class IndexHandler implements TemplateViewRoute {
       return null;
     }
 
-    return new ModelAndView(Collections.emptyMap(), "index.ftl");
+    String error = req.queryParams("error");
+    return new ModelAndView((error != null && error.length() > 0)
+        ? ImmutableMap.of("error", error) : Collections.emptyMap(),
+        "index.ftl");
   }
 }

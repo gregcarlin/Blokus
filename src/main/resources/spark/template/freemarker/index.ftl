@@ -9,6 +9,9 @@
 
 <div class="col-md-4">
 <div class="form-container">
+  <#if error??>
+    <div class="alert alert-danger" role="alert">${error?html}</div>
+  </#if>
   <form class="form-signin" action="/login" method="post">
     <label for="inputEmail" class="sr-only">Username</label>
     <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus name="username" />
