@@ -29,11 +29,12 @@ public class TotalComponentSizeAI implements AI {
    * @return total component size
    */
   public int totalComponentSize(Game g, Turn turn) {
+    boolean[][] available = Evaluator.available(g, turn);
     Set<Square> componentSquares = new HashSet<>();
-    Set<Square> availableCorners = Evaluator.getAvailableCorners(g, turn);
+    Set<Square> availableCorners = Evaluator.getAvailableCorners(g, turn, available);
     for (Square corner : availableCorners) {
       if (!componentSquares.contains(corner)) {
-        componentSquares.addAll(Evaluator.component(g, turn, corner));
+        componentSquares.addAll(Evaluator.component(g, turn, corner, available));
       }
     }
     return componentSquares.size();
