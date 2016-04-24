@@ -1,5 +1,4 @@
 var timerVal = 60;
-
 $('#timer-btn').click(function() {
   var timer = $('.input-group-timer');
   if (timer.is(':visible')) {
@@ -12,4 +11,8 @@ $('#timer-btn').click(function() {
     $('#timer').val(timerVal);
     $('#timer-btn').html('Remove Timer');
   }
+});
+
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip();
 });

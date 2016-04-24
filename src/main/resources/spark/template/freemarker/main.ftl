@@ -60,10 +60,14 @@
     </div>
 
     <div class="col-md-6">
-      <h2>Current Games</h2>
+      <h2>
+        Current Games
+        <small>Where you are currently playing</small>
+      </h2>
       <table class="table table-striped table-hover">
         <thead>
           <tr>
+            <th></th>
             <th>Players</th>
             <th>Max</th>
             <th>Timer</th>
@@ -71,8 +75,14 @@
         </thead>
         <tbody>
           <#if currGames?? && (currGames?size > 0)>
+            <#assign icons = ["globe", "lock", "laptop"]>
+            <#assign tools = ["Public", "Private", "Local"]>
             <#list currGames as game>
               <tr onclick="window.location='/auth/play/${game.getId()}'">
+                <td>
+                  <#assign i = game.getType().ordinal()>
+                  <span class="fa fa-fw fa-${icons[i]}" data-toggle="tooltip" data-placement="left" title="${tools[i]}"></span>
+                </td>
                 <td>
                   <ul>
                     <#list game.getUniquePlayers() as player>
@@ -86,13 +96,16 @@
             </#list>
           <#else>
             <tr>
-              <td colspan="3">You are not currently in any games.</td>
+              <td colspan="4">You are not currently in any games.</td>
             </tr>
           </#if>
         </tbody>
       </table>
 
-      <h2>Public Games</h2>
+      <h2>
+        Public Games
+        <small>Where you can join others</small>
+      </h2>
       <table class="table table-striped table-hover">
         <thead>
           <tr>
