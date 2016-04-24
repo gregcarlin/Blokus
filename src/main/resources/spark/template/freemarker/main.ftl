@@ -100,7 +100,7 @@
                   </ul>
                 </td>
                 <td>${game.getMaxPlayers()}</td>
-                <td>${game.getTimer()}</td>
+                <td>${game.getHumanTimer()}</td>
               </tr>
             </#list>
           <#else>
@@ -135,7 +135,7 @@
                   </ul>
                 </td>
                 <td>${game.getMaxPlayers()}</td>
-                <td>${game.getTimer()}</td>
+                <td>${game.getHumanTimer()}</td>
               </tr>
             </#list>
           <#else>

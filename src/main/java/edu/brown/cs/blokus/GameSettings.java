@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.brown.cs.blokus.handlers.LiveUpdater;
+import edu.brown.cs.parse.TimeUtils;
 
 
 /**
@@ -204,6 +205,22 @@ public final class GameSettings {
     */
   public int getTimer() {
     return timer;
+  }
+
+  /**
+    * Whether or not this game is timed.
+    * @return true if timed, false otherwise
+    */
+  public boolean isTimed() {
+    return getTimer() > 0;
+  }
+
+  /**
+    * Gets the timer in a more human-readable format.
+    * @return a string with info about the timer
+    */
+  public String getHumanTimer() {
+    return isTimed() ? TimeUtils.millisToLongDHMS(getTimer() * 1000) : "None";
   }
 
   /**
