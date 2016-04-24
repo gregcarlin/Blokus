@@ -2,8 +2,10 @@ package edu.brown.cs.blokus;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 
@@ -224,6 +226,18 @@ public final class GameSettings {
       if (players.containsKey(turn)) {
         rt.add(players.get(turn));
       }
+    }
+    return rt;
+  }
+
+  /**
+    * Gets a unique list of players.
+    * @return a set of players ids in this game
+    */
+  public Set<String> getUniquePlayers() {
+    Set<String> rt = new HashSet<>();
+    for (Player p : players.values()) {
+      rt.add(p.getId());
     }
     return rt;
   }

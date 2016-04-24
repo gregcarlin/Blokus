@@ -75,8 +75,8 @@
               <tr onclick="window.location='/auth/play/${game.getId()}'">
                 <td>
                   <ul>
-                    <#list game.getAllPlayers() as player>
-                      <li>${db.getName(player.getId())}</li>
+                    <#list game.getUniquePlayers() as player>
+                      <li>${db.getName(player)}</li>
                     </#list>
                   </ul>
                 </td>

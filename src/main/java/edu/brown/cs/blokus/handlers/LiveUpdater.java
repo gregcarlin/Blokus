@@ -66,8 +66,7 @@ public class LiveUpdater {
   }
 
   private static void sendToGame(GameSettings recipient, JsonObject msg) {
-    for (Player player : recipient.getAllPlayers()) {
-      String playerId = player.getId();
+    for (String playerId : recipient.getUniquePlayers()) {
       if (KNOWN_SESSIONS.containsKey(playerId)) {
         Session session = KNOWN_SESSIONS.get(playerId);
         try {
