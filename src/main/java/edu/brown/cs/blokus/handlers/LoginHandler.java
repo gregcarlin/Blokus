@@ -30,13 +30,13 @@ public class LoginHandler implements TemplateViewRoute {
     final String pass = qm.value("password");
 
     if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-      // TODO report empty data
+      res.redirect("/?error=All fields are required.");
       return null;
     }
 
     String userId = db.getUserId(user, pass);
     if (userId == null) {
-      // TODO report invalid credentials
+      res.redirect("/?error=Your username or password is incorrect.");
       return null;
     }
 

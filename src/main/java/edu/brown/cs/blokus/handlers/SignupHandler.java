@@ -30,18 +30,18 @@ public class SignupHandler implements TemplateViewRoute {
     final String pass = qm.value("password");
 
     if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-      // TODO report empty data
+      res.redirect("/?error=All fields are required.");
       return null;
     }
 
     if (user.length() > 15) {
-      // TODO report oversized username
+      res.redirect("/?error=Usernames cannot exceed 15 characters.");
       return null;
     }
 
     String userId = db.createUser(user, pass);
     if (userId == null) {
-      // TODO report user with same username
+      res.redirect("/?error=A user with that name already exists.");
       return null;
     }
 
