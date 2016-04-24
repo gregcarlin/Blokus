@@ -74,7 +74,7 @@ html, body {
 .container-main ul li {
   display: inline;
 }
-.container-main ul li:not(:last-child)::after {
+.container-main .current-games ul li:not(:last-child)::after {
   content: ",";
 }
 .form-create > div {

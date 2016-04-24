@@ -13,6 +13,19 @@ $('#timer-btn').click(function() {
   }
 });
 
+var unitMult = 1;
 $(function() {
+  // enable tooltips
   $('[data-toggle="tooltip"]').tooltip();
+
+  // change timer units
+  $('.dropdown-timer a').click(function() {
+    var me = $(this);
+    $('#unit').html(me.html());
+    unitMult = me.attr('data-mult');
+  });
+
+  $('.form-create').submit(function() {
+    $('#timer-actual').val($('#timer').val() * unitMult);
+  });
 });

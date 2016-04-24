@@ -50,8 +50,17 @@
         </div>
 
         <div class="input-group input-group-timer">
-          <span class="input-group-addon" id="timer-addon">Timer (sec)</span>
-          <input type="number" class="form-control" min="0" name="timer" id="timer" aria-describedby="timer-addon" value="0" required />
+          <input type="hidden" name="timer" id="timer-actual" />
+          <input type="number" class="form-control" min="0" name="timer-display" id="timer" aria-describedby="timer-addon" value="0" required placeholder="Timer" />
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="unit">Seconds</span> <span class="caret"></span></button>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-timer">
+              <li><a href="#" data-mult="1">Seconds</a></li>
+              <li><a href="#" data-mult="60">Minutes</a></li>
+              <li><a href="#" data-mult="3600">Hours</a></li>
+              <li><a href="#" data-mult="86400">Days</a></li>
+            </ul>
+          </div>
         </div>
         <a href="#" id="timer-btn">Add Timer</a>
 
@@ -59,7 +68,7 @@
       </form>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-6 current-games">
       <h2>
         Current Games
         <small>Where you are currently playing</small>
