@@ -28,6 +28,7 @@ public class SignupHandler implements TemplateViewRoute {
     final QueryParamsMap qm = req.queryMap();
     final String user = qm.value("username");
     final String pass = qm.value("password");
+    final String dest = qm.value("dest");
 
     if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
       res.redirect("/?error=All fields are required.");
@@ -47,7 +48,7 @@ public class SignupHandler implements TemplateViewRoute {
 
     String hash = db.logIn(userId);
     res.cookie("session", hash);
-    res.redirect("/auth/main");
+    res.redirect(dest == null ? "/auth/main" : dest);
 
     return null;
   }

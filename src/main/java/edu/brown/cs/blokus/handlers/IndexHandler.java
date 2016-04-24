@@ -1,7 +1,5 @@
 package edu.brown.cs.blokus.handlers;
 
-import java.util.Collections;
-
 import com.google.common.collect.ImmutableMap;
 
 import edu.brown.cs.blokus.db.Database;
@@ -34,8 +32,10 @@ public class IndexHandler implements TemplateViewRoute {
     }
 
     String error = req.queryParams("error");
+    String dest = req.queryParams("dest");
+    dest = (dest == null || dest.isEmpty()) ? "/auth/main" : dest;
     return new ModelAndView((error != null && error.length() > 0)
-        ? ImmutableMap.of("error", error) : Collections.emptyMap(),
-        "index.ftl");
+        ? ImmutableMap.of("error", error, "dest", dest)
+        : ImmutableMap.of("dest", dest), "index.ftl");
   }
 }

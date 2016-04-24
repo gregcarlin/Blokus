@@ -17,6 +17,7 @@
     <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus name="username" />
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password" />
+    <input type="hidden" name="dest" value="${dest}" />
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
   </form>
   <form class="form-signin" action="/signup" method="post">
