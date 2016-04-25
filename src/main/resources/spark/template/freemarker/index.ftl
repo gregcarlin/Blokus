@@ -1,5 +1,10 @@
 <#assign content>
 
+<video autoplay loop poster="/img/blokus.jpg" id="bgvid">
+  <source src="/img/blokus.webm" type="video/webm">
+  <source src="/img/blokus.mp4" type="video/mp4">
+</video>
+
 <div class="container container-index">
 
 <div class="row">
@@ -18,12 +23,13 @@
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password" />
     <input type="hidden" name="dest" value="${dest}" />
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
   </form>
-  <form class="form-signin" action="/signup" method="post">
+  <form class="form-signin form-signup" action="/signup" method="post">
     <input type="hidden" name="username" />
     <input type="hidden" name="password" />
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+    <input type="hidden" name="dest" value="${dest}" />
+    <button class="btn btn-lg btn-primary" type="submit">Sign up</button>
   </form>
 </div>
 </div>

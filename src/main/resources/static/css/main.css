@@ -1,10 +1,28 @@
-@import url(https://fonts.googleapis.com/css?family=Orbitron:400);
+@import url(https://fonts.googleapis.com/css?family=Orbitron:700);
 
 html, body {
   height: 100%;
 }
 
 /* index/landing page */
+#bgvid {
+  position: fixed;
+  min-width: 100%;
+  min-height: 100%;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  background: url(/img/blokus.jpg) no-repeat;
+  background-size: cover;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
+}
 .container-index {
   padding-top: 40px;
   padding-bottom: 40px;
@@ -17,14 +35,20 @@ html, body {
 }
 .container-index .col-md-8 h1 {
   font-family: 'Orbitron', sans-serif;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 86px;
   text-align: center;
+  color: #FFF;
+}
+.container-index .btn-group {
+  width: 100%;
 }
 .form-signin {
   max-width: 330px;
-  padding: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   margin: 0 auto;
+  display: inline;
 }
 .form-signin .form-signin-heading,
 .form-signin .checkbox {
@@ -45,15 +69,29 @@ html, body {
 .form-signin .form-control:focus {
   z-index: 2;
 }
-.form-signin input:first-of-type {
-  margin-bottom: -1px;
+.form-signin input[type="text"] {
+  margin-bottom: -21px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
-.form-signin input:last-of-type {
+.form-signin input[type="password"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.form-signin:first-of-type .btn {
+  width: 44%;
+  position: absolute;
+}
+.form-signup {
+  display: inline-block;
+  width: 44%;
+  padding: 0;
+  position: absolute;
+  right: 15px;
+}
+.form-signup .btn {
+  width: 100%;
 }
 
 /* main page */
@@ -82,6 +120,11 @@ html, body {
 }
 .input-group-timer {
   display: none;
+  margin-bottom: 0 !important;
+}
+#timer-btn {
+  display: block;
+  margin-bottom: 15px;
 }
 
 /* play page */

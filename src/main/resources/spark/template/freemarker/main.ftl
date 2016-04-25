@@ -49,8 +49,8 @@
           </label>
         </div>
 
+        <input type="hidden" name="timer" id="timer-actual" />
         <div class="input-group input-group-timer">
-          <input type="hidden" name="timer" id="timer-actual" />
           <input type="number" class="form-control" min="0" name="timer-display" id="timer" aria-describedby="timer-addon" value="0" required placeholder="Timer" />
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="unit">Seconds</span> <span class="caret"></span></button>
