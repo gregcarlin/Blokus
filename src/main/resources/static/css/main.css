@@ -168,16 +168,16 @@ html, body {
   filter: blur(0);
 }
 #player1 {
-  background-color: #00A0FF;
+  background-color: #007AF3;
 }
 #player2 {
-  background-color: #EEEE00;
+  background-color: #FFDE00;
 }
 #player3 {
-  background-color: #FF4000;
+  background-color: #E60000;
 }
 #player4 {
-  background-color: #0F0;
+  background-color: #00CD3D;
 }
 #linkDiv {
 	word-wrap: break-word;
