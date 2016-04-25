@@ -31,24 +31,28 @@
 
 <div id = "players">
 	<div id = "player1" class = "playerInfo"> 
-		<div id = "playerName1" class = "playerName"> EMPTY </div>
-		&nbsp&nbspSCORE:&nbsp
-		<span id = "playerScore1"> 0 </span>
+    <div>
+      <span id="playerName1" class="playerName">EMPTY</span>
+      <span id="playerScore1" class="badge">0</span>
+    </div>
 	</div>
 	<div id = "player2" class = "playerInfo"> 
-		<div id = "playerName2" class = "playerName"> EMPTY </div>
-		&nbsp&nbspSCORE:&nbsp
-		<span id = "playerScore2"> 0 </span>
+    <div>
+      <span id="playerName2" class="playerName">EMPTY</span>
+      <span id="playerScore2" class="badge">0</span>
+    </div>
 	</div>
 	<div id = "player3" class = "playerInfo">
-		<div id = "playerName3" class = "playerName"> EMPTY </div>
-		&nbsp&nbspSCORE:&nbsp
-		<span id = "playerScore3"> 0 </span>
+    <div>
+      <span id="playerName3" class="playerName">EMPTY</span>
+      <span id="playerScore3" class="badge">0</span>
+    </div>
 	</div>
 	<div id = "player4" class = "playerInfo"> 
-		<div id = "playerName4" class = "playerName"> EMPTY </div>
-		&nbsp&nbspSCORE:&nbsp
-		<span id = "playerScore4"> 0 <span>
+    <div>
+      <span id="playerName4" class="playerName">EMPTY</span>
+      <span id="playerScore4" class="badge">0<span>
+    </div>
 	</div>
 	<div id = "linkDiv">
 		<span class = "linkPart"> LINK TO JOIN GAME: </span><br>

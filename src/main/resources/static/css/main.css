@@ -147,18 +147,37 @@ html, body {
 }
 .playerInfo {
 	width: 200px;
-	height: 80px;
+	height: 60px;
 	border: 1px outset;
 	padding: 4px;
 	font-size: 20px;
 	font-family: helvetica;
   margin-bottom: 15px;
+  -webkit-filter: blur(1px);
+  filter: blur(1px);
+  border-radius: 5px;
 }
-.playerInfo:hover {
-  border: 3px solid black;
+.playerInfo > div {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
-.playerInfo.active {
-  border: 7px double black;
+.playerInfo:hover, .playerInfo.active {
+  box-shadow: 0 0 10px 0 #000;
+  -webkit-filter: blur(0);
+  filter: blur(0);
+}
+#player1 {
+  background-color: #00A0FF;
+}
+#player2 {
+  background-color: #EEEE00;
+}
+#player3 {
+  background-color: #FF4000;
+}
+#player4 {
+  background-color: #0F0;
 }
 #linkDiv {
 	word-wrap: break-word;
@@ -177,9 +196,5 @@ html, body {
   }
   .playerInfo {
     display: inline-block;
-  }
-  .playerInfo.active {
-    position: relative;
-    top: 6px;
   }
 }

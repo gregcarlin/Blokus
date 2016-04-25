@@ -24,8 +24,10 @@ supplyLeftEdge = 21*SIZE;
 size2 = Math.floor(SIZE/2);     //size for supply pieces
 dotSize = SIZE/3.3;
 
-colors = ["#EDEEEF","#00A0FF","#EEEE00", "#FF4000","#00FF00"];
-lightColors = ["#FFFFFF","#CCFFFF","#FFFFCC", "#FFCCCC","#CCFFCC"];
+colors = ["#EDEEEF"];
+$(".playerInfo").each(function() {
+  colors.push($(this).css("background-color"));
+});
 
 
 board = document.getElementById("board");
@@ -220,8 +222,6 @@ function highlightInfo(player, shouldHighlight) {
 	if (shouldHighlight) {
     $("#player" + player).addClass("active");
 	} else {
-		$("#player" + player).css("background",
-      "linear-gradient(" + lightColors[player] + "," + colors[player] + ")");
     $("#player" + player).removeClass("active");
 	}
 }
