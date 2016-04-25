@@ -84,22 +84,16 @@ $("#board").mouseup(function(e){
 		$("#board").css("cursor","default");
 		if (curMouseX < 20*SIZE) {
 			mode = "positioning";
-			
+
 			console.log(rotate);
 			console.log(getOrientation(rotate));
-			
-			
-			$(".icon").show();
-			$(".icon").css("left",(toGrid(e.clientX)-48)+"px");
-			
-			displaySubmit(); 
-			
-			$("#rot-right").css("top",(toGrid(e.clientY)-SIZE-10)+"px");
-			$("#rot-left").css("top",(toGrid(e.clientY)-10)+"px");
-			$("#flip-vert").css("top",(toGrid(e.clientY)+SIZE-10)+"px");
-			$("#flip-horiz").css("top",(toGrid(e.clientY)+2*SIZE-10)+"px");
-			$("#submit").css("top",(toGrid(e.clientY) + 3*SIZE-10)+"px");
-			
+
+			$(".icon-group").show();
+			$(".icon-group").css("left", (toGrid(e.clientX)-48)+"px");
+			$(".icon-group").css("top", toGrid(e.clientY)+"px");
+
+			displaySubmit();
+
 			curPieceX = Math.floor(curMouseX/SIZE);
 			curPieceY = Math.floor(curMouseY/SIZE);
 		}
@@ -211,7 +205,7 @@ function submitMove() {
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
 	$("#playerScore"+curPlayer).html(score(curPlayer));
-  $(".icon").hide();
+  $(".icon-group").hide();
 	
 	startNewTurn(true);
 }

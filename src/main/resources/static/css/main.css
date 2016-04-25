@@ -186,9 +186,16 @@ html, body {
 	text-align: center;
 	font-size: 24px;
 }
-.icon {
+.icon-group {
   position: absolute;
   display: none;
+  background-color: #FFF;
+  width: 26px;
+  border-radius: 10px;
+  border: 1px solid #000;
+}
+.icon:hover {
+  cursor: pointer;
 }
 @media (max-width: 1035px) {
   #players {
