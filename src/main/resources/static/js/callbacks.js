@@ -1,14 +1,10 @@
 $(".playerInfo").hover(function(e){
 	var p = $(this).attr('id').slice(-1);
-	if (p != curPlayer || !gameStarted) 
-		$(this).css("border","3px solid black");
 	hovering = p;
 	drawGrid();
 	if (mode == "positioning") drawCurPiece();
 },function(e){
 	var p = $(this).attr('id').slice(-1);
-	if (p != curPlayer || !gameStarted) 
-		$(this).css("border","1px outset"+colors[p]);
 	
 	hovering = 0;
 	drawGrid();
@@ -17,7 +13,7 @@ $(".playerInfo").hover(function(e){
 
 
 function setCursor(newCursor) {
-	$("#board").css("cursor",newCursor);
+	$("#board").css("cursor", newCursor);
 }
 function fixCursor() {
 	if (mode == "notYourTurn") {
@@ -93,9 +89,8 @@ $("#board").mouseup(function(e){
 			console.log(getOrientation(rotate));
 			
 			
-			$("i").show();
-			$("i").css("position","absolute");
-			$("i").css("left",(toGrid(e.clientX)-48)+"px");
+			$(".icon").show();
+			$(".icon").css("left",(toGrid(e.clientX)-48)+"px");
 			
 			displaySubmit(); 
 			
@@ -216,6 +211,7 @@ function submitMove() {
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
 	$("#playerScore"+curPlayer).html(score(curPlayer));
+  $(".icon").hide();
 	
 	startNewTurn(true);
 }
@@ -236,5 +232,4 @@ $("#submit").on('click', function() {
 	    y: curPieceY
   	},
   	function(data) {console.log(data);} );
-	
 });

@@ -1,7 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
 @import url(https://fonts.googleapis.com/css?family=Orbitron:700);
 
 html, body {
   height: 100%;
+  font-family: 'Lato', sans-serif;
 }
 
 /* index/landing page */
@@ -128,16 +130,20 @@ html, body {
 }
 
 /* play page */
-#header {
-	margin-left: 300px;
+.container-play {
+  text-align: center;
 }
 #board {
 	border: 2px solid black;
 }
 #players {
 	width: 250px;
-	float: left;
 	padding: 10px;
+  display: inline-block;
+  vertical-align: top;
+}
+#canvas {
+  display: inline-block;
 }
 .playerInfo {
 	width: 200px;
@@ -146,13 +152,34 @@ html, body {
 	padding: 4px;
 	font-size: 20px;
 	font-family: helvetica;
+  margin-bottom: 15px;
+}
+.playerInfo:hover {
+  border: 3px solid black;
+}
+.playerInfo.active {
+  border: 7px double black;
 }
 #linkDiv {
 	word-wrap: break-word;
-	width: 200px;
 }
-
 .playerName {
 	text-align: center;
 	font-size: 24px;
+}
+.icon {
+  position: absolute;
+  display: none;
+}
+@media (max-width: 1035px) {
+  #players {
+    width: 100%;
+  }
+  .playerInfo {
+    display: inline-block;
+  }
+  .playerInfo.active {
+    position: relative;
+    top: 6px;
+  }
 }

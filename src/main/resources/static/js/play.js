@@ -99,7 +99,7 @@ function initRequest(data) {
 	
 
 	for (i = 1; i <= 4; i++) {
-		$("#player" + i).css("border-color",colors[i]);
+		$("#player" + i).css("border-color", colors[i]);
 	}
 	if (!gameStarted) {
 		drawGrid();
@@ -216,15 +216,13 @@ function flipHoriz(r) {
 	return [-1*r[0],-1*r[1],r[2],r[3],(r[4] + 1) % 2];
 }
 
-function highlightInfo(player,shouldHighlight) {
+function highlightInfo(player, shouldHighlight) {
 	if (shouldHighlight) {
-		//$("#player"+player).css("background-color",colors[player]);
-		$("#player"+player).css("border","7px double black");
-	}
-	else {
-		//$("#player"+player).css("background-color",lightColors[player]);
-		$("#player"+player).css("background","linear-gradient("+lightColors[player]+","+colors[player]+")");
-		$("#player"+player).css("border","1px outset"+colors[player]);
+    $("#player" + player).addClass("active");
+	} else {
+		$("#player" + player).css("background",
+      "linear-gradient(" + lightColors[player] + "," + colors[player] + ")");
+    $("#player" + player).removeClass("active");
 	}
 }
 

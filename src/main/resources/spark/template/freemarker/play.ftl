@@ -21,7 +21,7 @@
   </div>
 </nav>
 
-<div class="container">
+<div class="container-fluid container-play">
 
 <h1 id = "header"> 
 	<span id = "alert"> GAME NOT STARTED</span> 
@@ -34,24 +34,24 @@
 		<div id = "playerName1" class = "playerName"> EMPTY </div>
 		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore1"> 0 </span>
-	</div><br>
+	</div>
 	<div id = "player2" class = "playerInfo"> 
 		<div id = "playerName2" class = "playerName"> EMPTY </div>
 		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore2"> 0 </span>
-	</div><br>
+	</div>
 	<div id = "player3" class = "playerInfo">
 		<div id = "playerName3" class = "playerName"> EMPTY </div>
 		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore3"> 0 </span>
-	</div><br>
+	</div>
 	<div id = "player4" class = "playerInfo"> 
 		<div id = "playerName4" class = "playerName"> EMPTY </div>
 		&nbsp&nbspSCORE:&nbsp
 		<span id = "playerScore4"> 0 <span>
 	</div>
 	<div id = "linkDiv">
-		<br> <span class = "linkPart"> LINK TO JOIN GAME: </span><br>
+		<span class = "linkPart"> LINK TO JOIN GAME: </span><br>
 		<div id  = "link" class = "linkPart">  </div>
 	</div>
 </div>
@@ -60,14 +60,11 @@
 	</canvas>
 </div>
 
-<br>
-
-
-<i id = "rot-right" class="material-icons">redo</i>
-<i id = "rot-left" class="material-icons">undo</i>
-<i id = "submit" class="material-icons">done</i>
-<i id = "flip-vert" class="material-icons">swap_vert</i>
-<i id = "flip-horiz" class="material-icons">swap_horiz</i>
+<span id = "rot-right" class="material-icons icon">redo</span>
+<span id = "rot-left" class="material-icons icon">undo</span>
+<span id = "submit" class="material-icons icon">done</span>
+<span id = "flip-vert" class="material-icons icon">swap_vert</span>
+<span id = "flip-horiz" class="material-icons icon">swap_horiz</span>
 
 </div><!-- /.container -->
 
