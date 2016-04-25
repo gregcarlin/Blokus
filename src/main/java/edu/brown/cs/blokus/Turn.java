@@ -12,11 +12,17 @@ public enum Turn {
     public Turn next() {
       return SECOND;
     }
+    public String toString(){
+    	return "first";
+    }
   },
   SECOND() {
     @Override
     public Turn next() {
       return THIRD;
+    }
+    public String toString(){
+    	return "second";
     }
   },
   THIRD() {
@@ -24,11 +30,17 @@ public enum Turn {
     public Turn next() {
       return FOURTH;
     }
+    public String toString(){
+    	return "third";
+    }
   },
   FOURTH() {
     @Override
     public Turn next() {
       return FIRST;
+    }
+    public String toString(){
+    	return "fourth";
     }
   };
 

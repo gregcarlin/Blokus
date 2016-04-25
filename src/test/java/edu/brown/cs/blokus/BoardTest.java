@@ -9,6 +9,9 @@ import static org.junit.Assert.*;
 import edu.brown.cs.blokus.Board;
 
 public class BoardTest {
+	
+	
+	
 
   @Test
   public void rowAndColumTest() {
@@ -44,6 +47,8 @@ public class BoardTest {
     assertEquals(outCome.getRowColumn(4, 6), 8);
   }
 
+  
+  
 
 
 

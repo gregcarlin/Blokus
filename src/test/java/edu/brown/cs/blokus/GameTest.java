@@ -115,6 +115,7 @@ public class GameTest {
     board5.setXY(11, 12, 3);
     game5 = new Game.Builder()
     .setSettings(new GameSettings.Builder()
+    	.state(GameSettings.State.PLAYING)
       .player(Turn.FIRST, new Player("one5", EnumSet.noneOf(Shape.class), 0, true))
       .player(Turn.SECOND, new Player("two5", EnumSet.of(Shape.I5), 0, true))
       .player(Turn.THIRD, new Player("three5"))
@@ -165,6 +166,38 @@ public class GameTest {
     assertFalse(game3.isLegal(new Move(Shape.I5, Orientation.E, 15,8)));
   }
 
+  @Test 
+  public void testNextPlaying() {  
+	  assertTrue(game1.nextPlaying() ==  Turn.SECOND);
+	  assertFalse(game1.nextPlaying() == Turn.FIRST);
+	  assertTrue(game2.nextPlaying() ==  Turn.SECOND);
+	  assertFalse(game2.nextPlaying() == Turn.FIRST);
+	  assertTrue(game3.nextPlaying() ==  Turn.THIRD);
+	  assertTrue(game4.nextPlaying() ==  Turn.THIRD);
+	  assertTrue(game5.nextPlaying() == Turn.THIRD);
+	  
+  }
+  
+  @Test
+  public void testGetRandomMove() {
+    Move move = game1.getRandomMove(Turn.FIRST);
+    Move fmove = game1.getRandomMove(Turn.SECOND);
+    Move move1 = game2.getRandomMove(Turn.FIRST);
+    Move fmove1 = game2.getRandomMove(Turn.SECOND);
+    Move move2 = game3.getRandomMove(Turn.SECOND);
+    Move fmove2 = game2.getRandomMove(Turn.THIRD);
+    Move move3 = game4.getRandomMove(Turn.FIRST);
+    assertTrue(game1.isLegal(move));
+    assertFalse(game1.isLegal(fmove));
+    assertTrue(game2.isLegal(move1));
+    assertFalse(game2.isLegal(fmove1));
+    assertTrue(game3.isLegal(move2));
+    assertFalse(game3.isLegal(fmove2));
+    assertTrue(game4.isLegal(move3));
+   
+  }
+  
+  
   @Test
   public void testCanMove() {
 //	    // Game 1
@@ -208,4 +241,23 @@ public class GameTest {
     game6.makeMove(game6.getRandomMove(game6.getTurn()));
     assertEquals(board6.getXY(0, 0), 4);
   }
+  
+  
+  @Test
+  public void testIsGameOver() {
+	  game5.getPlayer(Turn.FIRST).stopPlaying();
+	  game5.getPlayer(Turn.SECOND).stopPlaying();
+	  game5.getPlayer(Turn.THIRD).stopPlaying();
+	  game5.getPlayer(Turn.FOURTH).stopPlaying();
+	  assertTrue(game5.isGameOver());
+	  assertFalse(game4.isGameOver());
+	  assertFalse(game1.isGameOver());
+	  assertFalse(game2.isGameOver());
+	  assertFalse(game3.isGameOver());
+	  
+  }
+  
+  
+  
+  
 }
