@@ -67,6 +67,7 @@ html, body {
           box-sizing: border-box;
   padding: 10px;
   font-size: 16px;
+  opacity: 0.9;
 }
 .form-signin .form-control:focus {
   z-index: 2;
@@ -80,6 +81,9 @@ html, body {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.form-signin .btn {
+  opacity: 0.9;
 }
 .form-signin:first-of-type .btn {
   width: 44%;

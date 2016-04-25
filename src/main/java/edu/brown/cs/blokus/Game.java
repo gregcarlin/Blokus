@@ -310,8 +310,9 @@ public class Game {
     board.makeMove(move, turn.mark());
     getPlayer(turn).usePiece(move.getShape());
     settings.setLastTurnTime(timestamp);
-    LiveUpdater.moveMade(this, move);
+    Turn lastTurn = turn;
     turn = nextPlaying();
+    LiveUpdater.moveMade(this, move, lastTurn);
     if (turn == null) {
       settings.setState(GameSettings.State.FINISHED);
     }

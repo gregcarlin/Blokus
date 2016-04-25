@@ -13,6 +13,7 @@ import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
 import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Player;
+import edu.brown.cs.blokus.Turn;
 import edu.brown.cs.blokus.db.Database;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -82,18 +83,21 @@ public class LiveUpdater {
     * Should be called when a move is made.
     * @param context the game the move was made in
     * @param move the move made
+    * @param turn the turn of the move made
     */
-  public static void moveMade(Game context, Move move) {
+  public static void moveMade(Game context, Move move, Turn turn) {
     JsonObject jObj = new JsonObject();
     jObj.addProperty("code", 0);
     jObj.addProperty("piece", move.getShape().ordinal());
     jObj.addProperty("orientation", move.getOrientation().ordinal());
     jObj.addProperty("x", move.getX());
     jObj.addProperty("y", move.getY());
+    jObj.addProperty("turn", turn.ordinal());
     boolean playing
       = context.getSettings().getState() == GameSettings.State.PLAYING;
     jObj.addProperty("next_player",
         playing ? context.getTurn().ordinal() : -1);
+    jObj.addProperty("game_id", context.getSettings().getId());
 
     sendToGame(context.getSettings(), jObj);
   }
