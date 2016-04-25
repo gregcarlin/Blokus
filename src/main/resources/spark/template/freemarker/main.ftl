@@ -29,13 +29,13 @@
       <h2>Create a new game</h2>
       <form class="form-create" action="/auth/new" method="post">
         <div class="btn-group btn-group-justified" data-toggle="buttons">
-          <label class="btn btn-primary active">
+          <label class="btn btn-primary active" title="Anyone online will be able to join this game.">
             <input type="radio" name="type" id="public" autocomplete="off" checked value="public"> Public 
           </label>
-          <label class="btn btn-primary">
+          <label class="btn btn-primary" title="Only friends you invite can join this game.">
             <input type="radio" name="type" id="private" autocomplete="off" value="private"> Private
           </label>
-          <label class="btn btn-primary">
+          <label class="btn btn-primary" title="Play with your friends on your computer.">
             <input type="radio" name="type" id="local" autocomplete="off" value="local"> Local
           </label>
         </div>
