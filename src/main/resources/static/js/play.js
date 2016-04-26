@@ -36,6 +36,8 @@ $(".playerInfo").each(function() {
 board = document.getElementById("board");
 ctx = board.getContext("2d");
 url = window.location.href; 
+gameID = null;
+
 
 curPiece = 0;   //pieces range from 0 to 20
 rotate = [1,0,0,1,1]; //2x2 matrix followed by parity, see orient function
@@ -68,6 +70,7 @@ function initRequest(data) {
 	remainingPieces = [0,foo.slice(0),foo.slice(0),foo.slice(0),foo.slice(0)];
 	
 	var response = JSON.parse(data);
+	gameID = response._id;
 	grid = response.board;
 	var s = response.state;
 	if (s == 0) gameStarted = false;
@@ -382,7 +385,7 @@ $(document).ready(function(){
     switch (json.code) {
       case 0:
         //if (json.x == mostRecentX && json.y == mostRecentY) return;
-        
+         if (json.game_id != gameID) return;
         //mostRecentX = json.x;
         //mostRecentY = json.y;
         
@@ -391,7 +394,7 @@ $(document).ready(function(){
         curPieceY = json.y;
         rotate = getRotate(json.orientation);
         
-        //json.game_id
+       
         curPlayer = json.turn + 1;
         nextPlayer = json.next_player + 1;
         
