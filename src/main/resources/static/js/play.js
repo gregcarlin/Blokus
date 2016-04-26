@@ -103,8 +103,9 @@ function initRequest(data) {
 		$("#playerScore"+(i+1)).html(p.score);
 		
 	}
-	curPlayer = response.curr_move.turn+1;
 	
+	nextPlayer = response.curr_move.turn+1;
+	curPlayer = nextPlayer;
 
 	for (i = 1; i <= 4; i++) {
 		$("#player" + i).css("border-color", colors[i]);
@@ -137,7 +138,6 @@ function initRequest(data) {
 	else {
 		$(".timed").hide();
 	}
-	curPlayer = curPlayer -1;
 	startNewTurn(false);
 }
 
@@ -386,6 +386,9 @@ $(document).ready(function(){
       case 0:
         //if (json.x == mostRecentX && json.y == mostRecentY) return;
          if (json.game_id != gameID) return;
+         
+         console.log("NETWORKING RESPONSE:",json);
+         
         //mostRecentX = json.x;
         //mostRecentY = json.y;
         
@@ -398,7 +401,6 @@ $(document).ready(function(){
         curPlayer = json.turn + 1;
         nextPlayer = json.next_player + 1;
         
-        console.log("CURPLAYER",curPlayer,"NEXTPLAYER",nextPlayer);
         
         submitMove();
         break;
