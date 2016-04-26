@@ -161,8 +161,8 @@ function startNewTurn(resetTime) {
 	}
 
 	drawGrid();
-	$("i").hide();
-	
+	$(".icon-group").hide();
+
 	if (resetTime) startTime = Date.now();
 	$("#time").html(maxTime);
 }

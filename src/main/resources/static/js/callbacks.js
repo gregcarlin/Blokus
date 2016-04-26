@@ -54,7 +54,7 @@ $("#board").mousedown(function(e){
 	
 	if (mode == "positioning" && mouseOnPiece()) {
 		mode = "dragging";
-		$("i").hide();
+		$(".icon-group").hide();
 		return;
 	}
 	if ((mode != "notYourTurn") &&
@@ -70,7 +70,7 @@ $("#board").mousedown(function(e){
 		drawCurPiece();
 		mode = "dragging";
 		
-		$("i").hide();
+		$(".icon-group").hide();
 		rotate = [1,0,0,1,1];
 	}
 });
@@ -88,9 +88,12 @@ $("#board").mouseup(function(e){
 			console.log(rotate);
 			console.log(getOrientation(rotate));
 
-			$(".icon-group").show();
-			$(".icon-group").css("left", (toGrid(e.clientX)-48)+"px");
-			$(".icon-group").css("top", toGrid(e.clientY)+"px");
+      var group = $('.icon-group');
+			group.show();
+      group.removeClass().addClass('icon-group');
+      group.addClass('piece-' + curPiece);
+			group.css("left", (toGrid(e.clientX)-48)+"px");
+			group.css("top", toGrid(e.clientY)+"px");
 
 			displaySubmit();
 

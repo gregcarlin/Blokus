@@ -65,11 +65,11 @@
 </div>
 
 <div class="icon-group">
-  <span id = "rot-right" class="material-icons icon">redo</span>
-  <span id = "rot-left" class="material-icons icon">undo</span>
-  <span id = "flip-vert" class="material-icons icon">swap_vert</span>
-  <span id = "flip-horiz" class="material-icons icon">swap_horiz</span>
-  <span id = "submit" class="material-icons icon">done</span>
+  <span id="rot-right" class="material-icons icon rotation">redo</span>
+  <span id="rot-left" class="material-icons icon rotation">undo</span>
+  <span id="flip-vert" class="material-icons icon flip">swap_vert</span>
+  <span id="flip-horiz" class="material-icons icon flip">swap_horiz</span>
+  <span id="submit" class="material-icons icon">done</span>
 </div>
 
 </div><!-- /.container -->

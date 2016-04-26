@@ -3,3 +3,5 @@ jdk:
   - oraclejdk8
 after_success:
   "curl http://blokus.online:8080"
+notifications:
+  email: false
