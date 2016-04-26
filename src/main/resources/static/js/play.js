@@ -15,6 +15,9 @@ remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
 grid = []					    	//current game board
 
 curPlayer = 1;  //players are 1,2,3,4
+nextPlayer = 1;
+
+
 
 //BOARD PARAMETERS
 
@@ -137,8 +140,9 @@ function initRequest(data) {
 
 function startNewTurn(resetTime) {
 	rotate = [1,0,0,1,1];
-	var newPlayer = (curPlayer + 1) % 5;
-	if (newPlayer == 0) newPlayer++;
+	//var newPlayer = (curPlayer + 1) % 5;
+	//if (newPlayer == 0) newPlayer++;
+	var newPlayer = nextPlayer;
 		
 	highlightInfo(curPlayer,false);
 	highlightInfo(newPlayer,true);
@@ -163,7 +167,7 @@ function startNewTurn(resetTime) {
 function processTime() {
 	var d = Date.now();
 	var remaining = Math.ceil(maxTime - (d - startTime) / 1000);
-	if (remaining <= 0) {
+	if (remaining < 0) {
 		$.get(url+"/info", initRequest);
 	}
 	else $("#time").html(remaining);
@@ -354,8 +358,10 @@ function getCookie(cname) {
     return "";
 }
 
-mostRecentX = null;
-mostRecentY = null;
+//mostRecentX = null;
+//mostRecentY = null;
+
+
 $(document).ready(function(){
 	board.width = board.height*boardRatio;
 	init();
@@ -375,15 +381,22 @@ $(document).ready(function(){
     
     switch (json.code) {
       case 0:
-        if (json.x == mostRecentX && json.y == mostRecentY) return;
+        //if (json.x == mostRecentX && json.y == mostRecentY) return;
         
-        mostRecentX = json.x;
-        mostRecentY = json.y;
+        //mostRecentX = json.x;
+        //mostRecentY = json.y;
         
         curPiece = json.piece;
         curPieceX = json.x;
         curPieceY = json.y;
         rotate = getRotate(json.orientation);
+        
+        //json.game_id
+        curPlayer = json.turn + 1;
+        nextPlayer = json.next_player + 1;
+        
+        console.log("CURPLAYER",curPlayer,"NEXTPLAYER",nextPlayer);
+        
         submitMove();
         break;
       case 1:
