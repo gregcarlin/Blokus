@@ -1,16 +1,14 @@
 package edu.brown.cs.blokus;
 
-import edu.brown.cs.blokus.ai.AI;
-import edu.brown.cs.blokus.ai.RandomAI;
-import edu.brown.cs.blokus.ai.TotalComponentSizeAI;
+import edu.brown.cs.blokus.ai.Evaluator;
+import edu.brown.cs.blokus.handlers.LiveUpdater;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
-
-import edu.brown.cs.blokus.handlers.LiveUpdater;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -422,6 +420,42 @@ public class Game {
   }
 
   /**
+   * Gets legal moves using the given piece for the player with the given turn.
+   *
+   * @param turn turn
+   * @param shape shape
+   * @return legal moves
+   */
+  public List<Move> legalMovesForPiece(Turn turn, Shape shape) {
+    if (!getPlayer(turn).isPlaying()) {
+      return Collections.emptyList();
+    }
+    List<Move> legalMoves = new ArrayList<>();
+    for (Orientation o : shape.distinctOrientations()) {
+      for (int x = 0, s = board.size(); x < s; x++) {
+        for (int y = 0; y < s; y++) {
+          Move move = new Move(shape, o, x, y);
+          if (isLegal(move, turn)) {
+            legalMoves.add(move);
+          }
+        }
+      }
+    }
+    return legalMoves;
+  }
+  
+  /**
+   * Whether the piece is playable for the player with the given turn.
+   * 
+   * @param turn turn
+   * @param shape shape
+   * @return whether the piece is playable
+   */
+  public boolean playablePiece(Turn turn, Shape shape) {
+    return !legalMovesForPiece(turn, shape).isEmpty();
+  }
+
+  /**
    * Returns whether the game is over. If so, updates the game state in the game
    * settings.
    *
@@ -459,6 +493,51 @@ public class Game {
       next = next.next();
     } while (next != turn.next());
     return null;
+  }
+  
+  /**
+   * Gets unoccupied corners for the player with the given turn.
+   * 
+   * @param turn turn
+   * @return whether the corner is unoccupied
+   */
+  public Set<Square> unoccupiedCorners(Turn turn) {
+    return Evaluator.getAvailableCorners(this, turn);
+  }
+  
+  /**
+   * Gets corners where the piece can be played for the player with the given
+   * turn.
+   * 
+   * @param turn turn
+   * @param shape piece
+   * @return playable corners for piece
+   */
+  public Set<Square> playableCornersForPiece(Turn turn, Shape shape) {
+    Set<Square> covered = new HashSet<>();
+    for (Move m : legalMovesForPiece(turn, shape)) {
+      covered.addAll(m.getSquares());
+    }
+    covered.retainAll(unoccupiedCorners(turn));
+    return covered;
+  }
+  
+  /**
+   * Gets all playable corners for the player with the given turn.  A playable
+   * corner is a corner that can be occupied by a move. (As opposed to an
+   * unoccupied corner, which might not be playable if the player doesn't have
+   * a piece that fits there.)
+   * 
+   * @param turn turn
+   * @return playable corners
+   */
+  public Set<Square> playableCorners(Turn turn) {
+    Set<Square> covered = new HashSet<>();
+    for (Move m : getLegalMoves(turn)) {
+      covered.addAll(m.getSquares());
+    }
+    covered.retainAll(unoccupiedCorners(turn));
+    return covered;
   }
 
   /**
@@ -575,6 +654,11 @@ public class Game {
     }
     return false;
   }
+  
+  @Override
+  public String toString() {
+    return String.format("Game[turn=%d,settings=%s]", turn.ordinal(), settings);
+  }
 
   public static void main(String[] args) throws Exception {
     Board b = new Board(20);
@@ -602,13 +686,8 @@ public class Game {
     //TotalComponentSizeAI ai = new TotalComponentSizeAI();
     long before = System.currentTimeMillis();
     //AI.simulateAndSaveGame(TotalComponentSizeAI::new, RandomAI::new,
-      //RandomAI::new, RandomAI::new, "/home/aaronzhang/game1.blksgf");
+    //RandomAI::new, RandomAI::new, "/home/aaronzhang/game1.blksgf");
     long after = System.currentTimeMillis();
     System.out.println("time: " + (after - before));
-  }
-
-  @Override
-  public String toString() {
-    return String.format("Game[turn=%d,settings=%s]", turn.ordinal(), settings);
   }
 }
