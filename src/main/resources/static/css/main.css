@@ -150,20 +150,25 @@ html, body {
   display: inline-block;
   vertical-align: top;
 }
+#players .badge {
+  font-size: 18px;
+  position: relative;
+  top: -2px;
+}
 #canvas {
   display: inline-block;
 }
 .playerInfo {
-	width: 200px;
+	width: 175px;
 	height: 60px;
 	border: 1px outset;
 	padding: 4px;
 	font-size: 20px;
 	font-family: helvetica;
   margin-bottom: 15px;
-  -webkit-filter: blur(1px);
-  filter: blur(1px);
   border-radius: 5px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .playerInfo > div {
   position: relative;
@@ -172,8 +177,9 @@ html, body {
 }
 .playerInfo:hover, .playerInfo.active {
   box-shadow: 0 0 10px 0 #000;
-  -webkit-filter: blur(0);
-  filter: blur(0);
+}
+.playerInfo.active {
+  width: 200px;
 }
 #player1 {
   background-color: #007AF3;
