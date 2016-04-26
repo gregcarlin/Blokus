@@ -39,6 +39,7 @@
             <input type="radio" name="type" id="local" autocomplete="off" value="local"> Local
           </label>
         </div>
+        <div id="status"></div>
 
         <div class="btn-group btn-group-justified" data-toggle="buttons">
           <label class="btn btn-primary">

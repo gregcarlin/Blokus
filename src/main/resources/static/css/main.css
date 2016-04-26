@@ -124,6 +124,10 @@ html, body {
 .form-create > div {
   margin-bottom: 15px;
 }
+#status {
+  margin-top: -13px;
+  text-align: center;
+}
 .input-group-timer {
   display: none;
   margin-bottom: 0 !important;

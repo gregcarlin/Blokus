@@ -13,6 +13,13 @@ $('#timer-btn').click(function() {
   }
 });
 
+var updateStatus = function(e) {
+  var text = e ? $(this).attr('title')
+  : $('.form-create .btn.active').attr('title');
+  $('#status').html(text);
+};
+$('.form-create .btn').click(updateStatus);
+
 var unitMult = 1;
 $(function() {
   // enable tooltips
@@ -25,7 +32,10 @@ $(function() {
     unitMult = me.attr('data-mult');
   });
 
+  // set actual timer before form submission
   $('.form-create').submit(function() {
     $('#timer-actual').val($('#timer').val() * unitMult);
   });
+
+  updateStatus();
 });
