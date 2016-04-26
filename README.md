@@ -1,5 +1,5 @@
 # Blokus
-[ ![Codeship Status for gregthegeek/Blokus](https://codeship.com/projects/32b55d30-e3cb-0133-f983-2ef0590de381/status?branch=master)](https://codeship.com/projects/146147)
+[![Build Status](https://travis-ci.com/gregthegeek/Blokus.svg?token=GxwRo7a5dp63Gq5XNxwx&branch=master)](https://travis-ci.com/gregthegeek/Blokus)
 
 ## Building and Running
 1. Build with `mvn package`
