@@ -217,10 +217,7 @@ html, body {
 .piece-2 .flip,
 .piece-4 .flip,
 .piece-6 .rotation, .piece-6 .flip,
-.piece-7 #flip-horiz,
 .piece-10 .flip,
-.piece-14 #flip-vert,
-.piece-15 #flip-vert,
 .piece-18 .rotation, .piece-18 .flip {
   display: none;
 }
