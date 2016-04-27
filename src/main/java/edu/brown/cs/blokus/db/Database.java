@@ -37,8 +37,6 @@ public class Database implements AutoCloseable {
   // maps sessionHash to userId
   public static final Map<String, String> SESSIONS = new HashMap<>();
 
-  // the number of games to list in a single page
-  private static final int PAGE_SIZE = 20;
   // the fields necessary to create a game settings object
   private static final Document SETTINGS_PROJECTION = new Document()
     .append("_id", true)
@@ -294,16 +292,15 @@ public class Database implements AutoCloseable {
 
   /**
     * Gets a list of games that are public and haven't been started yet.
-    * @param page the 0-indexed page of data to load
     * @param without the id of the player to exclude from the results
     * @return a set of game settings representing each game
     */
-  public List<GameSettings> getOpenGames(int page, String without) {
+  public List<GameSettings> getOpenGames(String without) {
     FindIterable<Document> docs = games.find(and(
         eq("params.privacy", GameSettings.Type.PUBLIC.ordinal()),
         eq("state", GameSettings.State.UNSTARTED.ordinal()),
         not(elemMatch("players", new Document("_id", new ObjectId(without))))))
-      .skip(page * PAGE_SIZE)
+      .sort(new Document("_id", -1))
       .projection(SETTINGS_PROJECTION);
 
     List<GameSettings> rt = new ArrayList<>();
@@ -323,6 +320,7 @@ public class Database implements AutoCloseable {
     FindIterable<Document> docs = games.find(and(
           elemMatch("players", new Document("_id", new ObjectId(playerId))),
           ne("state", GameSettings.State.FINISHED.ordinal())))
+      .sort(new Document("_id", -1))
       .projection(SETTINGS_PROJECTION);
 
     List<GameSettings> rt = new ArrayList<>();
