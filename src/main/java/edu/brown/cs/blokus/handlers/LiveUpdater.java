@@ -93,8 +93,7 @@ public class LiveUpdater {
     jObj.addProperty("x", move.getX());
     jObj.addProperty("y", move.getY());
     jObj.addProperty("turn", turn.ordinal());
-    boolean playing
-      = context.getSettings().getState() == GameSettings.State.PLAYING;
+    boolean playing = context.getTurn() != null;
     jObj.addProperty("next_player",
         playing ? context.getTurn().ordinal() : -1);
     jObj.addProperty("game_id", context.getSettings().getId());
