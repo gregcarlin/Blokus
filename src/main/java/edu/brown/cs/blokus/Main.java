@@ -6,6 +6,7 @@ import java.io.IOException;
 import edu.brown.cs.blokus.db.Database;
 import edu.brown.cs.blokus.handlers.AuthHandler;
 import edu.brown.cs.blokus.handlers.ExceptionPrinter;
+import edu.brown.cs.blokus.handlers.GameListHandler;
 import edu.brown.cs.blokus.handlers.IndexHandler;
 import edu.brown.cs.blokus.handlers.InfoHandler;
 import edu.brown.cs.blokus.handlers.JoinHandler;
@@ -120,6 +121,7 @@ public final class Main {
     Spark.get("/signout", new SignoutHandler(), freeMarker);
     Spark.before("/auth/*", new AuthHandler(db));
     Spark.get("/auth/main", new MainHandler(db), freeMarker);
+    Spark.get("/auth/list", new GameListHandler(db));
     Spark.post("/auth/new", new NewGameHandler(db), freeMarker);
     Spark.get("/auth/join/:id", new JoinHandler(db), freeMarker);
     Spark.get("/auth/play/:id", new PlayHandler(db), freeMarker);

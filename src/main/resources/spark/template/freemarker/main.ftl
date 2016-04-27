@@ -74,7 +74,7 @@
         Current Games
         <small>Where you are currently playing</small>
       </h2>
-      <table class="table table-striped table-hover">
+      <table class="table table-striped table-hover table-current">
         <thead>
           <tr>
             <th></th>
@@ -84,31 +84,9 @@
           </tr>
         </thead>
         <tbody>
-          <#if currGames?? && (currGames?size > 0)>
-            <#assign icons = ["globe", "lock", "laptop"]>
-            <#assign tools = ["Public", "Private", "Local"]>
-            <#list currGames as game>
-              <tr onclick="window.location='/auth/play/${game.getId()}'">
-                <td>
-                  <#assign i = game.getType().ordinal()>
-                  <span class="fa fa-fw fa-${icons[i]}" data-toggle="tooltip" data-placement="left" title="${tools[i]}"></span>
-                </td>
-                <td>
-                  <ul>
-                    <#list game.getUniquePlayers() as player>
-                      <li>${db.getName(player)}</li>
-                    </#list>
-                  </ul>
-                </td>
-                <td>${game.getMaxPlayers()}</td>
-                <td>${game.getHumanTimer()}</td>
-              </tr>
-            </#list>
-          <#else>
-            <tr>
-              <td colspan="4">You are not currently in any games.</td>
-            </tr>
-          </#if>
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
         </tbody>
       </table>
 
@@ -116,7 +94,7 @@
         Public Games
         <small>Where you can join others</small>
       </h2>
-      <table class="table table-striped table-hover">
+      <table class="table table-striped table-hover table-public">
         <thead>
           <tr>
             <th>Players</th>
@@ -125,25 +103,9 @@
           </tr>
         </thead>
         <tbody>
-          <#if openGames?? && (openGames?size > 0)>
-            <#list openGames as game>
-              <tr onclick="window.location='/auth/join/${game.getId()}'">
-                <td>
-                  <ul>
-                    <#list game.getAllPlayers() as player>
-                      <li>${db.getName(player.getId())}</li>
-                    </#list>
-                  </ul>
-                </td>
-                <td>${game.getMaxPlayers()}</td>
-                <td>${game.getHumanTimer()}</td>
-              </tr>
-            </#list>
-          <#else>
-            <tr>
-              <td colspan="3">There are no open games.</td>
-            </tr>
-          </#if>
+          <tr>
+            <td colspan="3">Loading...</td>
+          </tr>
         </tbody>
       </table>
     </div>

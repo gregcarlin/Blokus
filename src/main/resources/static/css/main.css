@@ -119,7 +119,7 @@ html, body {
   display: inline;
 }
 .container-main .current-games ul li:not(:last-child)::after {
-  content: ",";
+  content: ", ";
 }
 .form-create > div {
   margin-bottom: 15px;
