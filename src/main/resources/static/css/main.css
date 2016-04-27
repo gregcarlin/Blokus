@@ -221,7 +221,7 @@ html, body {
 .piece-10 .flip,
 .piece-14 #flip-vert,
 .piece-15 #flip-vert,
-.piece-18 .rotation, .flip {
+.piece-18 .rotation, .piece-18 .flip {
   display: none;
 }
 @media (max-width: 1035px) {
