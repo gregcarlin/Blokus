@@ -79,6 +79,13 @@ function toGrid(x) {
 	return Math.floor(x/SIZE)*SIZE;
 }
 
+$(window).resize(function() {
+  var group = $('.icon-group');
+  var offset = $('#board').offset();
+  group.css("left", (curPieceX * SIZE + offset.left + 75) + "px");
+  group.css("top", ((grid.length - curPieceY) * SIZE + offset.top - 50) + "px");
+});
+
 $("#board").mouseup(function(e){
 	if (mode == "dragging") {
 		$("#board").css("cursor","default");
@@ -88,17 +95,18 @@ $("#board").mouseup(function(e){
 			console.log(rotate);
 			console.log(getOrientation(rotate));
 
+			curPieceX = Math.floor(curMouseX/SIZE);
+			curPieceY = Math.floor(curMouseY/SIZE);
+
       var group = $('.icon-group');
 			group.show();
       group.removeClass().addClass('icon-group');
       group.addClass('piece-' + curPiece);
-			group.css("left", (toGrid(e.clientX)-48)+"px");
-			group.css("top", toGrid(e.clientY)+"px");
+      var offset = $('#board').offset();
+			group.css("left", (curPieceX * SIZE + offset.left + 75) + "px");
+			group.css("top", ((grid.length - curPieceY) * SIZE + offset.top - 50) + "px");
 
 			displaySubmit();
-
-			curPieceX = Math.floor(curMouseX/SIZE);
-			curPieceY = Math.floor(curMouseY/SIZE);
 		}
 		else {
 			mode = "relaxing";
