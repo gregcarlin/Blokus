@@ -84,7 +84,7 @@ function initRequest(data) {
 	if (maxTime == 0) timed = false;
 	
 	var serverTime = parseInt(response.curr_move.timestamp.$numberLong);
-  delay = Date.now() - serverTime;
+  delay = Date.now() - response.sent;
 	var curTime = Date.now() - delay;
 	var difference = Math.ceil((curTime - serverTime) / 1000);
 	if (difference < maxTime) startTime = serverTime;
