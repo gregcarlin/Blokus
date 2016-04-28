@@ -54,6 +54,9 @@ curPieceY = 0;
 curMouseX = 0; //mouse locations within grid from bottom left 
 curMouseY = 0;
 
+// last system time delay between server and client
+var delay = 0;
+
 function init() {    //sets up grid and remainingPieces
 	
 	for (i = 1; i <= 4; i++) {
@@ -81,7 +84,8 @@ function initRequest(data) {
 	if (maxTime == 0) timed = false;
 	
 	var serverTime = parseInt(response.curr_move.timestamp.$numberLong);
-	var curTime = Date.now();
+  delay = Date.now() - serverTime;
+	var curTime = Date.now() - delay;
 	var difference = Math.ceil((curTime - serverTime) / 1000);
 	if (difference < maxTime) startTime = serverTime;
 	
@@ -163,13 +167,13 @@ function startNewTurn(resetTime) {
 	drawGrid();
 	$(".icon-group").hide();
 
-	if (resetTime) startTime = Date.now();
+	if (resetTime) startTime = Date.now() - delay;
 	$("#time").html(maxTime);
 }
 
 function processTime() {
-	var d = Date.now();
-	var remaining = Math.ceil(maxTime - (d - startTime) / 1000);
+	var d = Date.now() - delay;
+	var remaining = Math.floor(maxTime - (d - startTime) / 1000);
 	if (remaining < 0) {
 		$.get(url+"/info", initRequest);
 	}

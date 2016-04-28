@@ -45,6 +45,7 @@ public class InfoHandler implements Route {
       game.addProperty("_id",
           game.get("_id").getAsJsonObject().get("$oid").getAsString());
       game.addProperty("loaded_by", user);
+      game.addProperty("sent", System.currentTimeMillis());
       JsonArray players = game.getAsJsonArray("players");
       final int len = players.size();
       for (int i = 0; i < len; i++) {

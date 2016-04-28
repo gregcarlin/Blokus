@@ -39,7 +39,7 @@ public class MoveHandler implements Route {
     final String user = req.attribute("user-id");
     final String gameId = req.params("id");
     synchronized (gameId.intern()) {
-      final Game game = db.getGame(gameId/*, true*/);
+      final Game game = db.getGame(gameId);
 
       // if it's not this user's turn
       if (!user.equals(game.getPlayer(game.getTurn()).getId())) {

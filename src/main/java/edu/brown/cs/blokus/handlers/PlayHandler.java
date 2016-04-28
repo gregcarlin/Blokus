@@ -31,7 +31,10 @@ public class PlayHandler implements TemplateViewRoute {
     final String user = req.attribute("user-id");
     final String gameId = req.params("id");
     synchronized (gameId.intern()) {
-      final Game game = db.getGame(gameId/*, false*/);
+      final Game game = db.getGame(gameId);
+      if (game == null) {
+        Spark.halt(HTTP.NOT_FOUND, "This game does not exist.");
+      }
       db.saveGame(game);
 
       if (!game.hasUser(user)) {
