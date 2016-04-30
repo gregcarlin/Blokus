@@ -91,22 +91,29 @@ function initRequest(data) {
 	
 	
 	var loadedBy = response.loaded_by;
-	for (i = 0; i < response.players.length; i++) {
-		var p = response.players[i];
-    if (!p) continue;
-		
-		for (idx in p.pieces) {
+  _.each(response.players, function(p, i) {
+    if (!p) return;
+
+    _.each(p.pieces, function(idx) {
 			var p1 = p.pieces[idx];
 			remainingPieces[i+1][p1] = 1;
-		}
-		if (loadedBy == p._id) 
-			youControl[i+1] = true;
-		else youControl[i+1] = false;
+		});
+    youControl[i + 1] = loadedBy == p._id;
+
+    var name = p.name;
+    // if local game
+    if (response.params.privacy == 2) {
+      // if 2 player game, else 4 player game
+      if (response.params['num-players'] == 2) {
+        name = "Player " + ((i % 2) + 1);
+      } else {
+        name = "Player " + (i + 1);
+      }
+    }
+    $("#playerName" + (i + 1)).html(name);
+    $("#playerScore" + (i + 1)).html(p.score);
 		
-		$("#playerName"+(i+1)).html(p.name);
-		$("#playerScore"+(i+1)).html(p.score);
-		
-	}
+	});
 	
 	nextPlayer = response.curr_move.turn+1;
 	curPlayer = nextPlayer;
