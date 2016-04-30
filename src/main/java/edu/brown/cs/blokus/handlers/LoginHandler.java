@@ -31,13 +31,13 @@ public class LoginHandler implements TemplateViewRoute {
     final String dest = qm.value("dest");
 
     if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-      res.redirect("/?error=All fields are required.");
+      res.redirect("/?error=All fields are required.&hide=register");
       return null;
     }
 
     String userId = db.getUserId(user, pass);
     if (userId == null) {
-      res.redirect("/?error=Your username or password is incorrect.");
+      res.redirect("/?error=Your username or password is incorrect.&hide=register");
       return null;
     }
 

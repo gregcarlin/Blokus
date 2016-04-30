@@ -89,6 +89,11 @@ html, body {
   width: 44%;
   position: absolute;
 }
+.form-signin a {
+  width: 44%;
+  display: inline-block;
+  text-align: center;
+}
 .form-signup {
   display: inline-block;
   width: 44%;
@@ -96,7 +101,7 @@ html, body {
   position: absolute;
   right: 15px;
 }
-.form-signup .btn {
+.form-signup .btn, .form-signup a {
   width: 100%;
 }
 

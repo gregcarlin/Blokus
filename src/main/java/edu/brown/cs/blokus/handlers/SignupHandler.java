@@ -31,18 +31,18 @@ public class SignupHandler implements TemplateViewRoute {
     final String dest = qm.value("dest");
 
     if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-      res.redirect("/?error=All fields are required.");
+      res.redirect("/?error=All fields are required.&hide=login");
       return null;
     }
 
     if (user.length() > 15) {
-      res.redirect("/?error=Usernames cannot exceed 15 characters.");
+      res.redirect("/?error=Usernames cannot exceed 15 characters.&hide=login");
       return null;
     }
 
     String userId = db.createUser(user, pass);
     if (userId == null) {
-      res.redirect("/?error=A user with that name already exists.");
+      res.redirect("/?error=A user with that name already exists.&hide=login");
       return null;
     }
 
