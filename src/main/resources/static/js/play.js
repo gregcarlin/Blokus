@@ -145,6 +145,11 @@ function initRequest(data) {
 	startNewTurn(false);
 }
 
+// humanizes a duration (given in seconds)
+function humanize(time) {
+  return time < 60 ? time : moment.duration(time * 1000).humanize();
+}
+
 function startNewTurn(resetTime) {
 	rotate = [1,0,0,1,1];
 	//var newPlayer = (curPlayer + 1) % 5;
@@ -168,16 +173,20 @@ function startNewTurn(resetTime) {
 	$(".icon-group").hide();
 
 	if (resetTime) startTime = Date.now() - delay;
-	$("#time").html(maxTime);
+
+	var d = Date.now() - delay;
+	var remaining = Math.floor(maxTime - (d - startTime) / 1000);
+  $("#time").html(humanize(remaining));
 }
 
 function processTime() {
 	var d = Date.now() - delay;
 	var remaining = Math.floor(maxTime - (d - startTime) / 1000);
 	if (remaining < 0) {
-		$.get(url+"/info", initRequest);
-	}
-	else $("#time").html(remaining);
+		$.get(url + "/info", initRequest);
+	} else {
+    $("#time").html(humanize(remaining));
+  }
 }
 
 function score(player) {
