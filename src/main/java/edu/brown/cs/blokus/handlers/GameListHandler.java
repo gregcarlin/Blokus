@@ -33,14 +33,13 @@ public class GameListHandler implements Route {
   private JsonObject toJson(GameSettings gs) {
     JsonObject jObj = new JsonObject();
     jObj.addProperty("_id", gs.getId());
+    jObj.addProperty("state", gs.getState().ordinal());
 
     JsonObject params = new JsonObject();
     params.addProperty("privacy", gs.getType().ordinal());
     params.addProperty("num_players", gs.getMaxPlayers());
     params.addProperty("timer", gs.getHumanTimer());
     jObj.add("params", params);
-
-    jObj.addProperty("state", gs.getState().ordinal());
 
     JsonArray players = new JsonArray();
     for (String player : gs.getUniquePlayers()) {

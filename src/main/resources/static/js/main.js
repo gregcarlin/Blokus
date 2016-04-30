@@ -22,7 +22,11 @@ $('.form-create .btn').click(updateStatus);
 
 const icons = ['globe', 'lock', 'laptop'];
 const tools = ['Public', 'Private', 'Local'];
+const stIcons = ['clock-o', 'play', 'check'];
+const stTools = ['Waiting for players', 'Playing', 'Completed'];
+var update = true;
 var updateTables = function() {
+  if (!update) return;
   $.get('list', function(data) {
     var json = JSON.parse(data);
 
@@ -34,7 +38,10 @@ var updateTables = function() {
           '<tr onclick="window.location=\'/auth/play/' + game._id + '\'">' +
             '<td><span class="fa fa-fw fa-' + icons[game.params.privacy] +
               '" data-toggle="tooltip" data-placement="left" title="' +
-              tools[game.params.privacy] + '"></span></td>' +
+              tools[game.params.privacy] + '"></span>' +
+              '<span class="fa fa-fw fa-' + stIcons[game.state] +
+              '" data-toggle="tooltip" data-placement="right" title="' +
+              stTools[game.state] + '"></span></td>' +
             '<td><ul>';
         _.each(game.players, function(player) {
           html += '<li>' + player + '</li>';

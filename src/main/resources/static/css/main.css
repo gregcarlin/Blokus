@@ -126,6 +126,16 @@ html, body {
 .container-main .current-games ul li:not(:last-child)::after {
   content: ", ";
 }
+.container-main .current-games tr td:first-child {
+  width: 3.8em;
+  text-align: center;
+}
+.container-main .fa-clock-o {
+  color: #D6BA00;
+}
+.container-main .fa-play {
+  color: #00CD3D;
+}
 .form-create > div {
   margin-bottom: 15px;
 }
