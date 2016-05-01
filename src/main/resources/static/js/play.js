@@ -161,7 +161,6 @@ function initRequest(data) {
 			
 		
 		$(".gameResults").show();
-		
 		mode = "notYourTurn";
 		update = null;
 		return;
