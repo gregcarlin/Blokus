@@ -156,6 +156,9 @@ html, body {
 .container-play {
   text-align: center;
 }
+.alert#slow {
+  display: none;
+}
 #board {
 	border: 2px solid black;
 }

@@ -57,6 +57,9 @@ curMouseY = 0;
 // last system time delay between server and client
 var delay = 0;
 
+// id of last submitted piece
+var lastSubmitted = -1;
+
 function init() {    //sets up grid and remainingPieces
 	
 	for (i = 1; i <= 4; i++) {
@@ -406,8 +409,6 @@ function getMousePos(canvas, evt) {
     };
 }
 
-
-
 // http://www.w3schools.com/js/js_cookies.asp
 function getCookie(cname) {
     var name = cname + "=";
@@ -423,9 +424,12 @@ function getCookie(cname) {
 //mostRecentX = null;
 //mostRecentY = null;
 
-
 $(document).ready(function(){
-	board.width = board.height*boardRatio;
+  $('#slow .close').click(function() {
+    $(this).parent().hide();
+  });
+
+	board.width = board.height * boardRatio;
 	init();
 
   var wsProt = window.location.protocol == 'https:' ? 'wss' : 'ws';
@@ -444,23 +448,26 @@ $(document).ready(function(){
     switch (json.code) {
       case 0:
         //if (json.x == mostRecentX && json.y == mostRecentY) return;
-         if (json.game_id != gameID) return;
-         
-         console.log("NETWORKING RESPONSE:",json);
-         
+        if (json.game_id != gameID) return;
+
+        console.log("NETWORKING RESPONSE:",json);
+
+        if (lastSubmitted != json.piece && youControl[json.turn + 1]) {
+          $('#slow').show();
+        }
+        lastSubmitted = -1;
+
         //mostRecentX = json.x;
         //mostRecentY = json.y;
-        
+
         curPiece = json.piece;
         curPieceX = json.x;
         curPieceY = json.y;
         rotate = getRotate(json.orientation);
-        
-       
+
         curPlayer = json.turn + 1;
         nextPlayer = json.next_player + 1;
-        
-        
+
         submitMove();
         break;
       case 1:

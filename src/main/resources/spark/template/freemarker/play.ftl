@@ -29,6 +29,11 @@
 	<span id = "time" class = "timed">0 </span>
 </h1>
 
+<div class="alert alert-info alert-dismissible" role="alert" id="slow">
+  <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Too slow!</strong> A random move was made for you.
+</div>
+
 <div id = "players">
 	<div id = "player1" class = "playerInfo"> 
     <div>

@@ -299,23 +299,27 @@ function submitMove() {
 $("#submit").on('click', function() {
 	console.log(rotate);
 	console.log(getOrientation(rotate));
-	console.log( {
+	console.log({
 	    piece: curPiece,
 	    orientation: getOrientation(rotate),
 	    x: curPieceX,
 	    y: curPieceY
   	});
-	$.post(url+"/move", {
+  lastSubmitted = curPiece;
+	$.post(url + "/move", {
 	    piece: curPiece,
 	    orientation: getOrientation(rotate),
 	    x: curPieceX,
 	    y: curPieceY
   	},
-  	function(data) {console.log(data);} );
+  	function(data) {
+      data = JSON.parse(data);
+      if (!data.success) {
+        $('#slow').show();
+      }
+    });
 });
 
 $("#closeResults").on('click', function() {
 	$(".gameResults").hide();
 });
-
-
