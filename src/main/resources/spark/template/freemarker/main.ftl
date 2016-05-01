@@ -67,6 +67,13 @@
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Create Game</button>
       </form>
+
+      <div class="panel panel-info" id="tips">
+        <div class="panel-heading">Did you know?</div>
+        <div class="panel-body">
+          ${tip}
+        </div>
+      </div>
     </div>
 
     <div class="col-md-6 current-games">

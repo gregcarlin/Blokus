@@ -14,6 +14,10 @@ import spark.TemplateViewRoute;
   * Handles the display of the main page.
   */
 public class MainHandler implements TemplateViewRoute {
+  private static final String[] tips = {
+    "First tip",
+    "Second tip"
+  };
   private final Database db;
 
   /**
@@ -27,7 +31,9 @@ public class MainHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
     final String user = req.attribute("user-id");
-    return new ModelAndView(ImmutableMap.of("username", db.getName(user)),
+    return new ModelAndView(
+        ImmutableMap.of("username", db.getName(user),
+          "tip", tips[(int) (Math.random() * tips.length)]),
         "main.ftl");
   }
 }

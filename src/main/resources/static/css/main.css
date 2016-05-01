@@ -151,6 +151,9 @@ html, body {
   display: block;
   margin-bottom: 15px;
 }
+#tips {
+  margin-top: 40px;
+}
 
 /* play page */
 .container-play {
