@@ -390,8 +390,10 @@ function shade(color, percent){
 }
 
 function drawCurPiece() {
+  ctx.globalAlpha = 0.7;
 	drawPiece(orient(curPiece), shade(colors[curPlayer], -0.5),
             SIZE * curPieceX, SIZE * curPieceY, SIZE);
+  ctx.globalAlpha = 1;
 }
 
 function mouseOnPiece() {
