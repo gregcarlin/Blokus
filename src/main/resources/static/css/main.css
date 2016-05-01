@@ -154,6 +154,9 @@ html, body {
 #tips {
   margin-top: 40px;
 }
+#tips .panel-body {
+  overflow: scroll;
+}
 .table-current {
   margin-bottom: 0;
 }

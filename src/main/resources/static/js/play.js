@@ -64,11 +64,9 @@ var lastSubmitted = -1;
 var active = [true, true, true, true];
 
 function init() {    //sets up grid and remainingPieces
-	
 	for (i = 1; i <= 4; i++) {
 		highlightInfo(i,false);
 	}
-  $("#gameResults").modal('hide');
 	$.get(url + "/info", initRequest);
 }
 
@@ -158,34 +156,9 @@ function initRequest(data) {
 		$(".icon-group").hide();
 		$(".timed").hide();
 		$("#alert").html("GAME COMPLETED");
-		
-		
-		var scoreSort = function(a,b) {
-   		 return b.score - a.score;
-		}
-		
-		var scores = [];
-		
-		for (i = 0; i < response.players.length; i++) {
-			var p = response.players[i];
-			scores[i] = {name: p.name, score: p.score};
-		}
-		scores = scores.sort(scoreSort);
 
-    var html = '';
-    _.each(scores, function(score, i) {
-      html += '<li>' +
-        '<span class="ordinal">' + ordinal[i] + '</span>' +
-        score.name + ': ' + score.score + ' pts' +
-        '</li>';
-    });
-    $('#score-list').html(html);
+    showGameResults();
 
-    if (!endGameDisplayed) {
-      endGameDisplayed = true;
-      $("#gameResults").modal('show');
-    }
-		
 		mode = "notYourTurn";
 		update = null;
 		return;
@@ -199,6 +172,34 @@ function initRequest(data) {
 	}
 	startNewTurn(false);
 }
+
+var showGameResults = function() {
+  var scoreSort = function(a,b) {
+      return b.score - a.score;
+  }
+  
+  var scores = [];
+  
+  for (i = 0; i < response.players.length; i++) {
+    var p = response.players[i];
+    scores[i] = {name: p.name, score: p.score};
+  }
+  scores = scores.sort(scoreSort);
+
+  var html = '';
+  _.each(scores, function(score, i) {
+    html += '<li>' +
+      '<span class="ordinal">' + ordinal[i] + '</span>' +
+      score.name + ': ' + score.score + ' pts' +
+      '</li>';
+  });
+  $('#score-list').html(html);
+
+  if (!endGameDisplayed) {
+    endGameDisplayed = true;
+    $("#gameResults").modal('show');
+  }
+};
 
 // humanizes a duration (given in seconds)
 function humanize(time) {
@@ -510,6 +511,8 @@ $(document).ready(function(){
         })) {
           $('#inactive').show();
         }
+
+        showGameResults();
 
         submitMove();
         break;
