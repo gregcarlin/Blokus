@@ -77,32 +77,20 @@
   <span id="submit" class="material-icons icon">done</span>
 </div>
 
-<table class = "gameResults">
-	
-	<tr>
-		<td></td><td> <u>Game Results:</u> </td><td><button id = "closeResults">x</button></td>
-	</tr>
-	<tr>
-		<td>1st</td>
-		<td id = "username1"></td>
-		<td> <span id = "score1">0</span> pts </td>
-	</tr>
-	<tr>
-		<td>2nd</td>
-		<td id = "username2"></td>
-		<td> <span id = "score2">0</span> pts </td>
-	</tr>
-	<tr>
-		<td>3rd</td>
-		<td id = "username3"></td>
-		<td> <span id = "score3">0</span> pts </td>
-	</tr>
-	<tr>
-		<td>4th</td>
-		<td id = "username4"></td>
-		<td> <span id = "score4">0</span> pts </td>
-	</tr>
-</table>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="gameResults">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Game Results</h4>
+      </div>
+      <div class="modal-body">
+        <ul id="score-list">
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 </div><!-- /.container -->
 

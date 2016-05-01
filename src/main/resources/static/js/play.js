@@ -65,9 +65,11 @@ function init() {    //sets up grid and remainingPieces
 	for (i = 1; i <= 4; i++) {
 		highlightInfo(i,false);
 	}
-	$(".gameResults").hide();
+  $("#gameResults").modal('hide');
 	$.get(url+"/info", initRequest);
 }
+
+const ordinal = ['1st', '2nd', '3rd', '4th'];
 
 function initRequest(data) {
 	var foo = [];
@@ -126,7 +128,7 @@ function initRequest(data) {
 	}
 	if (!gameStarted) {
 		drawGrid();
-		$("i").hide();
+		$(".icon-group").hide();
 		$(".timed").hide();
 		$("#alert").html("GAME NOT STARTED");
 		mode = "notYourTurn";
@@ -138,29 +140,34 @@ function initRequest(data) {
 	}
 	if (gameOver) {
 		drawGrid();
-		$("i").hide();
+		$(".icon-group").hide();
 		$(".timed").hide();
 		$("#alert").html("GAME COMPLETED");
 		
 		
 		var scoreSort = function(a,b) {
-   		 return a.score - b.score;
+   		 return b.score - a.score;
 		}
 		
-		var scores = []
+		var scores = [];
 		
 		for (i = 0; i < response.players.length; i++) {
 			var p = response.players[i];
-			scores[i] = {name:p.name,score:p.score};
+			scores[i] = {name: p.name, score: p.score};
 		}
 		scores = scores.sort(scoreSort);
-		for (i = 0; i < 4; i++) {
-			$("#username"+(4-i)).html(scores[i].name);
-			$("#score"+(4-i)).html(scores[i].score);
-		}
-			
+
+    var html = '';
+    _.each(scores, function(score, i) {
+      html += '<li>' +
+        '<span class="ordinal">' + ordinal[i] + '</span>' +
+        score.name + ': ' + score.score + ' pts' +
+        '</li>';
+    });
+    $('#score-list').html(html);
+
+    $("#gameResults").modal('show');
 		
-		$(".gameResults").show();
 		mode = "notYourTurn";
 		update = null;
 		return;
@@ -383,8 +390,10 @@ function shade(color, percent){
 }
 
 function drawCurPiece() {
+  ctx.globalAlpha = 0.7;
 	drawPiece(orient(curPiece), shade(colors[curPlayer], -0.5),
             SIZE * curPieceX, SIZE * curPieceY, SIZE);
+  ctx.globalAlpha = 1;
 }
 
 function mouseOnPiece() {
