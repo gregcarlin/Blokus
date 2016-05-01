@@ -60,16 +60,20 @@ var delay = 0;
 // id of last submitted piece
 var lastSubmitted = -1;
 
+// whether each player is active or not. 0-indexed because fuck you.
+var active = [true, true, true, true];
+
 function init() {    //sets up grid and remainingPieces
 	
 	for (i = 1; i <= 4; i++) {
 		highlightInfo(i,false);
 	}
   $("#gameResults").modal('hide');
-	$.get(url+"/info", initRequest);
+	$.get(url + "/info", initRequest);
 }
 
 const ordinal = ['1st', '2nd', '3rd', '4th'];
+var endGameDisplayed = false;
 
 function initRequest(data) {
 	var foo = [];
@@ -117,10 +121,21 @@ function initRequest(data) {
     }
     $("#playerName" + (i + 1)).html(name);
     $("#playerScore" + (i + 1)).html(p.score);
-		
+
+    active[i] = p.playing;
+    if (!active[i]) {
+      $('#player' + (i + 1)).css('background-color', '#EEE');
+    }
 	});
+
+  // if all your colors are inactive
+  if (_.every(youControl, function(ctrl, i) {
+    return !ctrl || !active[i - 1];
+  })) {
+    $('#inactive').show();
+  }
 	
-	nextPlayer = response.curr_move.turn+1;
+	nextPlayer = response.curr_move.turn + 1;
 	curPlayer = nextPlayer;
 
 	for (i = 1; i <= 4; i++) {
@@ -132,11 +147,11 @@ function initRequest(data) {
 		$(".timed").hide();
 		$("#alert").html("GAME NOT STARTED");
 		mode = "notYourTurn";
-		$("#link").html(url.replace(/play/i, 'join'));
+		$("#link").val(url.replace(/play/i, 'join'));
 		return;
 	}
 	if (gameStarted) {
-		$(".linkPart").hide();
+		$("#linkDiv").hide();
 	}
 	if (gameOver) {
 		drawGrid();
@@ -166,7 +181,10 @@ function initRequest(data) {
     });
     $('#score-list').html(html);
 
-    $("#gameResults").modal('show');
+    if (!endGameDisplayed) {
+      endGameDisplayed = true;
+      $("#gameResults").modal('show');
+    }
 		
 		mode = "notYourTurn";
 		update = null;
@@ -436,6 +454,10 @@ $(document).ready(function(){
     $(this).parent().hide();
   });
 
+  $('#linkDiv input').click(function() {
+    this.select();
+  });
+
 	board.width = board.height * boardRatio;
 	init();
 
@@ -475,10 +497,24 @@ $(document).ready(function(){
         curPlayer = json.turn + 1;
         nextPlayer = json.next_player + 1;
 
+        active = json.active;
+        _.each(active, function(act, i) {
+          if (!act) {
+            $('#player' + (i + 1)).css('background-color', '#EEE');
+          }
+        });
+
+        // if all your colors are inactive
+        if (_.every(youControl, function(ctrl, i) {
+          return !ctrl || !active[i - 1];
+        })) {
+          $('#inactive').show();
+        }
+
         submitMove();
         break;
       case 1:
-        $.get(url+"/info", initRequest);
+        $.get(url + "/info", initRequest);
         break;
       default:
         alert('Unsupported socket code ' + json.code);

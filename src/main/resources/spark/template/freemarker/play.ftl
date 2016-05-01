@@ -34,6 +34,10 @@
   <strong>Too slow!</strong> A random move was made for you.
 </div>
 
+<div class="alert alert-info alert-dismissible" role="alert" id="inactive">
+  <strong>Good game!</strong> You have no more available moves.
+</div>
+
 <div id = "players">
 	<div id = "player1" class = "playerInfo"> 
     <div>
@@ -59,9 +63,10 @@
       <span id="playerScore4" class="badge">0<span>
     </div>
 	</div>
-	<div id = "linkDiv">
-		<span class = "linkPart"> LINK TO JOIN GAME: </span><br>
-		<div id  = "link" class = "linkPart">  </div>
+	<div id="linkDiv" class="panel panel-info">
+    <div class="panel-heading">Invite your friends!</div>
+    Give your friends the following link so they can join this game:
+    <input id="link" class="form-control" type="text" value="test" readonly />
 	</div>
 </div>
 <div id = "canvas">

@@ -180,7 +180,7 @@ html, body {
 .container-play {
   text-align: center;
 }
-.alert#slow {
+.alert#slow, .alert#inactive {
   display: none;
 }
 #board {

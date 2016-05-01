@@ -51,7 +51,7 @@ var updateTables = function() {
         var html =
           '<tr onclick="window.location=\'/auth/play/' + game._id + '\'">' +
             '<td><span class="fa fa-fw fa-' + icons[game.params.privacy] +
-              '" data-toggle="tooltip" data-placement="left" title="' +
+              '" data-toggle="tooltip" data-placement="right" title="' +
               tools[game.params.privacy] + '"></span>' +
               '<span class="fa fa-fw fa-' + stIcons[game.state] +
               '" data-toggle="tooltip" data-placement="right" title="' +

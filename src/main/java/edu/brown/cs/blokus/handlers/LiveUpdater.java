@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import edu.brown.cs.blokus.Game;
@@ -97,6 +98,12 @@ public class LiveUpdater {
     jObj.addProperty("next_player",
         playing ? context.getTurn().ordinal() : -1);
     jObj.addProperty("game_id", context.getSettings().getId());
+
+    JsonArray jArr = new JsonArray();
+    for (Turn t : Turn.values()) {
+      jArr.add(context.canMove(t));
+    }
+    jObj.add("active", jArr);
 
     sendToGame(context.getSettings(), jObj);
   }
