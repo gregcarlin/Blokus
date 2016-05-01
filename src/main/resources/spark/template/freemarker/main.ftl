@@ -81,40 +81,46 @@
         Current Games
         <small>Where you are currently playing</small>
       </h2>
-      <table class="table table-striped table-hover table-current">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Players</th>
-            <th>Max</th>
-            <th>Timer</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="4">Loading...</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="limited">
+        <table class="table table-striped table-hover table-current">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Players</th>
+              <th>Max</th>
+              <th>Timer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="4">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="shadow"></div>
+      </div>
 
       <h2>
         Public Games
         <small>Where you can join others</small>
       </h2>
-      <table class="table table-striped table-hover table-public">
-        <thead>
-          <tr>
-            <th>Players</th>
-            <th>Max</th>
-            <th>Timer</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="3">Loading...</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="limited">
+        <table class="table table-striped table-hover table-public">
+          <thead>
+            <tr>
+              <th>Players</th>
+              <th>Max</th>
+              <th>Timer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="3">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="shadow"></div>
+      </div>
     </div>
   </div>
 

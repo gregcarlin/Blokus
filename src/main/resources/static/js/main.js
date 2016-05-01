@@ -20,6 +20,20 @@ var updateStatus = function(e) {
 };
 $('.form-create .btn').click(updateStatus);
 
+var updateScroll = function() {
+  var me = $(this);
+  var shadow = $('.shadow', me);
+  if (me.scrollTop() == me.prop('scrollHeight') - me.outerHeight()) {
+    shadow.hide();
+  } else {
+    shadow.css('bottom', -me.scrollTop());
+    shadow.show();
+  }
+}
+var updateAllScroll = function() {
+  $('.limited').each(updateScroll);
+}
+
 const icons = ['globe', 'lock', 'laptop'];
 const tools = ['Public', 'Private', 'Local'];
 const stIcons = ['clock-o', 'play', 'check'];
@@ -79,6 +93,8 @@ var updateTables = function() {
     // enable tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
+    updateAllScroll();
+
     // do this again in 5 seconds
     setTimeout(updateTables, 5000);
   });
@@ -100,4 +116,6 @@ $(function() {
 
   updateStatus();
   updateTables();
+
+  $('.limited').scroll(updateScroll);
 });
