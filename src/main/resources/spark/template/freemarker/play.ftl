@@ -72,6 +72,33 @@
   <span id="submit" class="material-icons icon">done</span>
 </div>
 
+<table class = "gameResults">
+	
+	<tr>
+		<td></td><td> <u>Game Results:</u> </td><td><button id = "closeResults">x</button></td>
+	</tr>
+	<tr>
+		<td>1st</td>
+		<td id = "username1"></td>
+		<td> <span id = "score1">0</span> pts </td>
+	</tr>
+	<tr>
+		<td>2nd</td>
+		<td id = "username2"></td>
+		<td> <span id = "score2">0</span> pts </td>
+	</tr>
+	<tr>
+		<td>3rd</td>
+		<td id = "username3"></td>
+		<td> <span id = "score3">0</span> pts </td>
+	</tr>
+	<tr>
+		<td>4th</td>
+		<td id = "username4"></td>
+		<td> <span id = "score4">0</span> pts </td>
+	</tr>
+</table>
+
 </div><!-- /.container -->
 
 <script src="/js/pieces.js"></script>

@@ -59,6 +59,7 @@ function init() {    //sets up grid and remainingPieces
 	for (i = 1; i <= 4; i++) {
 		highlightInfo(i,false);
 	}
+	$(".gameResults").hide();
 	$.get(url+"/info", initRequest);
 }
 
@@ -127,6 +128,27 @@ function initRequest(data) {
 		$("i").hide();
 		$(".timed").hide();
 		$("#alert").html("GAME COMPLETED");
+		
+		
+		var scoreSort = function(a,b) {
+   		 return a.score - b.score;
+		}
+		
+		var scores = []
+		
+		for (i = 0; i < response.players.length; i++) {
+			var p = response.players[i];
+			scores[i] = {name:p.name,score:score(i+1)};
+		}
+		scores = scores.sort(scoreSort);
+		for (i = 0; i < 4; i++) {
+			$("#username"+(4-i)).html(scores[i].name);
+			$("#score"+(4-i)).html(scores[i].score);
+		}
+			
+		
+		$(".gameResults").show();
+		
 		mode = "notYourTurn";
 		update = null;
 		return;
@@ -347,6 +369,7 @@ function getMousePos(canvas,evt) {
         y: evt.clientY - rect.top
     };
 }
+
 
 
 // http://www.w3schools.com/js/js_cookies.asp

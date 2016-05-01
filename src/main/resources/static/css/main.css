@@ -200,6 +200,24 @@ html, body {
 	text-align: center;
 	font-size: 24px;
 }
+.gameResults {
+	position: absolute;
+	width: 300px;
+	height: 150px;
+	top: 200px; 
+	left: 400px;
+	background-color: #EBCF81;
+	font-size: 18px;
+	padding: 5px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px 0 #000;
+}
+#closeResults {
+	background-color: white;
+	border: 1px solid black;
+	width: 30px;
+	border-radius: 15px;
+}
 .icon-group {
   position: absolute;
   display: none;

@@ -230,3 +230,9 @@ $("#submit").on('click', function() {
   	},
   	function(data) {console.log(data);} );
 });
+
+$("#closeResults").on('click', function() {
+	$(".gameResults").hide();
+});
+
+
