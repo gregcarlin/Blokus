@@ -159,6 +159,81 @@ function isColor(color,row,column) {
 	return (grid[row][column] == color);
 }
 
+// Gets corners where the currently selected piece can be played
+function cornersForPiece() {
+    var corners = getCorners();
+    var moveCorners = new Set();
+    var rotateBak = rotate;
+    var curPieceXBak = curPieceX;
+    var curPieceYBak = curPieceY;
+    for (var o = 0; o < 8; o++) {
+        rotate = getRotate(o);
+        for (curPieceX = 0; curPieceX < 20; curPieceX++) {
+            for (curPieceY = 0; curPieceY < 20; curPieceY++) {
+                if (isLegal()) {
+                    var locs = orient(curPiece);
+                    for (var i = 0; i < locs.length / 2; i++) {
+                        var row = grid.length - 1 - (curPieceY + locs[2 * i + 1]);
+                        var col = curPieceX + locs[2 * i];
+                        var s = String([row, col]);
+                        if (corners.has(s)) {
+                            moveCorners.add(s);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    rotate = rotateBak;
+    curPieceX = curPieceXBak;
+    curPieceY = curPieceYBak;
+    return moveCorners;
+}
+
+function getPlaces() {
+    var places = new Set();
+    for (var r = 0; r < 20; r++) {
+        for (var c = 0; c < 20; c++) {
+            if (grid[r][c] == curPlayer) {
+                places.add(String([r, c]));
+            }
+        }
+    }
+    return places;
+}
+
+// Get all corners
+function getCorners() {
+    var corners = new Set();
+    var places = getPlaces();
+    for (let place of places) {
+        place = place.split(",");
+        checkCorner(corners, parseInt(place[0]) - 1, parseInt(place[1]) - 1, places);
+        checkCorner(corners, parseInt(place[0]) - 1, parseInt(place[1]) + 1, places);
+        checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) - 1, places);
+        checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) + 1, places);
+    }
+    return corners;
+}
+
+// If (x, y) is a corner, adds (x, y) to set s
+function checkCorner(s, x, y, places) {
+    if (grid[x] && grid[x][y] == 0
+            && notSame(x - 1, y)
+            && notSame(x + 1, y)
+            && notSame(x, y - 1)
+            && notSame(x, y + 1)) {
+        s.add(String([x, y]));
+    }
+}
+
+function notSame(x, y, places) {
+    if (grid[x] && grid[x][y] == curPlayer) {
+        return false;
+    }
+    return true;
+}
+
 function isLegal() {
 	var locs = orient(curPiece);
 	 
