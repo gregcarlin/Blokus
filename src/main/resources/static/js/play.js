@@ -98,8 +98,7 @@ function initRequest(data) {
   _.each(response.players, function(p, i) {
     if (!p) return;
 
-    _.each(p.pieces, function(idx) {
-			var p1 = p.pieces[idx];
+    _.each(p.pieces, function(p1) {
 			remainingPieces[i+1][p1] = 1;
 		});
     youControl[i + 1] = loadedBy == p._id;
