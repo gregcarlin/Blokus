@@ -36,30 +36,33 @@ public class InfoHandler implements Route {
     final String gameId = req.params("id");
 
     // get and save game so timer is updated
-    Game rich = db.getGame(gameId);
-    db.saveGame(rich);
+    synchronized (gameId.intern()) {
+      Game rich = db.getGame(gameId);
+      db.saveGame(rich);
 
-    JsonObject game
-      = GSON.fromJson(db.getGameRaw(gameId), JsonObject.class);
-    game.addProperty("_id",
-        game.get("_id").getAsJsonObject().get("$oid").getAsString());
-    game.addProperty("loaded_by", user);
-    JsonArray players = game.getAsJsonArray("players");
-    final int len = players.size();
-    for (int i = 0; i < len; i++) {
-      JsonElement oPlayer = players.get(i);
-      if (oPlayer == null || oPlayer instanceof JsonNull) {
-        players.set(i, null);
-      } else {
-        JsonObject player = oPlayer.getAsJsonObject();
-        String id = player.get("_id").getAsJsonObject().get("$oid").getAsString();
-        player.addProperty("_id", id);
-        player.addProperty("name", db.getName(id));
-        players.set(i, player);
+      JsonObject game
+        = GSON.fromJson(db.getGameRaw(gameId), JsonObject.class);
+      game.addProperty("_id",
+          game.get("_id").getAsJsonObject().get("$oid").getAsString());
+      game.addProperty("loaded_by", user);
+      game.addProperty("sent", System.currentTimeMillis());
+      JsonArray players = game.getAsJsonArray("players");
+      final int len = players.size();
+      for (int i = 0; i < len; i++) {
+        JsonElement oPlayer = players.get(i);
+        if (oPlayer == null || oPlayer instanceof JsonNull) {
+          players.set(i, null);
+        } else {
+          JsonObject player = oPlayer.getAsJsonObject();
+          String id = player.get("_id").getAsJsonObject().get("$oid").getAsString();
+          player.addProperty("_id", id);
+          player.addProperty("name", db.getName(id));
+          players.set(i, player);
+        }
       }
-    }
-    game.add("players", players);
+      game.add("players", players);
 
-    return GSON.toJson(game);
+      return GSON.toJson(game);
+    }
   }
 }

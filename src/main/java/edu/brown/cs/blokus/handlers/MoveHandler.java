@@ -37,29 +37,34 @@ public class MoveHandler implements Route {
   @Override
   public Object handle(Request req, Response res) {
     final String user = req.attribute("user-id");
-    final Game game = db.getGame(req.params("id"));
+    final String gameId = req.params("id");
+    synchronized (gameId.intern()) {
+      final Game game = db.getGame(gameId);
 
-    // if it's not this user's turn
-    if (!user.equals(game.getPlayer(game.getTurn()).getId())) {
-      return FAIL;
+      // if it's not this user's turn
+      if (!user.equals(game.getPlayer(game.getTurn()).getId())) {
+        db.saveGame(game);
+        return FAIL;
+      }
+
+      BodyParser body = new BodyParser(req.body());
+      Shape shape = Shape.values()[body.getInt("piece")];
+      Orientation orientation
+        = Orientation.values()[body.getInt("orientation")];
+      int x = body.getInt("x");
+      int y = body.getInt("y");
+      Move move = new Move(shape, orientation, x, y);
+
+      // if it's an illegal move
+      if (!game.isLegal(move)) {
+        db.saveGame(game);
+        return FAIL;
+      }
+
+      game.makeMove(move);
+      db.saveGame(game);
+      return status(true, game.getTurn().ordinal());
     }
-
-    BodyParser body = new BodyParser(req.body());
-    Shape shape = Shape.values()[body.getInt("piece")];
-    Orientation orientation
-      = Orientation.values()[body.getInt("orientation")];
-    int x = body.getInt("x");
-    int y = body.getInt("y");
-    Move move = new Move(shape, orientation, x, y);
-
-    // if it's an illegal move
-    if (!game.isLegal(move)) {
-      return FAIL;
-    }
-
-    game.makeMove(move);
-    db.saveGame(game);
-    return status(true, game.getTurn().ordinal());
   }
 
   private static String status(boolean flag) {

@@ -101,6 +101,7 @@
 
 </div><!-- /.container -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 <script src="/js/pieces.js"></script>
 </#assign>
 <#assign js>play</#assign>

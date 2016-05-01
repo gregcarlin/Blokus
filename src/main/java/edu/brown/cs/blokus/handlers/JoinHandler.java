@@ -28,21 +28,23 @@ public class JoinHandler implements TemplateViewRoute {
   public ModelAndView handle(Request req, Response res) {
     final String userId = req.attribute("user-id");
     final String gameId = req.params("id");
-    final Game game = db.getGame(gameId);
+    synchronized (gameId.intern()) {
+      final Game game = db.getGame(gameId);
 
-    // if user is already in this game, just redirect them to the actual game
-    for (Player player : game.getAllPlayers()) {
-      if (player.getId().equals(userId)) {
-        res.redirect("/auth/play/" + gameId);
-        return null;
+      // if user is already in this game, just redirect them to the actual game
+      for (Player player : game.getAllPlayers()) {
+        if (player.getId().equals(userId)) {
+          res.redirect("/auth/play/" + gameId);
+          return null;
+        }
       }
+
+      game.getSettings().addPlayer(userId);
+      String newId = db.saveGame(game);
+      assert newId.equals(gameId);
+
+      res.redirect("/auth/play/" + newId);
+      return null;
     }
-
-    game.getSettings().addPlayer(userId);
-    String newId = db.saveGame(game);
-    assert newId.equals(gameId);
-
-    res.redirect("/auth/play/" + newId);
-    return null;
   }
 }

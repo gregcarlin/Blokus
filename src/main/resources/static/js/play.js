@@ -54,6 +54,9 @@ curPieceY = 0;
 curMouseX = 0; //mouse locations within grid from bottom left 
 curMouseY = 0;
 
+// last system time delay between server and client
+var delay = 0;
+
 function init() {    //sets up grid and remainingPieces
 	
 	for (i = 1; i <= 4; i++) {
@@ -82,28 +85,36 @@ function initRequest(data) {
 	if (maxTime == 0) timed = false;
 	
 	var serverTime = parseInt(response.curr_move.timestamp.$numberLong);
-	var curTime = Date.now();
+  delay = Date.now() - response.sent;
+	var curTime = Date.now() - delay;
 	var difference = Math.ceil((curTime - serverTime) / 1000);
 	if (difference < maxTime) startTime = serverTime;
 	
 	
 	var loadedBy = response.loaded_by;
-	for (i = 0; i < response.players.length; i++) {
-		var p = response.players[i];
-    if (!p) continue;
-		
-		for (idx in p.pieces) {
+  _.each(response.players, function(p, i) {
+    if (!p) return;
+
+    _.each(p.pieces, function(idx) {
 			var p1 = p.pieces[idx];
 			remainingPieces[i+1][p1] = 1;
-		}
-		if (loadedBy == p._id) 
-			youControl[i+1] = true;
-		else youControl[i+1] = false;
+		});
+    youControl[i + 1] = loadedBy == p._id;
+
+    var name = p.name;
+    // if local game
+    if (response.params.privacy == 2) {
+      // if 2 player game, else 4 player game
+      if (response.params['num-players'] == 2) {
+        name = "Player " + ((i % 2) + 1);
+      } else {
+        name = "Player " + (i + 1);
+      }
+    }
+    $("#playerName" + (i + 1)).html(name);
+    $("#playerScore" + (i + 1)).html(p.score);
 		
-		$("#playerName"+(i+1)).html(p.name);
-		$("#playerScore"+(i+1)).html(p.score);
-		
-	}
+	});
 	
 	nextPlayer = response.curr_move.turn+1;
 	curPlayer = nextPlayer;
@@ -163,6 +174,11 @@ function initRequest(data) {
 	startNewTurn(false);
 }
 
+// humanizes a duration (given in seconds)
+function humanize(time) {
+  return time < 60 ? time : moment.duration(time * 1000).humanize();
+}
+
 function startNewTurn(resetTime) {
 	rotate = [1,0,0,1,1];
 	//var newPlayer = (curPlayer + 1) % 5;
@@ -185,17 +201,21 @@ function startNewTurn(resetTime) {
 	drawGrid();
 	$(".icon-group").hide();
 
-	if (resetTime) startTime = Date.now();
-	$("#time").html(maxTime);
+	if (resetTime) startTime = Date.now() - delay;
+
+	var d = Date.now() - delay;
+	var remaining = Math.floor(maxTime - (d - startTime) / 1000);
+  $("#time").html(humanize(remaining));
 }
 
 function processTime() {
-	var d = Date.now();
-	var remaining = Math.ceil(maxTime - (d - startTime) / 1000);
+	var d = Date.now() - delay;
+	var remaining = Math.floor(maxTime - (d - startTime) / 1000);
 	if (remaining < 0) {
-		$.get(url+"/info", initRequest);
-	}
-	else $("#time").html(remaining);
+		$.get(url + "/info", initRequest);
+	} else {
+    $("#time").html(humanize(remaining));
+  }
 }
 
 function score(player) {
@@ -273,7 +293,7 @@ function drawGrid() {
 
 	for (i=0;i<20;i++) {
 	for (j = 0;j<20;j++) {
-		fillGridSquare(grid[i][j],j,grid.length-1-i);
+		fillGridSquare(grid[i][j], j, grid.length - 1 - i);
 	}}
 	
 	if (score(1) == 0) drawDot(1,0,19);
@@ -297,7 +317,7 @@ function drawSupply() {
 		if (remainingPieces[hoveredPlayer][piece] == 1) {
 			var xloc = supplyLeftEdge + (m*6+2)*size2;
 			var yloc = (n*6+2)*size2;
-			drawPiece(pieces[piece],hoveredPlayer,xloc,yloc,size2);
+			drawPiece(pieces[piece], colors[hoveredPlayer], xloc, yloc, size2);
 		}
 	}}
 	
@@ -339,15 +359,31 @@ function drawDot(player, x, y) {
     ctx.restore();
 }
 
-function drawPiece(piece,player,x,y,squareSize) {   // x and y are bottom left corner of 0,0 in the piece
-	for (i = 0; i < piece.length/2; i++) {
-		fillPieceSquare(colors[player],x+squareSize*piece[2*i],
-			y+squareSize*piece[2*i+1],squareSize);
+// x and y are bottom left corner of 0,0 in the piece
+function drawPiece(piece, color, x, y, squareSize) {
+  for (var i = 0; i < piece.length / 2; i++) {
+		fillPieceSquare(color, x + squareSize * piece[2 * i],
+			y + squareSize * piece[2 * i + 1],squareSize);
 	}
 }
 
+// http://stackoverflow.com/a/13542669/720889
+function shadeColor2(color, percent) {   
+  var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+  return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+}
+function shadeRGBColor(color, percent) {
+  var f=color.split(","),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=parseInt(f[0].slice(4)),G=parseInt(f[1]),B=parseInt(f[2]);
+  return "rgb("+(Math.round((t-R)*p)+R)+","+(Math.round((t-G)*p)+G)+","+(Math.round((t-B)*p)+B)+")";
+}
+function shade(color, percent){
+  if (color.length > 7) return shadeRGBColor(color,percent);
+  else return shadeColor2(color,percent);
+}
+
 function drawCurPiece() {
-	drawPiece(orient(curPiece),curPlayer, SIZE*curPieceX,SIZE*curPieceY,SIZE);
+	drawPiece(orient(curPiece), shade(colors[curPlayer], -0.5),
+            SIZE * curPieceX, SIZE * curPieceY, SIZE);
 }
 
 function mouseOnPiece() {
@@ -361,7 +397,7 @@ function mouseOnPiece() {
 	return false;
 }
 
-function getMousePos(canvas,evt) {
+function getMousePos(canvas, evt) {
 	var rect = board.getBoundingClientRect();
 
     return {

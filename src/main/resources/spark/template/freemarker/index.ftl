@@ -23,13 +23,21 @@
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password" />
     <input type="hidden" name="dest" value="${dest}" />
-    <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+    <#if hide == "login">
+      <a href="/?hide=register">Already have an account?</a>
+    <#else>
+      <button class="btn btn-lg btn-primary" type="submit">Log in</button>
+    </#if>
   </form>
   <form class="form-signin form-signup" action="/signup" method="post">
     <input type="hidden" name="username" />
     <input type="hidden" name="password" />
     <input type="hidden" name="dest" value="${dest}" />
-    <button class="btn btn-lg btn-primary" type="submit">Sign up</button>
+    <#if hide == "register">
+      <a href="/?hide=login">Need to make an account?</a>
+    <#else>
+      <button class="btn btn-lg btn-primary" type="submit">Register</button>
+    </#if>
   </form>
 </div>
 </div>

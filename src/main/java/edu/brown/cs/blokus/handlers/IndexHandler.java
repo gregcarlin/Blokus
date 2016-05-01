@@ -31,11 +31,14 @@ public class IndexHandler implements TemplateViewRoute {
       return null;
     }
 
-    String error = req.queryParams("error");
+    final String error = req.queryParams("error");
+    final String hide = req.queryParams("hide");
     String dest = req.queryParams("dest");
     dest = (dest == null || dest.isEmpty()) ? "/auth/main" : dest;
-    return new ModelAndView((error != null && error.length() > 0)
-        ? ImmutableMap.of("error", error, "dest", dest)
-        : ImmutableMap.of("dest", dest), "index.ftl");
+    ImmutableMap.Builder mapBuilder = new ImmutableMap.Builder()
+      .put("dest", dest)
+      .put("hide", hide == null ? "" : hide);
+    if (error != null && !error.isEmpty()) mapBuilder.put("error", error);
+    return new ModelAndView(mapBuilder.build(), "index.ftl");
   }
 }
