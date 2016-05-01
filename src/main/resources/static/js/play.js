@@ -151,7 +151,7 @@ function initRequest(data) {
 		
 		for (i = 0; i < response.players.length; i++) {
 			var p = response.players[i];
-			scores[i] = {name:p.name,score:score(i+1)};
+			scores[i] = {name:p.name,score:p.score};
 		}
 		scores = scores.sort(scoreSort);
 		for (i = 0; i < 4; i++) {

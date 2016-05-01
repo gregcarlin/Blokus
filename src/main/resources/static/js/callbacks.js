@@ -206,13 +206,13 @@ function getPlaces() {
 function getCorners() {
     var corners = new Set();
     var places = getPlaces();
-    for (let place of places) {
+    places.forEach(function(place) {
         place = place.split(",");
         checkCorner(corners, parseInt(place[0]) - 1, parseInt(place[1]) - 1, places);
         checkCorner(corners, parseInt(place[0]) - 1, parseInt(place[1]) + 1, places);
         checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) - 1, places);
         checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) + 1, places);
-    }
+    });
     return corners;
 }
 
