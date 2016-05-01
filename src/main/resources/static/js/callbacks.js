@@ -319,7 +319,3 @@ $("#submit").on('click', function() {
       }
     });
 });
-
-$("#closeResults").on('click', function() {
-	$(".gameResults").hide();
-});
