@@ -222,6 +222,9 @@ html, body {
   list-style-type: none;
   padding: 0;
 }
+#gameResults ul .ordinal {
+  margin-right: 7px;
+}
 .icon-group {
   position: absolute;
   display: none;

@@ -69,6 +69,8 @@ function init() {    //sets up grid and remainingPieces
 	$.get(url+"/info", initRequest);
 }
 
+const ordinal = ['1st', '2nd', '3rd', '4th'];
+
 function initRequest(data) {
 	var foo = [];
 	for (i = 0; i < 21; i++) {
@@ -156,8 +158,9 @@ function initRequest(data) {
 		scores = scores.sort(scoreSort);
 
     var html = '';
-    _.each(scores, function(score) {
+    _.each(scores, function(score, i) {
       html += '<li>' +
+        '<span class="ordinal">' + ordinal[i] + '</span>' +
         score.name + ': ' + score.score + ' pts' +
         '</li>';
     });
