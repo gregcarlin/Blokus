@@ -13,10 +13,11 @@ update = null;
 
 remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
 grid = []					    	//current game board
+var playable = []; // playable squares in the format {x, y}
+var players = []; // player data
 
 curPlayer = 1;  //players are 1,2,3,4
 nextPlayer = 1;
-
 
 
 //BOARD PARAMETERS
@@ -83,21 +84,22 @@ function initRequest(data) {
 	var response = JSON.parse(data);
 	gameID = response._id;
 	grid = response.board;
+  playable = response.playable;
+  players = response.players;
 	var s = response.state;
 	if (s == 0) gameStarted = false;
 	if (s == 1) gameStarted = true;
 	if (s == 2) gameOver = true;
-	
+
 	maxTime = response.params.timer;
 	if (maxTime == 0) timed = false;
-	
+
 	var serverTime = parseInt(response.curr_move.timestamp.$numberLong);
   delay = Date.now() - response.sent;
 	var curTime = Date.now() - delay;
 	var difference = Math.ceil((curTime - serverTime) / 1000);
 	if (difference < maxTime) startTime = serverTime;
-	
-	
+
 	var loadedBy = response.loaded_by;
   _.each(response.players, function(p, i) {
     if (!p) return;
@@ -180,8 +182,8 @@ var showGameResults = function() {
   
   var scores = [];
   
-  for (i = 0; i < response.players.length; i++) {
-    var p = response.players[i];
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
     scores[i] = {name: p.name, score: p.score};
   }
   scores = scores.sort(scoreSort);
@@ -307,27 +309,29 @@ function drawGrid() {
 	ctx.fillStyle = "white";
 	ctx.fillRect(0,0,board.width,board.height);
 	ctx.beginPath();
-	
-	for (i = 0;i<21;i++)
-	{
-	ctx.moveTo(SIZE*i,0);
-	ctx.lineTo(SIZE*i,20*SIZE);
-	ctx.moveTo(0,SIZE*i);
-	ctx.lineTo(20*SIZE,SIZE*i);
+
+	for (var i = 0; i < 21; i++) {
+    ctx.moveTo(SIZE*i,0);
+    ctx.lineTo(SIZE*i,20*SIZE);
+    ctx.moveTo(0,SIZE*i);
+    ctx.lineTo(20*SIZE,SIZE*i);
 	}
-	
+
 	ctx.stroke();
 
-	for (i=0;i<20;i++) {
-	for (j = 0;j<20;j++) {
-		fillGridSquare(grid[i][j], j, grid.length - 1 - i);
-	}}
-	
-	if (score(1) == 0) drawDot(1,0,19);
-	if (score(2) == 0) drawDot(2,19,19);
-	if (score(3) == 0) drawDot(3,19,0);
-	if (score(4) == 0) drawDot(4,0,0);
-	
+	for (var i = 0; i < 20; i++) {
+    for (var j = 0; j < 20; j++) {
+      fillGridSquare(grid[i][j], j, grid.length - 1 - i);
+    }
+  }
+
+  // if you control the current player, draw helper dots
+  if (youControl[curPlayer]) {
+    _.each(playable, function(square) {
+      drawDot(curPlayer, square.x, square.y);
+    });
+  }
+
 	drawSupply();
 }
 
@@ -494,6 +498,7 @@ $(document).ready(function(){
         curPieceX = json.x;
         curPieceY = json.y;
         rotate = getRotate(json.orientation);
+        playable = json.playable;
 
         curPlayer = json.turn + 1;
         nextPlayer = json.next_player + 1;
@@ -512,7 +517,9 @@ $(document).ready(function(){
           $('#inactive').show();
         }
 
-        showGameResults();
+        if (nextPlayer == 0) {
+          showGameResults();
+        }
 
         submitMove();
         break;

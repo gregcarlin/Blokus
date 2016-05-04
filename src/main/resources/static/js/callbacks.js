@@ -290,7 +290,9 @@ function submitMove() {
 		grid[grid.length-1-(curPieceY+locs[2*i+1])][curPieceX+locs[2*i]] = curPlayer;
 	}
 	remainingPieces[curPlayer][curPiece] = 0;
-	$("#playerScore"+curPlayer).html(score(curPlayer));
+  var newScore = score(curPlayer);
+  players[curPlayer - 1].score = newScore;
+	$("#playerScore" + curPlayer).html(newScore);
   $(".icon-group").hide();
 	
 	startNewTurn(true);

@@ -7,6 +7,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import edu.brown.cs.blokus.Game;
+import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.Request;
@@ -42,10 +43,12 @@ public class InfoHandler implements Route {
 
       JsonObject game
         = GSON.fromJson(db.getGameRaw(gameId), JsonObject.class);
+
       game.addProperty("_id",
           game.get("_id").getAsJsonObject().get("$oid").getAsString());
       game.addProperty("loaded_by", user);
       game.addProperty("sent", System.currentTimeMillis());
+
       JsonArray players = game.getAsJsonArray("players");
       final int len = players.size();
       for (int i = 0; i < len; i++) {
@@ -54,13 +57,23 @@ public class InfoHandler implements Route {
           players.set(i, null);
         } else {
           JsonObject player = oPlayer.getAsJsonObject();
-          String id = player.get("_id").getAsJsonObject().get("$oid").getAsString();
+          String id
+            = player.get("_id").getAsJsonObject().get("$oid").getAsString();
           player.addProperty("_id", id);
           player.addProperty("name", db.getName(id));
           players.set(i, player);
         }
       }
       game.add("players", players);
+
+      JsonArray playable = new JsonArray();
+      for (Square sq : rich.playableCorners()) {
+        JsonObject jSq = new JsonObject();
+        jSq.addProperty("x", sq.getX());
+        jSq.addProperty("y", sq.getY());
+        playable.add(jSq);
+      }
+      game.add("playable", playable);
 
       return GSON.toJson(game);
     }

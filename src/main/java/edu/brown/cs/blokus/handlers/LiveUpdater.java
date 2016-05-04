@@ -14,6 +14,7 @@ import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
 import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Player;
+import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.Turn;
 import edu.brown.cs.blokus.db.Database;
 
@@ -104,6 +105,15 @@ public class LiveUpdater {
       jArr.add(context.canMove(t));
     }
     jObj.add("active", jArr);
+
+    JsonArray playable = new JsonArray();
+    for (Square sq : context.playableCorners()) {
+      JsonObject jSq = new JsonObject();
+      jSq.addProperty("x", sq.getX());
+      jSq.addProperty("y", sq.getY());
+      playable.add(jSq);
+    }
+    jObj.add("playable", playable);
 
     sendToGame(context.getSettings(), jObj);
   }

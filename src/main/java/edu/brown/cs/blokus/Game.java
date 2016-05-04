@@ -492,6 +492,16 @@ public class Game {
   }
   
   /**
+   * Returns playable corners for the player with the current turn.  A corner is
+   * playable if the player has some legal move that covers the corner.
+   * 
+   * @return playable corners
+   */
+  public Set<Square> playableCorners() {
+    return playableCorners(getTurn());
+  }
+
+  /**
    * Returns playable corners for the player with the given turn.  A corner is
    * playable if the player has some legal move that covers the corner.
    * 
