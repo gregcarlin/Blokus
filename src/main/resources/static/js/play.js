@@ -13,7 +13,6 @@ update = null;
 
 remainingPieces = [0,[],[],[],[]]; //0 is here for convenient player indexing
 grid = []					    	//current game board
-var playable = []; // playable squares in the format {x, y}
 var players = []; // player data
 
 curPlayer = 1;  //players are 1,2,3,4
@@ -84,7 +83,6 @@ function initRequest(data) {
 	var response = JSON.parse(data);
 	gameID = response._id;
 	grid = response.board;
-  playable = response.playable;
   players = response.players;
 	var s = response.state;
 	if (s == 0) gameStarted = false;
@@ -325,12 +323,10 @@ function drawGrid() {
     }
   }
 
-  // if you control the current player, draw helper dots
-  if (youControl[curPlayer]) {
-    _.each(playable, function(square) {
-      drawDot(curPlayer, square.x, square.y);
-    });
-  }
+  var toDraw = hovering || curPlayer;
+  _.each(players[toDraw - 1].playable, function(square) {
+    drawDot(toDraw, square.x, square.y);
+  });
 
 	drawSupply();
 }
@@ -498,10 +494,13 @@ $(document).ready(function(){
         curPieceX = json.x;
         curPieceY = json.y;
         rotate = getRotate(json.orientation);
-        playable = json.playable;
 
         curPlayer = json.turn + 1;
         nextPlayer = json.next_player + 1;
+
+        for (var i = 0; i < json.players.length; i++) {
+          players[i].playable = json.players[i].playable;
+        }
 
         active = json.active;
         _.each(active, function(act, i) {

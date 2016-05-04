@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.Square;
+import edu.brown.cs.blokus.Turn;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.Request;
@@ -61,19 +62,20 @@ public class InfoHandler implements Route {
             = player.get("_id").getAsJsonObject().get("$oid").getAsString();
           player.addProperty("_id", id);
           player.addProperty("name", db.getName(id));
+
+          JsonArray playable = new JsonArray();
+          for (Square sq : rich.playableCorners(Turn.values()[i])) {
+            JsonObject jSq = new JsonObject();
+            jSq.addProperty("x", sq.getX());
+            jSq.addProperty("y", sq.getY());
+            playable.add(jSq);
+          }
+          player.add("playable", playable);
+
           players.set(i, player);
         }
       }
       game.add("players", players);
-
-      JsonArray playable = new JsonArray();
-      for (Square sq : rich.playableCorners()) {
-        JsonObject jSq = new JsonObject();
-        jSq.addProperty("x", sq.getX());
-        jSq.addProperty("y", sq.getY());
-        playable.add(jSq);
-      }
-      game.add("playable", playable);
 
       return GSON.toJson(game);
     }

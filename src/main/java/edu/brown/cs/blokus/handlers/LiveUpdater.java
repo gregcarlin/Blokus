@@ -3,6 +3,7 @@ package edu.brown.cs.blokus.handlers;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,14 +107,24 @@ public class LiveUpdater {
     }
     jObj.add("active", jArr);
 
-    JsonArray playable = new JsonArray();
-    for (Square sq : context.playableCorners()) {
-      JsonObject jSq = new JsonObject();
-      jSq.addProperty("x", sq.getX());
-      jSq.addProperty("y", sq.getY());
-      playable.add(jSq);
+    JsonArray jPlayers = new JsonArray();
+    List<Player> players = context.getSettings().getAllPlayers();
+    final int numPlayers = players.size();
+    for (int i = 0; i < numPlayers; i++) {
+      JsonObject jPlayer = new JsonObject();
+
+      JsonArray playable = new JsonArray();
+      for (Square sq : context.playableCorners()) {
+        JsonObject jSq = new JsonObject();
+        jSq.addProperty("x", sq.getX());
+        jSq.addProperty("y", sq.getY());
+        playable.add(jSq);
+      }
+      jPlayer.add("playable", playable);
+
+      jPlayers.add(jPlayer);
     }
-    jObj.add("playable", playable);
+    jObj.add("players", jPlayers);
 
     sendToGame(context.getSettings(), jObj);
   }
