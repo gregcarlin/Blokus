@@ -63,6 +63,8 @@ var lastSubmitted = -1;
 // whether each player is active or not. 0-indexed because fuck you.
 var active = [true, true, true, true];
 
+var dragCorners = [];
+
 function init() {    //sets up grid and remainingPieces
 	for (i = 1; i <= 4; i++) {
 		highlightInfo(i,false);
@@ -323,10 +325,16 @@ function drawGrid() {
     }
   }
 
-  var toDraw = hovering || curPlayer;
-  _.each(players[toDraw - 1].playable, function(square) {
-    drawDot(toDraw, square.x, square.y);
-  });
+  if (mode == 'dragging') {
+    _.each(dragCorners, function(square) {
+      drawDot(curPlayer, square.y, grid.length - square.x - 1);
+    });
+  } else {
+    var toDraw = hovering || curPlayer;
+    _.each(players[toDraw - 1].playable, function(square) {
+      drawDot(toDraw, square.x, square.y);
+    });
+  }
 
 	drawSupply();
 }

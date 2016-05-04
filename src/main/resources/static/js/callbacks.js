@@ -69,6 +69,7 @@ $("#board").mousedown(function(e){
 		drawGrid();
 		drawCurPiece();
 		mode = "dragging";
+    dragCorners = cornersForPiece();
 		
 		$(".icon-group").hide();
 		rotate = [1,0,0,1,1];
@@ -162,7 +163,7 @@ function isColor(color,row,column) {
 // Gets corners where the currently selected piece can be played
 function cornersForPiece() {
     var corners = getCorners();
-    var moveCorners = new Set();
+    var moveCorners = [];
     var rotateBak = rotate;
     var curPieceXBak = curPieceX;
     var curPieceYBak = curPieceY;
@@ -175,9 +176,9 @@ function cornersForPiece() {
                     for (var i = 0; i < locs.length / 2; i++) {
                         var row = grid.length - 1 - (curPieceY + locs[2 * i + 1]);
                         var col = curPieceX + locs[2 * i];
-                        var s = String([row, col]);
-                        if (corners.has(s)) {
-                            moveCorners.add(s);
+                        var s = {x: row, y: col};
+                        if (_.some(corners, _.partial(_.isEqual, s))) {
+                            moveCorners.push(s);
                         }
                     }
                 }
@@ -204,7 +205,7 @@ function getPlaces() {
 
 // Get all corners
 function getCorners() {
-    var corners = new Set();
+    var corners = [];
     var places = getPlaces();
     places.forEach(function(place) {
         place = place.split(",");
@@ -223,7 +224,7 @@ function checkCorner(s, x, y, places) {
             && notSame(x + 1, y)
             && notSame(x, y - 1)
             && notSame(x, y + 1)) {
-        s.add(String([x, y]));
+        s.push({x: x, y: y});
     }
 }
 
