@@ -378,10 +378,10 @@ public class LegalMoves {
     // Common case: player has I2
     if (pieces.contains(Shape.I2)) {
       for (Square s : a.corners()) {
-        if (a.available(s.translate(-1, -1))
-          || a.available(s.translate(-1, 1))
-          || a.available(s.translate(1, -1))
-          || a.available(s.translate(1, 1))) {
+        if (a.available(s.translate(-1, 0))
+          || a.available(s.translate(1, 0))
+          || a.available(s.translate(0, -1))
+          || a.available(s.translate(0, 1))) {
           return true;
         }
       }
