@@ -18,6 +18,7 @@ import edu.brown.cs.blokus.handlers.NewGameHandler;
 import edu.brown.cs.blokus.handlers.PlayHandler;
 import edu.brown.cs.blokus.handlers.SignoutHandler;
 import edu.brown.cs.blokus.handlers.SignupHandler;
+import edu.brown.cs.blokus.legal.LegalMoves;
 
 import freemarker.template.Configuration;
 
@@ -79,6 +80,8 @@ public final class Main {
       .withRequiredArg().ofType(String.class)
       .defaultsTo("");
     OptionSet options = parser.parse(args);
+
+    LegalMoves.load();
 
     runSparkServer(options.valueOf(portSpec), options.valueOf(dbHostSpec),
         options.valueOf(dbPortSpec), options.valueOf(dbSpec),
