@@ -14,35 +14,208 @@ public enum Orientation {
   /**
    * Identity.
    */
-  E(new Square(1, 0), new Square(0, 1)),
+  E(new Square(1, 0), new Square(0, 1)) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        return o2;
+      }
+    },
   /**
    * 90-degree rotation.
    */
-  S(new Square(0, 1), new Square(-1, 0)),
+  S(new Square(0, 1), new Square(-1, 0)) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return S;
+          case S:
+            return SS;
+          case SS:
+            return SSS;
+          case SSS:
+            return E;
+          case R:
+            return RSSS;
+          case RS:
+            return R;
+          case RSS:
+            return RS;
+          case RSSS:
+            return RSS;
+          default:
+            throw new AssertionError();
+        }
+      }
+    },
   /**
    * 180-degree rotation.
    */
-  SS(S, S),
+  SS(S, S) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return SS;
+          case S:
+            return SSS;
+          case SS:
+            return E;
+          case SSS:
+            return S;
+          case R:
+            return RSS;
+          case RS:
+            return RSSS;
+          case RSS:
+            return R;
+          case RSSS:
+            return RS;
+          default:
+            throw new AssertionError();
+        }
+      }
+    },
   /**
    * 270-degree rotation.
    */
-  SSS(SS, S),
+  SSS(SS, S) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return SSS;
+          case S:
+            return E;
+          case SS:
+            return S;
+          case SSS:
+            return SS;
+          case R:
+            return RS;
+          case RS:
+            return RSS;
+          case RSS:
+            return RSSS;
+          case RSSS:
+            return R;
+          default:
+            throw new AssertionError();
+        }
+      }
+    },
   /**
-   * Vertical reflection.
+   * Reflection across the vertical axis.
    */
-  R(new Square(-1, 0), new Square(0, 1)),
+  R(new Square(-1, 0), new Square(0, 1)) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return R;
+          case S:
+            return RS;
+          case SS:
+            return RSS;
+          case SSS:
+            return RSSS;
+          case R:
+            return E;
+          case RS:
+            return S;
+          case RSS:
+            return SS;
+          case RSSS:
+            return SSS;
+          default:
+            throw new AssertionError();
+        }
+      }
+    },
   /**
    * Vertical reflection then 90-degree rotation.
    */
-  RS(R, S),
+  RS(R, S) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return RS;
+          case S:
+            return RSS;
+          case SS:
+            return RSSS;
+          case SSS:
+            return R;
+          case R:
+            return SSS;
+          case RS:
+            return E;
+          case RSS:
+            return S;
+          case RSSS:
+            return SS;
+          default:
+            throw new AssertionError();
+        }
+      }
+    },
   /**
    * Vertical reflection then 180-degree rotation.
    */
-  RSS(R, SS),
+  RSS(R, SS) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return RSS;
+          case S:
+            return RSSS;
+          case SS:
+            return R;
+          case SSS:
+            return RS;
+          case R:
+            return SS;
+          case RS:
+            return SSS;
+          case RSS:
+            return E;
+          case RSSS:
+            return S;
+          default:
+            throw new AssertionError();
+        }
+      }
+    },
   /**
    * Vertical reflection then 270-degree rotation.
    */
-  RSSS(R, SSS);
+  RSSS(R, SSS) {
+      @Override
+      public Orientation compose(Orientation o2) {
+        switch (o2) {
+          case E:
+            return RSSS;
+          case S:
+            return R;
+          case SS:
+            return RS;
+          case SSS:
+            return RSS;
+          case R:
+            return S;
+          case RS:
+            return SS;
+          case RSS:
+            return SSS;
+          case RSSS:
+            return E;
+          default:
+            throw new AssertionError();
+        }
+      }
+    };
 
   /**
    * Image of the square (1, 0).
@@ -73,7 +246,27 @@ public enum Orientation {
    */
   private Orientation(Orientation first, Orientation second) {
     this(second.imageOf(first.imageOf(new Square(1, 0))),
-        second.imageOf(first.imageOf(new Square(0, 1))));
+      second.imageOf(first.imageOf(new Square(0, 1))));
+  }
+
+  /**
+   * Returns the orientation obtained by performing the first orientation, then
+   * the second orientation.
+   *
+   * @param first first orientation
+   * @param second second orientation
+   * @return composition
+   */
+  public static Orientation compose(Orientation first, Orientation second) {
+    Square image1 = second.imageOf(first.imageOf(new Square(1, 0)));
+    Square image2 = second.imageOf(first.imageOf(new Square(0, 1)));
+    for (Orientation o : values()) {
+      if (o.imageOf(new Square(1, 0)).equals(image1)
+        && o.imageOf(new Square(0, 1)).equals(image2)) {
+        return o;
+      }
+    }
+    throw new AssertionError();
   }
 
   /**
@@ -87,6 +280,8 @@ public enum Orientation {
     int imageY = input.getX() * x[1] + input.getY() * y[1];
     return new Square(imageX, imageY);
   }
+
+  public abstract Orientation compose(Orientation o2);
 
   /**
    * Prints orientations of the F5. Allows visual verification that the

@@ -109,16 +109,12 @@ public class Move {
     if (!(o instanceof Move)) {
       return false;
     }
-    Move other = (Move) o;
-    return this.shape == other.shape
-      && this.orientation == other.orientation
-      && this.x == other.x
-      && this.y == other.y;
+    return this.getSquares().equals(((Move) o).getSquares());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(shape, orientation, x, y);
+    return Objects.hash(getSquares());
   }
 
   @Override

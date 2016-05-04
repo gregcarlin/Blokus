@@ -1,9 +1,12 @@
 package edu.brown.cs.blokus;
 
 import edu.brown.cs.blokus.ai.Evaluator;
+import edu.brown.cs.blokus.legal.Available;
+import edu.brown.cs.blokus.legal.LegalMoves;
 import edu.brown.cs.blokus.handlers.LiveUpdater;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -274,7 +277,7 @@ public class Game {
    * @param turn turn
    * @return corner square
    */
-  private Square getCorner(Turn turn) {
+  public Square getCorner(Turn turn) {
     switch (turn) {
       case FIRST:
         return new Square(0, board.size() - 1);
@@ -285,7 +288,7 @@ public class Game {
       case FOURTH:
         return new Square(0, 0);
       default:
-        throw new AssertionError("invalid turn");
+        throw new AssertionError();
     }
   }
 
@@ -355,6 +358,7 @@ public class Game {
    * @return true if the player can move, false otherwise
    */
   public boolean canMove(Turn turn) {
+    /*
     if (!getPlayer(turn).isPlaying()) {
       return false;
     }
@@ -372,6 +376,12 @@ public class Game {
     }
     getPlayer(turn).stopPlaying();
     return false;
+    */
+    boolean canMove = LegalMoves.canMove(this, turn);
+    if (!canMove) {
+      getPlayer(turn).stopPlaying();
+    }
+    return canMove;
   }
 
   /**
@@ -382,12 +392,19 @@ public class Game {
    * @return random move, if any
    */
   public Move getRandomMove(Turn turn) {
+    /*
     List<Move> legalMoves = getLegalMoves(turn);
     if (legalMoves.isEmpty()) {
       getPlayer(turn).stopPlaying();
       return null;
     }
     return legalMoves.get((int) (Math.random() * legalMoves.size()));
+    */
+    try {
+      return LegalMoves.randomMove(this, turn);
+    } catch (IllegalStateException e) {
+      return null;
+    }
   }
 
   /**
@@ -400,6 +417,7 @@ public class Game {
    * @return legal moves
    */
   public List<Move> getLegalMoves(Turn turn) {
+    /*
     if (!getPlayer(turn).isPlaying()) {
       return Collections.emptyList();
     }
@@ -417,42 +435,8 @@ public class Game {
       }
     }
     return legalMoves;
-  }
-
-  /**
-   * Gets legal moves using the given piece for the player with the given turn.
-   *
-   * @param turn turn
-   * @param shape shape
-   * @return legal moves
-   */
-  public List<Move> legalMovesForPiece(Turn turn, Shape shape) {
-    if (!getPlayer(turn).isPlaying()) {
-      return Collections.emptyList();
-    }
-    List<Move> legalMoves = new ArrayList<>();
-    for (Orientation o : shape.distinctOrientations()) {
-      for (int x = 0, s = board.size(); x < s; x++) {
-        for (int y = 0; y < s; y++) {
-          Move move = new Move(shape, o, x, y);
-          if (isLegal(move, turn)) {
-            legalMoves.add(move);
-          }
-        }
-      }
-    }
-    return legalMoves;
-  }
-  
-  /**
-   * Whether the piece is playable for the player with the given turn.
-   * 
-   * @param turn turn
-   * @param shape shape
-   * @return whether the piece is playable
-   */
-  public boolean playablePiece(Turn turn, Shape shape) {
-    return !legalMovesForPiece(turn, shape).isEmpty();
+    */
+    return LegalMoves.legalMoves(this, turn);
   }
 
   /**
@@ -496,48 +480,26 @@ public class Game {
   }
   
   /**
-   * Gets unoccupied corners for the player with the given turn.
+   * Returns an array that represents whether each piece is playable for the
+   * player with the given turn.  The ordering of the array is the same as the
+   * ordering of the {@link Shape} enum.
    * 
    * @param turn turn
-   * @return whether the corner is unoccupied
+   * @return playable pieces
    */
-  public Set<Square> unoccupiedCorners(Turn turn) {
-    return Evaluator.getAvailableCorners(this, turn);
+  public boolean[] playablePieces(Turn turn) {
+    return LegalMoves.playablePieces(this, turn);
   }
   
   /**
-   * Gets corners where the piece can be played for the player with the given
-   * turn.
-   * 
-   * @param turn turn
-   * @param shape piece
-   * @return playable corners for piece
-   */
-  public Set<Square> playableCornersForPiece(Turn turn, Shape shape) {
-    Set<Square> covered = new HashSet<>();
-    for (Move m : legalMovesForPiece(turn, shape)) {
-      covered.addAll(m.getSquares());
-    }
-    covered.retainAll(unoccupiedCorners(turn));
-    return covered;
-  }
-  
-  /**
-   * Gets all playable corners for the player with the given turn.  A playable
-   * corner is a corner that can be occupied by a move. (As opposed to an
-   * unoccupied corner, which might not be playable if the player doesn't have
-   * a piece that fits there.)
+   * Returns playable corners for the player with the given turn.  A corner is
+   * playable if the player has some legal move that covers the corner.
    * 
    * @param turn turn
    * @return playable corners
    */
   public Set<Square> playableCorners(Turn turn) {
-    Set<Square> covered = new HashSet<>();
-    for (Move m : getLegalMoves(turn)) {
-      covered.addAll(m.getSquares());
-    }
-    covered.retainAll(unoccupiedCorners(turn));
-    return covered;
+    return LegalMoves.playableCorners(this, turn);
   }
 
   /**
@@ -661,33 +623,35 @@ public class Game {
   }
 
   public static void main(String[] args) throws Exception {
+    Set<Shape> minusOne = EnumSet.allOf(Shape.class);
+    minusOne.remove(Shape.I1);
     Board b = new Board(20);
-    //b.setXY(10, 10, 1);
-    //b.setXY(10, 12, 1);
-
-    for (int x = 0; x < 20; x++) {
+    /*for (int x = 0; x < 20; x++) {
       for (int y = 0; y < 20; y++) {
-        b.setXY(x, y, (int) (Math.random() * 5));
+        if (Math.random() > 0.5) {
+          b.setXY(x, y, 1 + (int) (Math.random() * 4));
+        }
       }
-    }
-
-    Set<Shape> allShapes = EnumSet.allOf(Shape.class);
-    allShapes.remove(Shape.I1);
+    }*/
     Game g = new Game.Builder()
       .setBoard(b)
       .setSettings(new GameSettings.Builder()
-        .player(Turn.FIRST, new Player("", allShapes, 1, true))
+        .player(Turn.FIRST, new Player(""))
         .player(Turn.SECOND, new Player(""))
         .player(Turn.THIRD, new Player(""))
         .player(Turn.FOURTH, new Player(""))
         .build())
       .setTurn(Turn.FIRST)
       .build();
-    //TotalComponentSizeAI ai = new TotalComponentSizeAI();
+    LegalMoves.load();
+    for (int i = 0; i < 40; i++) {
+      g.makeMove(g.getRandomMove(g.getTurn()));
+    }
     long before = System.currentTimeMillis();
-    //AI.simulateAndSaveGame(TotalComponentSizeAI::new, RandomAI::new,
-    //RandomAI::new, RandomAI::new, "/home/aaronzhang/game1.blksgf");
+    g.playableCorners(g.getTurn());
     long after = System.currentTimeMillis();
     System.out.println("time: " + (after - before));
+    System.out.println(g.getBoard());
+    System.out.println(g.playableCorners(g.getTurn()));
   }
 }

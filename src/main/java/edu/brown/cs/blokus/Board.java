@@ -188,7 +188,7 @@ public class Board {
     StringBuilder sb = new StringBuilder();
     for (int[] row : grid) {
       for (int column : row) {
-        sb.append(column);
+        sb.append(column == 0 ? "-" : column);
       }
       sb.append('\n');
     }

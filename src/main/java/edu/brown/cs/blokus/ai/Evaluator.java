@@ -118,6 +118,9 @@ public class Evaluator {
     Iterator<Square> cornersItr = corners.iterator();
     while (cornersItr.hasNext()) {
       Square s = cornersItr.next();
+      /*
+      WRONG
+      */
       if (!available[s.getX() + 1][s.getY() + 1]) {
         cornersItr.remove();
       }
