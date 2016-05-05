@@ -151,10 +151,10 @@ public class Board {
   public int[][] getGrid() {
     return copyOf(grid);
   }
-  
+
   /**
    * Gets a copy of the grid indexed by x and y-coordinates.
-   * 
+   *
    * @return grid indexed by x and y-coordinates
    */
   public int[][] getGridXY() {

@@ -36,26 +36,10 @@ public enum Corner {
    * @return corner
    */
   public static Corner fromValue(int value) {
-    switch (value) {
-      case 1:
-        return BOTTOM_LEFT;
-      case 2:
-        return TOP_LEFT;
-      case 4:
-        return BOTTOM_RIGHT;
-      case 8:
-        return TOP_RIGHT;
-      case 3:
-        return LEFT;
-      case 12:
-        return RIGHT;
-      case 5:
-        return BOTTOM;
-      case 10:
-        return TOP;
-      default:
-        return OPPOSITE;
+    for (Corner c : Corner.values()) {
+      if (c.getValue() == value) { return c; }
     }
+    return OPPOSITE;
   }
 
   /**

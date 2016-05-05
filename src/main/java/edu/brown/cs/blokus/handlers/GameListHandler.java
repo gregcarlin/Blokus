@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import edu.brown.cs.blokus.GameSettings;
-import edu.brown.cs.blokus.Player;
 import edu.brown.cs.blokus.db.Database;
 
 import spark.Request;

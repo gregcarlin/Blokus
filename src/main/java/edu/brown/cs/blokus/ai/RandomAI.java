@@ -5,7 +5,7 @@ import edu.brown.cs.blokus.Move;
 
 /**
  * An AI that makes random moves.
- * 
+ *
  * @author aaronzhang
  */
 public class RandomAI implements AI {

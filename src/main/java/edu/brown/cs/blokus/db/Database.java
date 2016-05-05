@@ -171,7 +171,7 @@ public class Database implements AutoCloseable {
     final int playerCount = playerDocs.size();
     for (int i = 0; i < playerCount; i++) {
       Document playerDoc = playerDocs.get(i);
-      if (playerDoc == null) continue;
+      if (playerDoc == null) { continue; }
 
       String playerId = playerDoc.getObjectId("_id").toString();
 
@@ -258,7 +258,7 @@ public class Database implements AutoCloseable {
     Document[] players = new Document[Turn.values().length];
     for (Turn turn : Turn.values()) {
       Player player = game.getPlayer(turn);
-      if (player == null) continue;
+      if (player == null) { continue; }
 
       List<Integer> pieces = new ArrayList<>();
       for (Shape shape : player.getRemainingPieces()) {

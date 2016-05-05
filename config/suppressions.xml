@@ -6,4 +6,5 @@
 
 <suppressions>
     <suppress checks="." files="BCrypt.java" />
+    <suppress checks="." files="TimeUtils.java" />
 </suppressions>

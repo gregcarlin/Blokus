@@ -1,17 +1,11 @@
 package edu.brown.cs.blokus.ai;
 
 import edu.brown.cs.blokus.Game;
-import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.Turn;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -24,6 +18,8 @@ import java.util.Queue;
  * @author aaronzhang
  */
 public class Evaluator {
+  private Evaluator() {
+  }
 
   /**
    * Gets the squares occupied by the player with the given turn.

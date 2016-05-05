@@ -148,7 +148,7 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <excludePackageNames>org.mindrot.jbcrypt</excludePackageNames>
+          <excludePackageNames>org.mindrot.jbcrypt:com.rgagnon</excludePackageNames>
         </configuration>
       </plugin>
       <plugin>
@@ -166,6 +166,7 @@
         <configuration>
           <excludes>
             <exclude>org/mindrot/jbcrypt/BCrypt.java</exclude>
+            <exclude>com/rgagnon/TimeUtils.java</exclude>
           </excludes>
         </configuration>
       </plugin>

@@ -1,7 +1,5 @@
 package edu.brown.cs.blokus.handlers;
 
-import java.util.Map;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 

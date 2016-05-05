@@ -37,7 +37,8 @@ public class LoginHandler implements TemplateViewRoute {
 
     String userId = db.getUserId(user, pass);
     if (userId == null) {
-      res.redirect("/?error=Your username or password is incorrect.&hide=register");
+      res.redirect(
+          "/?error=Your username or password is incorrect.&hide=register");
       return null;
     }
 

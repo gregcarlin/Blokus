@@ -12,7 +12,7 @@ public class WithinAI implements AI {
   public Move suggestMove(Game game) {
     return bestMove(game, game.getTurn());
   }
-  
+
   public Move bestMove(Game g, Turn turn) {
     Move bestMove = null;
     int bestValue = -1;

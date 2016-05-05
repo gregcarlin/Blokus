@@ -14,7 +14,7 @@ import spark.TemplateViewRoute;
   * Handles the display of the main page.
   */
 public class MainHandler implements TemplateViewRoute {
-  private static final String[] tips = {
+  private static final String[] TIPS = {
     "Try to play your biggest pieces first, but don’t be afraid to put a small piece in a hole to access a new area.",
     "In the beginning of the game, try to get to the center of the board as fast as possible to increase the number of areas that you will have access to later.",
     "In a two player game, try to secure an area that both of your colors have access to, but no opponent color does.",
@@ -37,7 +37,7 @@ public class MainHandler implements TemplateViewRoute {
     final String user = req.attribute("user-id");
     return new ModelAndView(
         ImmutableMap.of("username", db.getName(user),
-          "tip", tips[(int) (Math.random() * tips.length)]),
+          "tip", TIPS[(int) (Math.random() * TIPS.length)]),
         "main.ftl");
   }
 }

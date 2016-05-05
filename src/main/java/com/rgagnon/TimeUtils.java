@@ -1,4 +1,4 @@
-package edu.brown.cs.parse;
+package com.rgagnon;
 
 /**
   * Adapted from http://www.rgagnon.com/javadetails/java-0585.html

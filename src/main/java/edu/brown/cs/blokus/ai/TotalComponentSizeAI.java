@@ -11,7 +11,7 @@ import java.util.Set;
  * AI that makes a move based on total component size.  Total component size is
  * the sum of the sizes of all components that contain one of the turn player's
  * corners, but components with multiple corners are counted multiple times.
- * 
+ *
  * @author aaronzhang
  */
 public class TotalComponentSizeAI implements AI {
@@ -20,10 +20,10 @@ public class TotalComponentSizeAI implements AI {
   public Move suggestMove(Game game) {
     return bestMove(game, game.getTurn());
   }
-  
+
   /**
    * Total component size for player with given turn.
-   * 
+   *
    * @param g game
    * @param turn turn
    * @return total component size
@@ -42,7 +42,7 @@ public class TotalComponentSizeAI implements AI {
 
   /**
    * Best move based on total component size.
-   * 
+   *
    * @param g game
    * @param turn turn
    * @return best move
@@ -59,10 +59,10 @@ public class TotalComponentSizeAI implements AI {
     }
     return bestMove;
   }
-  
+
   /**
    * Calculates a score for a move.
-   * 
+   *
    * @param g game
    * @param turn turn
    * @param m move

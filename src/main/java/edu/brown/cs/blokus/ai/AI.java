@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
 
 /**
  * An AI can suggest a move for the turn player in a game.
- * 
+ *
  * @author aaronzhang
  */
 @FunctionalInterface
 public interface AI {
   /**
    * Suggests a move for the turn player in the game.
-   * 
+   *
    * @param game game
    * @return move
    */
   Move suggestMove(Game game);
-  
+
   /**
    * Simulates a game using the given type of AI for each player.
-   * 
+   *
    * @param ai1 AI for first player
    * @param ai2 AI for second player
    * @param ai3 AI for third player
@@ -57,20 +57,20 @@ public interface AI {
     System.out.println(g.getAllPlayers().stream()
       .map(p -> p.getScore()).collect(Collectors.toList()));
   }
-  
+
   /**
    * Simulates a game using the same type of AI for all four players.
-   * 
+   *
    * @param ai AI supplier
    */
   static void simulateGame(Supplier<AI> ai) {
     simulateGame(ai, ai, ai, ai);
   }
-  
+
   /**
    * Simulates a game using the given type of AI for each player and saves it
    * with the given filename.
-   * 
+   *
    * @param ai1 AI for first player
    * @param ai2 AI for second player
    * @param ai3 AI for third player
@@ -109,10 +109,10 @@ public interface AI {
     }
     System.out.println("saved to " + file);
   }
-  
+
   /**
    * Converts move to a line in a blksgf file.
-   * 
+   *
    * @param turn turn
    * @param move move
    * @return line

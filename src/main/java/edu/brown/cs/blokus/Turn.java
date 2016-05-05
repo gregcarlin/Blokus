@@ -12,8 +12,9 @@ public enum Turn {
     public Turn next() {
       return SECOND;
     }
-    public String toString(){
-    	return "first";
+    @Override
+    public String toString() {
+      return "first";
     }
   },
   SECOND() {
@@ -21,8 +22,9 @@ public enum Turn {
     public Turn next() {
       return THIRD;
     }
-    public String toString(){
-    	return "second";
+    @Override
+    public String toString() {
+      return "second";
     }
   },
   THIRD() {
@@ -30,8 +32,9 @@ public enum Turn {
     public Turn next() {
       return FOURTH;
     }
-    public String toString(){
-    	return "third";
+    @Override
+    public String toString() {
+      return "third";
     }
   },
   FOURTH() {
@@ -39,8 +42,9 @@ public enum Turn {
     public Turn next() {
       return FIRST;
     }
-    public String toString(){
-    	return "fourth";
+    @Override
+    public String toString() {
+      return "fourth";
     }
   };
 

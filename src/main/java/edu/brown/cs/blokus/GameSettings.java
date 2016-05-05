@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.rgagnon.TimeUtils;
+
 import edu.brown.cs.blokus.handlers.LiveUpdater;
-import edu.brown.cs.parse.TimeUtils;
 
 
 /**
@@ -36,6 +37,7 @@ public final class GameSettings {
   }
 
   private static final int DEFAULT_MAX_PLAYERS = 4;
+  private static final int MILLIS_IN_SEC = 1000;
 
   private final String id;
   private final Map<Turn, Player> players;
@@ -95,7 +97,7 @@ public final class GameSettings {
       * @return this builder
       */
     public Builder maxPlayers(int maxPlayers) {
-      if (maxPlayers != 2 && maxPlayers != 4) {
+      if (maxPlayers != 2 && maxPlayers != DEFAULT_MAX_PLAYERS) {
         throw new IllegalArgumentException(
             String.format("%d player games are not supported.", maxPlayers));
       }
@@ -220,7 +222,8 @@ public final class GameSettings {
     * @return a string with info about the timer
     */
   public String getHumanTimer() {
-    return isTimed() ? TimeUtils.millisToLongDHMS(getTimer() * 1000) : "None";
+    return isTimed()
+      ? TimeUtils.millisToLongDHMS(getTimer() * MILLIS_IN_SEC) : "None";
   }
 
   /**
@@ -324,6 +327,7 @@ public final class GameSettings {
 
   @Override
   public String toString() {
-    return String.format("GameSettings[id=%s, players=%s, state=%d]", id, players, state.ordinal());
+    return String.format("GameSettings[id=%s, players=%s, state=%d]",
+        id, players, state.ordinal());
   }
 }

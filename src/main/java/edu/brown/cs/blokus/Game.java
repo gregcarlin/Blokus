@@ -478,23 +478,23 @@ public class Game {
     } while (next != turn.next());
     return null;
   }
-  
+
   /**
    * Returns an array that represents whether each piece is playable for the
    * player with the given turn.  The ordering of the array is the same as the
    * ordering of the {@link Shape} enum.
-   * 
+   *
    * @param turn turn
    * @return playable pieces
    */
   public boolean[] playablePieces(Turn turn) {
     return LegalMoves.playablePieces(this, turn);
   }
-  
+
   /**
    * Returns playable corners for the player with the current turn.  A corner is
    * playable if the player has some legal move that covers the corner.
-   * 
+   *
    * @return playable corners
    */
   public Set<Square> playableCorners() {
@@ -504,7 +504,7 @@ public class Game {
   /**
    * Returns playable corners for the player with the given turn.  A corner is
    * playable if the player has some legal move that covers the corner.
-   * 
+   *
    * @param turn turn
    * @return playable corners
    */
@@ -626,7 +626,7 @@ public class Game {
     }
     return false;
   }
-  
+
   @Override
   public String toString() {
     return String.format("Game[turn=%d,settings=%s]", turn.ordinal(), settings);

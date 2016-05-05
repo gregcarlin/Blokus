@@ -35,10 +35,13 @@ public class IndexHandler implements TemplateViewRoute {
     final String hide = req.queryParams("hide");
     String dest = req.queryParams("dest");
     dest = (dest == null || dest.isEmpty()) ? "/auth/main" : dest;
-    ImmutableMap.Builder mapBuilder = new ImmutableMap.Builder()
-      .put("dest", dest)
-      .put("hide", hide == null ? "" : hide);
-    if (error != null && !error.isEmpty()) mapBuilder.put("error", error);
+    ImmutableMap.Builder<String, String> mapBuilder
+      = new ImmutableMap.Builder<String, String>()
+        .put("dest", dest)
+        .put("hide", hide == null ? "" : hide);
+    if (error != null && !error.isEmpty()) {
+      mapBuilder.put("error", error);
+    }
     return new ModelAndView(mapBuilder.build(), "index.ftl");
   }
 }

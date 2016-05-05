@@ -1,17 +1,5 @@
 package edu.brown.cs.blokus.legal;
 
-import edu.brown.cs.blokus.Move;
-import edu.brown.cs.blokus.Orientation;
-import static edu.brown.cs.blokus.Orientation.*;
-import edu.brown.cs.blokus.Shape;
-import static edu.brown.cs.blokus.Shape.*;
-import static edu.brown.cs.blokus.legal.Corner.*;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import edu.brown.cs.blokus.Game;
-import edu.brown.cs.blokus.Square;
-import edu.brown.cs.blokus.Turn;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -21,30 +9,53 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import edu.brown.cs.blokus.Game;
+import edu.brown.cs.blokus.Move;
+import edu.brown.cs.blokus.Orientation;
+import edu.brown.cs.blokus.Shape;
+import edu.brown.cs.blokus.Square;
+import edu.brown.cs.blokus.Turn;
+
+import static edu.brown.cs.blokus.Orientation.*;
+import static edu.brown.cs.blokus.Shape.*;
+import static edu.brown.cs.blokus.legal.Corner.*;
+
+
 /**
  * Legal moves for each piece. Reduces the number of moves that have to be
  * checked to get all legal moves.
  *
  * @author aaronzhang
  */
-public class LegalMoves {
+public final class LegalMoves {
 
   // Legal moves by corner type
   private static final Map<Corner, Multimap<Shape, RelativeMove>> relativeMoves
     = new EnumMap<>(Corner.class);
-  private static final Multimap<Shape, RelativeMove> bottomLeft = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> topLeft = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> bottomRight = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> topRight = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> left = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> right = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> bottom = HashMultimap.create();
-  private static final Multimap<Shape, RelativeMove> top = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> bottomLeft
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> topLeft
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> bottomRight
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> topRight
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> left
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> right
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> bottom
+    = HashMultimap.create();
+  private static final Multimap<Shape, RelativeMove> top
+    = HashMultimap.create();
 
   /**
    * A move relative to (0, 0). Does not compute occupied squares.
    */
-  private static class RelativeMove {
+  private static final class RelativeMove {
 
     private final Shape shape;
     private final Orientation orientation;
@@ -61,6 +72,9 @@ public class LegalMoves {
     private Move translate(int deltaX, int deltaY) {
       return new Move(shape, orientation, x + deltaX, y + deltaY);
     }
+  }
+
+  private LegalMoves() {
   }
 
   /**
@@ -341,7 +355,8 @@ public class LegalMoves {
           moves.add(new Move(I1, E, s.getX(), s.getY()));
         } else {
           if (cornerSizes.get(s) >= shape.size()) {
-            for (RelativeMove r : relativeMoves.get(corners.get(s)).get(shape)) {
+            for (RelativeMove r : relativeMoves.get(corners.get(s))
+                .get(shape)) {
               Move m = r.translate(s.getX(), s.getY());
               if (isAvailable(m, a)) {
                 moves.add(m);
@@ -403,10 +418,10 @@ public class LegalMoves {
     }
     return false;
   }
-  
+
   /**
    * Gets a random legal move for the player with the given turn.
-   * 
+   *
    * @param g game
    * @param turn turn
    * @return random move
@@ -420,12 +435,12 @@ public class LegalMoves {
     }
     return legalMoves.get(new Random().nextInt(legalMoves.size()));
   }
-  
+
   /**
    * Returns an array that represents whether each piece is playable for the
    * player with the given turn.  The ordering of the array is the same as the
    * ordering of the {@link Shape} enum.
-   * 
+   *
    * @param g game
    * @param turn turn
    * @return playable pieces
@@ -439,7 +454,7 @@ public class LegalMoves {
     Map<Square, Corner> corners = a.cornerTypes();
     Map<Square, Integer> cornerSizes = a.cornerSizes(5);
     Shape[] shapes = Shape.values();
-    eachShape:
+  eachShape:
     for (int i = 0; i < shapes.length; i++) {
       Shape shape = shapes[i];
       if (!g.getPlayer(turn).hasPiece(shape)) {
@@ -463,11 +478,11 @@ public class LegalMoves {
     }
     return playable;
   }
-  
+
   /**
    * Returns playable corners for the player with the given turn.  A corner is
    * playable if the player has some legal move that covers the corner.
-   * 
+   *
    * @param g game
    * @param turn turn
    * @return playable corners
@@ -496,11 +511,12 @@ public class LegalMoves {
       return playable;
     }
     // General case
-    eachCorner:
+  eachCorner:
     for (Square s : a.corners()) {
       for (Shape shape : pieces) {
         if (cornerSizes.get(s) >= shape.size()) {
-          for (RelativeMove r : relativeMoves.get(cornerTypes.get(s)).get(shape)) {
+          for (RelativeMove r : relativeMoves.get(cornerTypes.get(s))
+              .get(shape)) {
             Move m = r.translate(s.getX(), s.getY());
             if (isAvailable(m, a)) {
               playable.add(s);
