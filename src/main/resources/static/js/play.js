@@ -340,22 +340,22 @@ function drawGrid() {
 }
 
 function drawSupply() {
-	
 	hoveredPlayer = curPlayer;
 	if (hovering != 0) {
 		hoveredPlayer = hovering;
 	}
-	
-	for (m = 0; m < 3; m++) {
-	for (n = 0; n < 7; n++) {
+
+	for (var m = 0; m < 3; m++) {
+	for (var n = 0; n < 7; n++) {
 		var piece = 3*n + m;
 		if (remainingPieces[hoveredPlayer][piece] == 1) {
 			var xloc = supplyLeftEdge + (m*6+2)*size2;
 			var yloc = (n*6+2)*size2;
-			drawPiece(pieces[piece], colors[hoveredPlayer], xloc, yloc, size2);
+      var color = players[hoveredPlayer - 1].playable_pieces[piece]
+      ? colors[hoveredPlayer] : '#EEE';
+			drawPiece(pieces[piece], color, xloc, yloc, size2);
 		}
 	}}
-	
 }
 
 function fillSquare(color,x,y,width) {  // x and y are bottom left corner

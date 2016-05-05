@@ -57,6 +57,8 @@ public class InfoHandler implements Route {
         if (oPlayer == null || oPlayer instanceof JsonNull) {
           players.set(i, null);
         } else {
+          Turn turn = Turn.values()[i];
+
           JsonObject player = oPlayer.getAsJsonObject();
           String id
             = player.get("_id").getAsJsonObject().get("$oid").getAsString();
@@ -64,13 +66,19 @@ public class InfoHandler implements Route {
           player.addProperty("name", db.getName(id));
 
           JsonArray playable = new JsonArray();
-          for (Square sq : rich.playableCorners(Turn.values()[i])) {
+          for (Square sq : rich.playableCorners(turn)) {
             JsonObject jSq = new JsonObject();
             jSq.addProperty("x", sq.getX());
             jSq.addProperty("y", sq.getY());
             playable.add(jSq);
           }
           player.add("playable", playable);
+
+          JsonArray playablePieces = new JsonArray();
+          for (boolean b : rich.playablePieces(turn)) {
+            playablePieces.add(b);
+          }
+          player.add("playable_pieces", playablePieces);
 
           players.set(i, player);
         }

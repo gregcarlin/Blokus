@@ -111,16 +111,23 @@ public class LiveUpdater {
     List<Player> players = context.getSettings().getAllPlayers();
     final int numPlayers = players.size();
     for (int i = 0; i < numPlayers; i++) {
+      Turn t = Turn.values()[i];
       JsonObject jPlayer = new JsonObject();
 
       JsonArray playable = new JsonArray();
-      for (Square sq : context.playableCorners()) {
+      for (Square sq : context.playableCorners(t)) {
         JsonObject jSq = new JsonObject();
         jSq.addProperty("x", sq.getX());
         jSq.addProperty("y", sq.getY());
         playable.add(jSq);
       }
       jPlayer.add("playable", playable);
+
+      JsonArray playablePieces = new JsonArray();
+      for (boolean b : context.playablePieces(t)) {
+        playablePieces.add(b);
+      }
+      jPlayer.add("playable_pieces", playablePieces);
 
       jPlayers.add(jPlayer);
     }
