@@ -35,9 +35,12 @@ public class MainHandler implements TemplateViewRoute {
   @Override
   public ModelAndView handle(Request req, Response res) {
     final String user = req.attribute("user-id");
-    return new ModelAndView(
-        ImmutableMap.of("username", db.getName(user),
-          "tip", TIPS[(int) (Math.random() * TIPS.length)]),
-        "main.ftl");
+    final String error = req.queryParams("error");
+    ImmutableMap.Builder<String, String> map
+      = new ImmutableMap.Builder<String, String>()
+      .put("username", db.getName(user))
+      .put("tip", TIPS[(int) (Math.random() * TIPS.length)]);
+    if (error != null && !error.isEmpty()) { map.put("error", error); }
+    return new ModelAndView(map.build(), "main.ftl");
   }
 }
