@@ -23,6 +23,10 @@
 
 <div class="container container-main">
 
+  <#if error??>
+    <div class="alert alert-danger" role="alert">${error?html}</div>
+  </#if>
+
   <!-- Main component for a primary marketing message or call to action -->
   <div class="row">
     <div class="col-md-6">
