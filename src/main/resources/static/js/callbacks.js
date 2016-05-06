@@ -232,6 +232,7 @@ function getCorners() {
         checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) - 1, places);
         checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) + 1, places);
     });
+    return corners;
 }
 
 // If (x, y) is a corner, adds (x, y) to set s
