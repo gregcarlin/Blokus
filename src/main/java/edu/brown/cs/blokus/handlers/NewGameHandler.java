@@ -37,23 +37,28 @@ public class NewGameHandler implements TemplateViewRoute {
     final GameSettings.Type type = TYPE_MAP.get(qm.value("type"));
     final int count = Integer.parseInt(qm.value("count"));
     final String rawTimer = qm.value("timer");
-    final int timer = rawTimer == null || rawTimer.isEmpty()
-        ? 0 : Integer.parseInt(rawTimer);
+    try {
+      final int timer = rawTimer == null || rawTimer.isEmpty()
+          ? 0 : Integer.parseInt(rawTimer);
 
-    GameSettings settings = new GameSettings.Builder()
-      .type(type)
-      .state(GameSettings.State.UNSTARTED)
-      .maxPlayers(count)
-      .timer(timer)
-      .build();
-    settings.addPlayer(req.attribute("user-id"));
-    Game game = new Game.Builder()
-      .setSettings(settings)
-      .build();
+      GameSettings settings = new GameSettings.Builder()
+        .type(type)
+        .state(GameSettings.State.UNSTARTED)
+        .maxPlayers(count)
+        .timer(timer)
+        .build();
+      settings.addPlayer(req.attribute("user-id"));
+      Game game = new Game.Builder()
+        .setSettings(settings)
+        .build();
 
-    String id = db.saveGame(game);
-    res.redirect("/auth/play/" + id);
+      String id = db.saveGame(game);
+      res.redirect("/auth/play/" + id);
 
-    return null;
+      return null;
+    } catch (NumberFormatException e) {
+      res.redirect("/auth/main?error=That timer is too large!");
+      return null;
+    }
   }
 }
