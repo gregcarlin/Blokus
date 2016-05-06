@@ -207,6 +207,18 @@ function getPlaces() {
 // Get all corners
 function getCorners() {
     var corners = [];
+    if (score(curPlayer) == 0) {
+        if (curPlayer == 1) {
+            corners.push({x: 0, y: 0});
+        } else if (curPlayer == 2) {
+            corners.push({x: 0, y: 19});
+        } else if (curPlayer == 3) {
+            corners.push({x: 19, y: 19});
+        } else {
+            corners.push({x: 19, y: 0});
+        }
+        return corners;
+    }
     var places = getPlaces();
     places.forEach(function(place) {
         place = place.split(",");
@@ -215,7 +227,6 @@ function getCorners() {
         checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) - 1, places);
         checkCorner(corners, parseInt(place[0]) + 1, parseInt(place[1]) + 1, places);
     });
-    return corners;
 }
 
 // If (x, y) is a corner, adds (x, y) to set s
