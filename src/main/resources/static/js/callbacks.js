@@ -55,7 +55,7 @@ $("#board").mousedown(function(e){
 	if (mode == "positioning" && mouseOnPiece()) {
 		mode = "dragging";
 		$(".icon-group").hide();
-		return;
+		return false;
 	}
 	if ((mode != "notYourTurn") &&
 			(curMouseX > supplyLeftEdge && curMouseX < supplyLeftEdge + 3*6*size2)) {
@@ -74,6 +74,7 @@ $("#board").mousedown(function(e){
 		$(".icon-group").hide();
 		rotate = [1,0,0,1,1];
 	}
+	 return false;
 });
 
 function toGrid(x) {
@@ -115,6 +116,10 @@ $("#board").mouseup(function(e){
 			drawGrid();
 		}
 	}
+});
+
+$(".icon").mousedown(function(e){
+	return false;
 });
 
 $("#rot-left").on('click', function() {
