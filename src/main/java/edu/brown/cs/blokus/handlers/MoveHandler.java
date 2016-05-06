@@ -7,7 +7,7 @@ import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Orientation;
 import edu.brown.cs.blokus.Shape;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 import edu.brown.cs.parse.BodyParser;
 
 import spark.Request;
@@ -22,13 +22,13 @@ public class MoveHandler implements Route {
   private static final Gson GSON = new Gson();
   private static final String FAIL = status(false);
 
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler that handles move requests.
     * @param db a reference to the database
     */
-  public MoveHandler(Database db) {
+  public MoveHandler(Datasource db) {
     this.db = db;
   }
 

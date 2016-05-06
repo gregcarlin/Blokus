@@ -2,7 +2,7 @@ package edu.brown.cs.blokus.handlers;
 
 import com.google.common.collect.ImmutableMap;
 
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -22,13 +22,13 @@ public class MainHandler implements TemplateViewRoute {
     "At the end of the game, be sure to play in places that an opponent could block before playing in your secured areas.",
     "<img src = \"http://pentolla.com/images/Pieces.png\"></img>"
   };
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates an instance of a handler that displays the main page.
     * @param db a reference to the database
     */
-  public MainHandler(Database db) {
+  public MainHandler(Datasource db) {
     this.db = db;
   }
 

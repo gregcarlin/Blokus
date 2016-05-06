@@ -2,7 +2,7 @@ package edu.brown.cs.blokus.handlers;
 
 import com.google.common.collect.ImmutableMap;
 
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -14,13 +14,13 @@ import spark.TemplateViewRoute;
   * Handles index page in web GUI.
   */
 public class IndexHandler implements TemplateViewRoute {
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new index handler.
     * @param db a reference to the database
     */
-  public IndexHandler(Database db) {
+  public IndexHandler(Datasource db) {
     this.db = db;
   }
 

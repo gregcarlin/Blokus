@@ -1,6 +1,6 @@
 package edu.brown.cs.blokus.handlers;
 
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.Filter;
 import spark.Request;
@@ -13,13 +13,13 @@ import spark.Spark;
   * If not, they are redirected.
   */
 public class AuthHandler implements Filter {
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new authentication handler.
     * @param db a reference to the database
     */
-  public AuthHandler(Database db) {
+  public AuthHandler(Datasource db) {
     this.db = db;
   }
 

@@ -1,6 +1,6 @@
 package edu.brown.cs.blokus.handlers;
 
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.ModelAndView;
 import spark.QueryParamsMap;
@@ -13,13 +13,13 @@ import spark.TemplateViewRoute;
   * Handles user logins.
   */
 public class SignupHandler implements TemplateViewRoute {
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler for user sign ups.
     * @param db a reference to the database
     */
-  public SignupHandler(Database db) {
+  public SignupHandler(Datasource db) {
     this.db = db;
   }
 

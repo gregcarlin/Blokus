@@ -17,7 +17,7 @@ import edu.brown.cs.blokus.Move;
 import edu.brown.cs.blokus.Player;
 import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.Turn;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.MongoDatasource;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -64,8 +64,8 @@ public class LiveUpdater {
     */
   @OnWebSocketMessage
   public void message(Session session, String message) {
-    if (Database.SESSIONS.containsKey(message)) {
-      KNOWN_SESSIONS.put(Database.SESSIONS.get(message), session);
+    if (MongoDatasource.SESSIONS.containsKey(message)) {
+      KNOWN_SESSIONS.put(MongoDatasource.SESSIONS.get(message), session);
     }
   }
 

@@ -3,7 +3,8 @@ package edu.brown.cs.blokus;
 import java.io.File;
 import java.io.IOException;
 
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
+import edu.brown.cs.blokus.db.MongoDatasource;
 import edu.brown.cs.blokus.handlers.AuthHandler;
 import edu.brown.cs.blokus.handlers.ExceptionPrinter;
 import edu.brown.cs.blokus.handlers.GameListHandler;
@@ -63,15 +64,15 @@ public final class Main {
     OptionSpec<String> dbHostSpec = parser
       .accepts("dbhost", "The host address of the database to use.")
       .withRequiredArg().ofType(String.class)
-      .defaultsTo(Database.DEFAULT_HOST);
+      .defaultsTo(MongoDatasource.DEFAULT_HOST);
     OptionSpec<Integer> dbPortSpec = parser
       .accepts("dbport", "The port the database to use is running on.")
       .withRequiredArg().ofType(Integer.class)
-      .defaultsTo(Database.DEFAULT_PORT);
+      .defaultsTo(MongoDatasource.DEFAULT_PORT);
     OptionSpec<String> dbSpec = parser
       .accepts("db", "The name of the database to use.")
       .withRequiredArg().ofType(String.class)
-      .defaultsTo(Database.DEFAULT_DB);
+      .defaultsTo(MongoDatasource.DEFAULT_DB);
     OptionSpec<File> keystoreSpec = parser
       .accepts("keystore", "The path to the secure keystore.")
       .withRequiredArg().ofType(File.class);
@@ -113,7 +114,7 @@ public final class Main {
     }
 
     FreeMarkerEngine freeMarker = createEngine();
-    Database db = new Database(dbHost, dbPort, dbName);
+    Datasource db = new MongoDatasource(dbHost, dbPort, dbName);
 
     Spark.webSocket("/live", LiveUpdater.class);
 

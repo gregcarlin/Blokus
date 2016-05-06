@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.Square;
 import edu.brown.cs.blokus.Turn;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.Request;
 import spark.Response;
@@ -22,13 +22,13 @@ import spark.Route;
 public class InfoHandler implements Route {
   private static final Gson GSON = new Gson();
 
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler that handles info requests.
     * @param db a reference to the database
     */
-  public InfoHandler(Database db) {
+  public InfoHandler(Datasource db) {
     this.db = db;
   }
 

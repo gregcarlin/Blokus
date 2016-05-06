@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import edu.brown.cs.blokus.GameSettings;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.Request;
 import spark.Response;
@@ -19,13 +19,13 @@ import spark.Route;
 public class GameListHandler implements Route {
   private static final Gson GSON = new Gson();
 
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler that handles game list requests.
     * @param db a reference to the database
     */
-  public GameListHandler(Database db) {
+  public GameListHandler(Datasource db) {
     this.db = db;
   }
 

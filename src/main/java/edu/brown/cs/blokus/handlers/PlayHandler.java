@@ -3,7 +3,7 @@ package edu.brown.cs.blokus.handlers;
 import com.google.common.collect.ImmutableMap;
 
 import edu.brown.cs.blokus.Game;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -16,13 +16,13 @@ import spark.TemplateViewRoute;
   * Handles the display of the play page.
   */
 public class PlayHandler implements TemplateViewRoute {
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler that displays the play page.
     * @param db a reference to the database
     */
-  public PlayHandler(Database db) {
+  public PlayHandler(Datasource db) {
     this.db = db;
   }
 

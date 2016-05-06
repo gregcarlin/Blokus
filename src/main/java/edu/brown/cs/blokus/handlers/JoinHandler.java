@@ -2,7 +2,7 @@ package edu.brown.cs.blokus.handlers;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.Player;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -14,13 +14,13 @@ import spark.TemplateViewRoute;
   * Handles the joining of games.
   */
 public class JoinHandler implements TemplateViewRoute {
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler that adds players to games.
     * @param db a reference to the database
     */
-  public JoinHandler(Database db) {
+  public JoinHandler(Datasource db) {
     this.db = db;
   }
 

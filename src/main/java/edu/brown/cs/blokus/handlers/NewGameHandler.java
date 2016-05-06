@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import edu.brown.cs.blokus.Game;
 import edu.brown.cs.blokus.GameSettings;
-import edu.brown.cs.blokus.db.Database;
+import edu.brown.cs.blokus.db.Datasource;
 
 import spark.ModelAndView;
 import spark.QueryParamsMap;
@@ -21,13 +21,13 @@ public class NewGameHandler implements TemplateViewRoute {
     ImmutableMap.of("public", GameSettings.Type.PUBLIC,
         "private", GameSettings.Type.PRIVATE,
         "local", GameSettings.Type.LOCAL);
-  private final Database db;
+  private final Datasource db;
 
   /**
     * Creates a new handler for making new games.
     * @param db a reference to the database
     */
-  public NewGameHandler(Database db) {
+  public NewGameHandler(Datasource db) {
     this.db = db;
   }
 

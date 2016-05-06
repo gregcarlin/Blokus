@@ -29,7 +29,7 @@ import static com.mongodb.client.model.Filters.*;
 /**
   * Manages connections to the database.
   */
-public class Database implements AutoCloseable {
+public class MongoDatasource implements Datasource {
   public static final String DEFAULT_HOST = "104.236.87.248";
   public static final int DEFAULT_PORT = 27017;
   public static final String DEFAULT_DB = "blokus";
@@ -53,7 +53,7 @@ public class Database implements AutoCloseable {
   /**
     * Creates a new database connection with default values.
     */
-  public Database() {
+  public MongoDatasource() {
     this(DEFAULT_DB);
   }
 
@@ -61,7 +61,7 @@ public class Database implements AutoCloseable {
     * Creates a new database connection with default values.
     * @param dbName the name of the database to connect to
     */
-  public Database(String dbName) {
+  public MongoDatasource(String dbName) {
     this(DEFAULT_HOST, dbName);
   }
 
@@ -70,7 +70,7 @@ public class Database implements AutoCloseable {
     * @param host the address of the database host
     * @param dbName the name of the database to connect to
     */
-  public Database(String host, String dbName) {
+  public MongoDatasource(String host, String dbName) {
     this(host, DEFAULT_PORT, dbName);
   }
 
@@ -80,7 +80,7 @@ public class Database implements AutoCloseable {
     * @param port the port where the database is running
     * @param dbName the name of the database to connect to
     */
-  public Database(String host, int port, String dbName) {
+  public MongoDatasource(String host, int port, String dbName) {
     client = new MongoClient(host, port);
     db = client.getDatabase(dbName);
     users = db.getCollection("users");
@@ -93,12 +93,7 @@ public class Database implements AutoCloseable {
     return docs.first();
   }
 
-  /**
-    * Creates a new user with a given username and password.
-    * @param user the username
-    * @param pass the password
-    * @return the id of the new user, of null if this username already exists
-    */
+  @Override
   public String createUser(String user, String pass) {
     Document userDoc = getUser(user);
     if (userDoc != null) { return null; }
@@ -111,12 +106,7 @@ public class Database implements AutoCloseable {
     return getUser(user).getObjectId("_id").toString();
   }
 
-  /**
-    * Gets the id of a user given valid credentials.
-    * @param user the username
-    * @param pass the password
-    * @return the id of the user if credentials are valid, null otherwise
-    */
+  @Override
   public String getUserId(String user, String pass) {
     Document userDoc = getUser(user);
     if (userDoc == null) { return null; }
@@ -127,31 +117,19 @@ public class Database implements AutoCloseable {
     return userDoc.getObjectId("_id").toString();
   }
 
-  /**
-    * Creates a new session for a given user.
-    * @param userId the id of the user logging in
-    * @return the session hash
-    */
+  @Override
   public String logIn(String userId) {
     String hash = UUID.randomUUID().toString();
     SESSIONS.put(hash, userId);
     return hash;
   }
 
-  /**
-    * Gets the user id associated with a session hash.
-    * @param hash the session hash provided by the client
-    * @return the id of the associated user, or null if none
-    */
+  @Override
   public String getUserId(String hash) {
     return SESSIONS.get(hash);
   }
 
-  /**
-    * Gets the name of a user.
-    * @param id the id of the user to get
-    * @return the user's name as a string, or null if invalid id
-    */
+  @Override
   public String getName(String id) {
     Document doc = users.find(new Document("_id", new ObjectId(id))).first();
     return doc == null ? null : doc.getString("username");
@@ -198,11 +176,7 @@ public class Database implements AutoCloseable {
       .build();
   }
 
-  /**
-    * Gets a raw game with a given id.
-    * @param id the id of the game to find
-    * @return the game's json, or null if not found
-    */
+  @Override
   public String getGameRaw(String id) {
     FindIterable<Document> docs
       = games.find(new Document("_id", new ObjectId(id)));
@@ -210,11 +184,7 @@ public class Database implements AutoCloseable {
     return doc == null ? null : doc.toJson();
   }
 
-  /**
-    * Gets a game with a given id.
-    * @param id the id of the game to find
-    * @return the game, or null if not found
-    */
+  @Override
   public Game getGame(String id) {
     FindIterable<Document> docs
       = games.find(new Document("_id", new ObjectId(id)));
@@ -243,12 +213,7 @@ public class Database implements AutoCloseable {
     return gameBuilder.build();
   }
 
-  /**
-    * Saves a game to the database.
-    * If a game with a matching id is already present, it is replaced.
-    * @param game the game to save
-    * @return the id of the saved game
-    */
+  @Override
   public String saveGame(Game game) {
     GameSettings settings = game.getSettings();
 
@@ -290,11 +255,7 @@ public class Database implements AutoCloseable {
     return id.toString();
   }
 
-  /**
-    * Gets a list of games that are public and haven't been started yet.
-    * @param without the id of the player to exclude from the results
-    * @return a set of game settings representing each game
-    */
+  @Override
   public List<GameSettings> getOpenGames(String without) {
     FindIterable<Document> docs = games.find(and(
         eq("params.privacy", GameSettings.Type.PUBLIC.ordinal()),
@@ -310,12 +271,7 @@ public class Database implements AutoCloseable {
     return rt;
   }
 
-  /**
-    * Gets all games that a given player has joined.
-    * Excludes games that are finished.
-    * @param playerId the unique id of the player
-    * @return a set of game settings representing each game
-    */
+  @Override
   public List<GameSettings> getGamesWith(String playerId) {
     FindIterable<Document> docs = games.find(and(
           elemMatch("players", new Document("_id", new ObjectId(playerId))),

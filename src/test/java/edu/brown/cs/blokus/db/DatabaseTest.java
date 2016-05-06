@@ -24,11 +24,11 @@ import static org.junit.Assert.*;
   * Unit tests for the blokus database connection layer.
   */
 public class DatabaseTest {
-  private static Database db;
+  private static MongoDatasource db;
 
   @BeforeClass
   public static void setupDb() {
-    db = new Database("blokus-test");
+    db = new MongoDatasource("blokus-test");
   }
 
   @Before
