@@ -508,6 +508,7 @@ $(document).ready(function(){
 
         for (var i = 0; i < json.players.length; i++) {
           players[i].playable = json.players[i].playable;
+          players[i].playable_pieces = json.players[i].playable_pieces;
         }
 
         active = json.active;
