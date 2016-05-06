@@ -101,6 +101,7 @@ $("#board").mouseup(function(e){
 			curPieceY = Math.floor(curMouseY/SIZE);
 
       $('#loading').hide();
+      $('.icon').show();
       var group = $('.icon-group');
       group.removeClass().addClass('icon-group');
       group.addClass('piece-' + curPiece);
