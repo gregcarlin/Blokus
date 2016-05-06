@@ -80,6 +80,7 @@
   <span id="flip-vert" class="material-icons icon flip">swap_vert</span>
   <span id="flip-horiz" class="material-icons icon flip">swap_horiz</span>
   <span id="submit" class="material-icons icon">done</span>
+  <span id="loading" class="fa fa-spinner fa-spin"></span>
 </div>
 
 <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="gameResults">

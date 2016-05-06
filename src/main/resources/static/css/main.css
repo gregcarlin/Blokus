@@ -264,6 +264,9 @@ html, body {
 .icon:hover {
   cursor: pointer;
 }
+#loading {
+  display: none;
+}
 .piece-0 .rotation, .piece-0 .flip,
 .piece-1 .flip,
 .piece-2 .flip,

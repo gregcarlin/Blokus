@@ -99,13 +99,14 @@ $("#board").mouseup(function(e){
 			curPieceX = Math.floor(curMouseX/SIZE);
 			curPieceY = Math.floor(curMouseY/SIZE);
 
+      $('#loading').hide();
       var group = $('.icon-group');
-			group.show();
       group.removeClass().addClass('icon-group');
       group.addClass('piece-' + curPiece);
       var offset = $('#board').offset();
 			group.css("left", (curPieceX * SIZE + offset.left + 75) + "px");
 			group.css("top", ((grid.length - curPieceY) * SIZE + offset.top - 50) + "px");
+			group.show();
 
 			displaySubmit();
 		}
@@ -300,6 +301,8 @@ function submitMove() {
 }
 
 $("#submit").on('click', function() {
+  $('.icon').hide();
+  $('#loading').show();
 	console.log(rotate);
 	console.log(getOrientation(rotate));
 	console.log({
