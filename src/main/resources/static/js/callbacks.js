@@ -79,7 +79,7 @@ $("#board").mousedown(function(e) {
     dragCorners = cornersForPiece();
 
     $(".icon-group").hide();
-    rotate = [1,0,0,1,1];
+    rotate = [1, 0, 0, 1, 1];
   }
   return false;
 });

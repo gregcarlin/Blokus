@@ -375,7 +375,7 @@ function drawGrid() {
     }
   }
 
-  if (mode == 'dragging') {
+  if (mode == 'dragging' || mode == 'positioning') {
     _.each(dragCorners, function(square) {
       drawDot(curPlayer, square.y, grid.length - square.x - 1);
     });

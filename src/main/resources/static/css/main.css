@@ -218,6 +218,9 @@ html, body {
 .progress {
   display: none;
 }
+.progress-bar {
+  color: #000;
+}
 .playerInfo > div {
   position: relative;
   top: 50%;
