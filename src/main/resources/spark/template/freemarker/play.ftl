@@ -23,8 +23,8 @@
 
 <div class="container-fluid container-play">
 
-<h1 id = "header"> 
-	<span id = "alert">GAME NOT STARTED</span> 
+<h1 id="header"> 
+  <span id="alert">GAME NOT STARTED</span> 
 </h1>
 
 <div class="alert alert-info alert-dismissible" role="alert" id="slow">
@@ -36,9 +36,8 @@
   <strong>Good game!</strong> You have no more available moves.
 </div>
 
-<div id = "players">
-	
-	<div id = "player1" class = "playerInfo"> 
+<div id="players">
+  <div id="player1" class="playerInfo"> 
     <div>
       <span id="playerName1" class="playerName">EMPTY</span>
       <span id="playerScore1" class="badge">0</span>
@@ -47,9 +46,9 @@
       <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
-	</div>
-	
-	<div id = "player2" class = "playerInfo"> 
+  </div>
+
+  <div id="player2" class="playerInfo"> 
     <div>
       <span id="playerName2" class="playerName">EMPTY</span>
       <span id="playerScore2" class="badge">0</span>
@@ -58,9 +57,9 @@
       <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
-	</div>
+  </div>
 
-	<div id = "player3" class = "playerInfo">
+  <div id="player3" class="playerInfo">
     <div>
       <span id="playerName3" class="playerName">EMPTY</span>
       <span id="playerScore3" class="badge">0</span>
@@ -69,9 +68,9 @@
       <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
-	</div>
+  </div>
 
-	<div id = "player4" class = "playerInfo"> 
+  <div id="player4" class="playerInfo"> 
     <div>
       <span id="playerName4" class="playerName">EMPTY</span>
       <span id="playerScore4" class="badge">0<span>
@@ -80,18 +79,18 @@
       <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
-	</div>
+  </div>
 
-	<div id="linkDiv" class="panel panel-info">
+  <div id="linkDiv" class="panel panel-info">
     <div class="panel-heading">Invite your friends!</div>
     Give your friends the following link so they can join this game:
     <input id="link" class="form-control" type="text" value="test" readonly />
-	</div>
+  </div>
 </div>
 
-<div id = "canvas">
-	<canvas id = "board" height = "500">
-	</canvas>
+<div id="canvas">
+  <canvas id="board" height="500">
+  </canvas>
 </div>
 
 <div class="icon-group">
@@ -112,10 +111,10 @@
       </div>
       <div class="modal-body">
         <table id="score-list">
-        <tr id = "results0"></tr>
-        <tr id = "results1"></tr>
-        <tr id = "results2"></tr>
-        <tr id = "results3"></tr>
+        <tr id="results0"></tr>
+        <tr id="results1"></tr>
+        <tr id="results2"></tr>
+        <tr id="results3"></tr>
         </table>
       </div>
     </div>

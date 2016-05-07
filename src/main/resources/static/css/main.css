@@ -187,11 +187,11 @@ html, body {
   display: none;
 }
 #board {
-	border: 2px solid black;
+  border: 2px solid black;
 }
 #players {
-	width: 250px;
-	padding: 10px;
+  width: 250px;
+  padding: 10px;
   display: inline-block;
   vertical-align: top;
 }
@@ -204,12 +204,12 @@ html, body {
   display: inline-block;
 }
 .playerInfo {
-	width: 175px;
-	height: 60px;
-	border: 1px outset;
-	padding: 4px;
-	font-size: 20px;
-	font-family: helvetica;
+  width: 175px;
+  height: 60px;
+  border: 1px outset;
+  padding: 4px;
+  font-size: 20px;
+  font-family: helvetica;
   margin-bottom: 25px;
   border-radius: 5px;
   margin-left: auto;
@@ -242,11 +242,11 @@ html, body {
   background-color: #00CD3D;
 }
 #linkDiv {
-	word-wrap: break-word;
+  word-wrap: break-word;
 }
 .playerName {
-	text-align: center;
-	font-size: 24px;
+  text-align: center;
+  font-size: 24px;
 }
 #gameResults ul {
   list-style-type: none;
