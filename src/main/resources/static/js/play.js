@@ -288,6 +288,10 @@ function processTime() {
 		$.get(url + "/info", initRequest);
 	} else {
     $("#time").html(humanize(remaining));
+    
+    $(".leftTimer").html("");
+    $("#time" + curPlayer).html(humanize(remaining));
+    
   }
 }
 

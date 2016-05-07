@@ -38,25 +38,34 @@
   <strong>Good game!</strong> You have no more available moves.
 </div>
 
+<div id = "timeLabel">Time:</div>
+
 <div id = "players">
+	
+	<div id = "time1" class = "leftTimer"></div>
 	<div id = "player1" class = "playerInfo"> 
     <div>
       <span id="playerName1" class="playerName">EMPTY</span>
       <span id="playerScore1" class="badge">0</span>
     </div>
 	</div>
+	
+	<div id = "time2" class = "leftTimer"></div>
+	
 	<div id = "player2" class = "playerInfo"> 
     <div>
       <span id="playerName2" class="playerName">EMPTY</span>
       <span id="playerScore2" class="badge">0</span>
     </div>
 	</div>
+	<div id = "time3" class = "leftTimer"></div>
 	<div id = "player3" class = "playerInfo">
     <div>
       <span id="playerName3" class="playerName">EMPTY</span>
       <span id="playerScore3" class="badge">0</span>
     </div>
 	</div>
+	<div id = "time4" class = "leftTimer"></div>
 	<div id = "player4" class = "playerInfo"> 
     <div>
       <span id="playerName4" class="playerName">EMPTY</span>
