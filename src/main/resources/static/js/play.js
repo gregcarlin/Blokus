@@ -149,7 +149,10 @@ function initRequest(data) {
 		$(".timed").hide();
 		$("#alert").html("GAME COMPLETED");
 
-    showGameResults();
+
+		var isLocal = response.params.privacy == 2;
+		var isTwoPlayer = response.params['num-players'] == 2;
+   		showGameResults(isTwoPlayer,isLocal);
 
 		mode = "notYourTurn";
 		update = null;
@@ -180,27 +183,63 @@ function initRequest(data) {
 	startNewTurn(false);
 }
 
-var showGameResults = function() {
+function colorOf(player) {
+	switch(player) {
+		case 1:
+			return "Blue";
+		case 2: 
+			return "Yellow";
+		case 3: 
+			return "Red";
+		case 4: 
+			return "Green";
+	}
+}
+
+var showGameResults = function(isTwoPlayer,isLocal) {
   var scoreSort = function(a,b) {
       return b.score - a.score;
   }
   
   var scores = [];
-  
-  for (var i = 0; i < players.length; i++) {
-    var p = players[i];
-    scores[i] = {name: p.name, score: p.score};
+
+  if (!isTwoPlayer) {
+	  for (var i = 0; i < players.length; i++) {
+	    var p = players[i];
+	    
+	    var pName = p.name;
+	    if (isLocal) pName = "Player " + (i+1);
+	    
+	    
+	    scores[i] = {name: pName, score: p.score, color: colorOf(i+1)};
+	  }
   }
+  else {
+  	var score1 = players[0].score + players[2].score;
+  	var score2 = players[1].score + players[3].score;
+  	var name1 = players[0].name;
+  	var name2 = players[1].name;
+  	if (isLocal) {
+  		name1 = "Player 1";
+  		name2 = "Player 2";
+  	}
+  	scores[0] = {name: name1, score: score1, color: "Blue/Red"}
+  	scores[1] = {name: name2, score: score2, color: "Yellow/Green"}
+  }
+  
+  
+  
   scores = scores.sort(scoreSort);
 
   var html = '';
   _.each(scores, function(score, i) {
-    html += '<li>' +
-      '<span class="ordinal">' + ordinal[i] + '</span>' +
-      score.name + ': ' + score.score + ' pts' +
-      '</li>';
+    $("#results" + i).html( '<td>' +
+      '<span class="ordinal">' + ordinal[i] + '</span></td>' +
+      "<td>" + score.color + "</td>" +
+      "<td>" + score.name + "</td>" + 
+      "<td>" + score.score + ' pts' + "</td>");
   });
-  $('#score-list').html(html);
+ // $('#score-list').html(html);
 
   if (!endGameDisplayed) {
     endGameDisplayed = true;

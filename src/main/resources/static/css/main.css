@@ -252,6 +252,12 @@ html, body {
 #gameResults ul .ordinal {
   margin-right: 7px;
 }
+
+#score-list {
+	width: 90%;
+    margin: 0 auto; 
+}
+
 .icon-group {
   position: absolute;
   display: none;

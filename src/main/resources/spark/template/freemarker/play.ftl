@@ -91,8 +91,16 @@
         <h4 class="modal-title" id="myModalLabel">Game Results</h4>
       </div>
       <div class="modal-body">
-        <ul id="score-list">
-        </ul>
+        <table id="score-list">
+        <tr id = "results0"> </tr>
+        
+        <tr id = "results1"> </tr>
+        <tr id = "results2"> </tr>
+        <tr id = "results3"> </tr>
+        </table>
+        <br> Thanks for using our site!  <br><br> You should thank George Spahn
+        <br> for all the work put into this project.<br><br> Other people you should thank include 
+        Aaron Zhang and Thomas Abebe.
       </div>
     </div>
   </div>
