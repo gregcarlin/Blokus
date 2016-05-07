@@ -40,6 +40,10 @@ public class NewGameHandler implements TemplateViewRoute {
     try {
       final int timer = rawTimer == null || rawTimer.isEmpty()
           ? 0 : Integer.parseInt(rawTimer);
+      if (timer < 0 || timer > Math.pow(2, 31) / 1000) {
+        res.redirect("/auth/main?error=That timer is too large!");
+        return null;
+      }
 
       GameSettings settings = new GameSettings.Builder()
         .type(type)
