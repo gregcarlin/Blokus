@@ -162,7 +162,7 @@ html, body {
 }
 .limited {
   max-height: 300px;
-  overflow: scroll;
+  overflow-y: scroll;
   position: relative;
   margin-bottom: 20px;
 }
@@ -210,27 +210,14 @@ html, body {
 	padding: 4px;
 	font-size: 20px;
 	font-family: helvetica;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   border-radius: 5px;
   margin-left: auto;
   margin-right: auto;
 }
-
-.leftTimer {
-	position: absolute;
-	left: 30px;
-	float: left;
-	font-size: 25px;
-	font-family: helvetica;
+.progress {
+  display: none;
 }
-#timeLabel {
-	position: absolute;
-	left: 40px;
-	top: 100px;
-	font-size: 30px;
-	font-family: helvetica;
-}
-
 .playerInfo > div {
   position: relative;
   top: 50%;
@@ -268,12 +255,10 @@ html, body {
 #gameResults ul .ordinal {
   margin-right: 7px;
 }
-
 #score-list {
-	width: 90%;
-    margin: 0 auto; 
+  width: 90%;
+  margin: 0 auto; 
 }
-
 .icon-group {
   position: absolute;
   display: none;
@@ -304,5 +289,8 @@ html, body {
   }
   .playerInfo {
     display: inline-block;
+    vertical-align: top;
+    margin-left: 3px;
+    margin-right: 3px;
   }
 }

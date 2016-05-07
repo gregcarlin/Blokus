@@ -18,6 +18,9 @@ var players = []; // player data
 curPlayer = 1;  //players are 1,2,3,4
 nextPlayer = 1;
 
+var playerCount = 4; // max num of players
+var isLocal = false; // true if local, false if networked
+
 
 //BOARD PARAMETERS
 
@@ -92,6 +95,9 @@ function initRequest(data) {
 	if (s == 1) gameStarted = true;
 	if (s == 2) gameOver = true;
 
+  isLocal = response.params.privacy == 2;
+  playerCount = response.params['num-players'];
+
 	maxTime = response.params.timer;
 	if (maxTime == 0) timed = false;
 
@@ -146,13 +152,10 @@ function initRequest(data) {
 	if (gameOver) {
 		drawGrid();
 		$(".icon-group").hide();
-		$(".timed").hide();
+		$(".progress").hide();
 		$("#alert").html("GAME COMPLETED");
 
-
-		var isLocal = response.params.privacy == 2;
-		var isTwoPlayer = response.params['num-players'] == 2;
-   		showGameResults(isTwoPlayer,isLocal);
+    showGameResults();
 
 		mode = "notYourTurn";
 		update = null;
@@ -163,7 +166,7 @@ function initRequest(data) {
 	if (!gameStarted) {
 		drawGrid();
 		$(".icon-group").hide();
-		$(".timed").hide();
+		$(".progress").hide();
 		$("#alert").html("GAME NOT STARTED");
 		mode = "notYourTurn";
 		$("#link").val(url.replace(/play/i, 'join'));
@@ -175,35 +178,23 @@ function initRequest(data) {
 	
 	if (timed) {
 		update = setInterval(processTime, 1000);
-    $(".timed").show();
-	}
-	else {
-		$(".timed").hide();
 	}
 	startNewTurn(false);
 }
 
+const colorNames = ["Blue", "Yellow", "Red", "Green"];
 function colorOf(player) {
-	switch(player) {
-		case 1:
-			return "Blue";
-		case 2: 
-			return "Yellow";
-		case 3: 
-			return "Red";
-		case 4: 
-			return "Green";
-	}
+  return colorNames[player - 1];
 }
 
-var showGameResults = function(isTwoPlayer,isLocal) {
+var showGameResults = function() {
   var scoreSort = function(a,b) {
       return b.score - a.score;
   }
   
   var scores = [];
 
-  if (!isTwoPlayer) {
+  if (playerCount == 4) {
 	  for (var i = 0; i < players.length; i++) {
 	    var p = players[i];
 	    
@@ -213,8 +204,7 @@ var showGameResults = function(isTwoPlayer,isLocal) {
 	    
 	    scores[i] = {name: pName, score: p.score, color: colorOf(i+1)};
 	  }
-  }
-  else {
+  } else {
   	var score1 = players[0].score + players[2].score;
   	var score2 = players[1].score + players[3].score;
   	var name1 = players[0].name;
@@ -276,9 +266,7 @@ function startNewTurn(resetTime) {
 
 	if (resetTime) startTime = Date.now() - delay;
 
-	var d = Date.now() - delay;
-	var remaining = Math.floor(maxTime - (d - startTime) / 1000);
-  $("#time").html(humanize(remaining));
+  processTime();
 }
 
 function processTime() {
@@ -287,11 +275,13 @@ function processTime() {
 	if (remaining < 0) {
 		$.get(url + "/info", initRequest);
 	} else {
-    $("#time").html(humanize(remaining));
-    
-    $(".leftTimer").html("");
-    $("#time" + curPlayer).html(humanize(remaining));
-    
+    $(".progress").hide();
+    $("#player" + curPlayer + " .progress").show();
+    $("#player" + curPlayer + " .progress-bar")
+      .attr("aria-valuenow", remaining)
+      .attr("aria-valuemax", maxTime)
+      .css("width", (((maxTime - remaining) / maxTime) * 100) + '%')
+      .html(humanize(remaining));
   }
 }
 
@@ -544,9 +534,6 @@ $(document).ready(function(){
           $('#slow').show();
         }
         lastSubmitted = -1;
-
-        //mostRecentX = json.x;
-        //mostRecentY = json.y;
 
         curPiece = json.piece;
         curPieceX = json.x;
