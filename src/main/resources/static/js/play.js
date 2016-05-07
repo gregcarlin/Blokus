@@ -266,7 +266,17 @@ function startNewTurn(resetTime) {
 
 	if (resetTime) startTime = Date.now() - delay;
 
-  processTime();
+  if (timed) {
+    var d = Date.now() - delay;
+    var remaining = Math.floor(maxTime - (d - startTime) / 1000);
+    $(".progress").hide();
+    $("#player" + curPlayer + " .progress").show();
+    $("#player" + curPlayer + " .progress-bar")
+      .attr("aria-valuenow", remaining)
+      .attr("aria-valuemax", maxTime)
+      .css("width", (((maxTime - remaining) / maxTime) * 100) + '%')
+      .html(humanize(remaining));
+  }
 }
 
 function processTime() {
