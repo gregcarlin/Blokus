@@ -76,6 +76,7 @@ const ordinal = ['1st', '2nd', '3rd', '4th'];
 var endGameDisplayed = false;
 
 function initRequest(data) {
+
 	var foo = [];
 	for (i = 0; i < 21; i++) {
 		foo[i] = 0;
@@ -141,6 +142,21 @@ function initRequest(data) {
 	for (i = 1; i <= 4; i++) {
 		$("#player" + i).css("border-color", colors[i]);
 	}
+	
+	if (gameOver) {
+		drawGrid();
+		$(".icon-group").hide();
+		$(".timed").hide();
+		$("#alert").html("GAME COMPLETED");
+
+    showGameResults();
+
+		mode = "notYourTurn";
+		update = null;
+		$("#linkDiv").hide();
+		return;
+	}
+	
 	if (!gameStarted) {
 		drawGrid();
 		$(".icon-group").hide();
@@ -153,18 +169,7 @@ function initRequest(data) {
 	if (gameStarted) {
 		$("#linkDiv").hide();
 	}
-	if (gameOver) {
-		drawGrid();
-		$(".icon-group").hide();
-		$(".timed").hide();
-		$("#alert").html("GAME COMPLETED");
-
-    showGameResults();
-
-		mode = "notYourTurn";
-		update = null;
-		return;
-	}
+	
 	if (timed) {
 		update = setInterval(processTime, 1000);
     $(".timed").show();
@@ -331,9 +336,11 @@ function drawGrid() {
     });
   } else {
     var toDraw = hovering || curPlayer;
+    if (!gameOver) {
     _.each(players[toDraw - 1].playable, function(square) {
       drawDot(toDraw, square.x, square.y);
     });
+    }
   }
 
 	drawSupply();
