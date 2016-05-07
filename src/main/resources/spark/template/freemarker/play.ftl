@@ -43,6 +43,7 @@
       <span id="playerScore1" class="badge">0</span>
     </div>
     <div class="progress">
+      <span class="progress-text"></span>
       <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
@@ -54,6 +55,7 @@
       <span id="playerScore2" class="badge">0</span>
     </div>
     <div class="progress">
+      <span class="progress-text"></span>
       <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
@@ -65,6 +67,7 @@
       <span id="playerScore3" class="badge">0</span>
     </div>
     <div class="progress">
+      <span class="progress-text"></span>
       <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
@@ -76,6 +79,7 @@
       <span id="playerScore4" class="badge">0<span>
     </div>
     <div class="progress">
+      <span class="progress-text"></span>
       <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>

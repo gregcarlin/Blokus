@@ -276,8 +276,8 @@ function startNewTurn(resetTime) {
     $("#player" + curPlayer + " .progress-bar")
       .attr("aria-valuenow", remaining)
       .attr("aria-valuemax", maxTime)
-      .css("width", (((maxTime - remaining) / maxTime) * 100) + '%')
-      .html(humanize(remaining));
+      .css("width", (((maxTime - remaining) / maxTime) * 100) + '%');
+    $("#player" + curPlayer + " .progress-text").html(humanize(remaining));
   }
 }
 
@@ -292,8 +292,8 @@ function processTime() {
     $("#player" + curPlayer + " .progress-bar")
       .attr("aria-valuenow", remaining)
       .attr("aria-valuemax", maxTime)
-      .css("width", (((maxTime - remaining) / maxTime) * 100) + '%')
-      .html(humanize(remaining));
+      .css("width", (((maxTime - remaining) / maxTime) * 100) + '%');
+    $("#player" + curPlayer + " .progress-text").html(humanize(remaining));
   }
 }
 
