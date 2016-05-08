@@ -15,11 +15,27 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li><a class="static">${username}</a></li>
+        <li><a href="#" data-toggle="modal" data-target="#rulesModal">Rules</a></li>
         <li><a href="/signout">Sign out</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>
 </nav>
+
+<!-- Rules modal -->
+<div class="modal fade" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="rulesModalLabel">Blokus Rules</h4>
+      </div>
+      <div class="modal-body">
+        Rules go here
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="container-fluid container-play">
 
