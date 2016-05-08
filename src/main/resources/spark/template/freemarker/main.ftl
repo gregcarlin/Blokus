@@ -31,7 +31,29 @@
         <h4 class="modal-title" id="rulesModalLabel">Blokus Rules</h4>
       </div>
       <div class="modal-body">
-        Rules go here
+        <ul>
+          <li>
+            The first piece played of each color is placed in one of the
+            board's four corners. Each new piece played must be placed so
+            that it touches at least one piece of the same color, with
+            only corner-to-corner contact allowed—edges cannot touch.
+            However, edge-to-edge contact is allowed when two pieces of
+            different color are involved.
+          </li>
+          <li>
+            When a player cannot place a piece, he or she passes, and
+            play continues as normal. The game ends when no one can place
+            a piece.
+          </li>
+          <li>
+            When a game ends, the score is based on the number of squares
+            in each player's pieces on the board (e.g. a piece with four
+            squares is
+            worth 4 points). If a player played all of his or her pieces,
+            he or she gets a bonus score of +20 points if the last piece
+            played was a single square piece, +15 points otherwise.
+          </li>
+        </ul>
       </div>
     </div>
   </div>

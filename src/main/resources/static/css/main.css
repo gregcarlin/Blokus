@@ -178,6 +178,10 @@ html, body {
   bottom: 0;
   pointer-events: none;
 }
+#rulesModal li {
+  line-height: 30px;
+  margin-bottom: 15px;
+}
 
 /* play page */
 .container-play {
